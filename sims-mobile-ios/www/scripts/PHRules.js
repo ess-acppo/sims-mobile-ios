@@ -1756,7 +1756,6 @@ $(document).on('click', 'a.downloadMaps', function (e) {
             $('#mb6 .progText').text(error.source);
         },
         null, {}
-        //
     );
 });
 
