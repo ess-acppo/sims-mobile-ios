@@ -1738,7 +1738,7 @@ $(document).on('click', '#SaveSettingsExit', function (e) {
 $(document).on('click', 'a.downloadMaps', function (e) {
     var url2 = $('#form3').find("input[name='optMaps']:checked").data("url");
     var filename = $('#form3').find("input[name='optMaps']:checked").data("filename");
-    var fileURL = cordova.file.externalRootDirectory + "maps/" +  filename;
+    var fileURL = cordova.file.documentsDirectory + "maps/" +  filename;
     var fileTransfer = new FileTransfer();
     $('#modalProgress').modal();
     $('#mb6 .progText').text("Download in progress ...");
@@ -1749,8 +1749,7 @@ $(document).on('click', 'a.downloadMaps', function (e) {
             //console.log("Successful download...");
             $('#mb6 .progText').text("Download complete ...");
             $('#mb6 .progText').text("Extracting Zip file. This might take a while ...");
-            processZip(fileURL, cordova.file.externalRootDirectory + "maps"); //Enable for Android
-            //processZip(fileURL, cordova.file.dataDirectory + "maps"); //Enable for iOS
+            processZip(fileURL, cordova.file.documentsDirectory + "maps");
         },
         function (error) {
             $('#mb6 .progText').text(error.source);
