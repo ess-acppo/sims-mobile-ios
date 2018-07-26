@@ -305,6 +305,7 @@ function initSettings() {
                     }
                 });
             };
+            loadSitePolygons();
         });
     }, function (err) {
         $.growl({ title: "Application Error", message: "An error occured while loading app settings. " + err.message, location: "bc", size: "large", fixed: "true" });
@@ -509,33 +510,42 @@ function checkMapBoundsBySite(position, siteId) {
         var wkt = new Wkt.Wkt();
         wkt.read(arr[0].locationDatum.wkt);
         wkt.toObject();
-        var boundarydata = new Array();
-        for (var i = 0; i < wkt.toJson().coordinates[0].length; i++) {
-            boundarydata[i] = new google.maps.LatLng(wkt.toJson().coordinates[0][1].Ua, wkt.toJson().coordinates[0][0].Va);
-        }
-        sitePolygon = new google.maps.Polygon({
-            path: boundarydata,
-            strokeColor: "#0000FF",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: 'Red',
-            fillOpacity: 0.4
+
+        // Set the initial Lat and Long of the Google Map
+        var x = wkt.toJson().coordinates[0].length - 1;
+        var myLatLng = new google.maps.LatLng(wkt.toJson().coordinates[0][x][1], wkt.toJson().coordinates[0][x][0]);
+
+        trackCoords = [];
+        if (trackPath) { trackPath.setMap(null); }
+        // Add each GPS entry to an array
+        for (var k = 0; k < wkt.toJson().coordinates[0].length; k++) {
+            var latlngc = new google.maps.LatLng(wkt.toJson().coordinates[0][k][1], wkt.toJson().coordinates[0][k][0]);
+            trackCoords.push(latlngc);
+        };
+        // Plot the GPS entries as a line on the Google Map
+        trackPath = new google.maps.Polygon({
+            map: map,
+            path: trackCoords,
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.0,
+            strokeWeight: 2
         });
-        map.setCenter(boundarydata[0]);
-        sitePolygon.setMap(map);
+        //mapc.fitBounds(trackCoords);
+        trackPath.setMap(map);
+        map.setZoom(15);
+        map.setCenter(myLatLng);
 
         var cLat = position.coords.latitude;
         var cLng = position.coords.longitude;
         var point = new google.maps.LatLng(cLat, cLng);
 
-        if (sitePolygon.Contains(point)) {
+        if (trackPath.Contains(point)) {
             return true;
         }
         else {
             $.growl({ title: "Out of bounds!", message: "Location is outside site bounds!", location: "bc", size: "large" });
             return false;
         }
-
     }
     else {
         $.growl({ title: "Out of bounds!", message: "Location is outside site bounds!", location: "bc", size: "large" });
