@@ -120,7 +120,7 @@ function initSettings() {
                 var arr = resSettings.settings.mapSets.filter(function (el) {
                     return (el.activeFlag === 1);
                 });
-                mapPath = arr[0].mapPath;
+                mapPath = cordova.file.documentsDirectory + arr[0].mapPath;
                 emptyTilePath = arr[0].emptyTilePath;
                 myCenter = new google.maps.LatLng(Number(arr[0].mapCenter.lat), Number(arr[0].mapCenter.lng));
                 AppMode = resSettings.settings.app.appMode; 
@@ -189,7 +189,7 @@ function initSettings() {
                         var arr = resSettings.settings.mapSets.filter(function (el) {
                             return (el.activeFlag === 1);
                         });
-                        mapPath = arr[0].mapPath;
+                        mapPath = cordova.file.documentsDirectory + arr[0].mapPath;
                         emptyTilePath = arr[0].emptyTilePath;
                         myCenter = new google.maps.LatLng(Number(arr[0].mapCenter.lat), Number(arr[0].mapCenter.lng));
                         AppMode = resSettings.settings.app.appMode;
