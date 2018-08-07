@@ -1986,7 +1986,7 @@ $(document).on('click', '#SaveSettingsExit', function (e) {
     });
     /* Set active Mapset */
     var activeMapset = $("input[name='optMaps']:checked").data('id');
-    resSettings.settings.mapSets[activeMapset].activeFlag = 1;
+    if (activeMapset) { resSettings.settings.mapSets[activeMapset].activeFlag = 1; }
     //console.log(JSON.stringify(resSettings));
     /* Save to DB */
     db.transaction(function (tx) {

@@ -439,6 +439,8 @@ function clearMarkers() {
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
     }
+    if (markerCluster) { markerCluster.clearMarkers(); }
+    markers = [];
 }
 function checkMapBoundsByLoc(location) {
     var nM = new google.maps.Marker({
