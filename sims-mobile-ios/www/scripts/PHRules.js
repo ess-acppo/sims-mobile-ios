@@ -2035,7 +2035,7 @@ $(document).on('click', 'a.downloadMaps', function (e) {
 function getFileandExtract(url, mapset, i, n) {
     t1 = performance.now();
     t3 = t3 + Math.round((t1 - t0));
-    $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...(" + t3 / 60 + "m)");
+    $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...(" + Math.round(t3 / 1000 / 60) + "m)");
     url2 = url + mapset + pad(i, 2) + ".zip";
     filename = mapset + pad(i, 2) + ".zip";
     var fileURL = cordova.file.documentsDirectory + "maps/" + filename;
@@ -2056,7 +2056,7 @@ function processZip(zipSource, destination, url, mapset, i, n) {
     // Handle the progress event
     t1 = performance.now();
     t3 = t3 + Math.round((t1 - t0));
-    $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...(" + t3 / 60 + "m)");
+    $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...(" + Math.round(t3 / 1000 / 60) + "m)");
 
     var progressHandler = function (progressEvent) {
         var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
