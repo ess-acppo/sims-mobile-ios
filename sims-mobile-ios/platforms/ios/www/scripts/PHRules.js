@@ -172,7 +172,7 @@ function syncPHRefCodes() {
         "url": "http://dev-sims.oztaxa.com/BasicAuth/api/referenceCodes",
         "method": "GET",
         "beforeSend": function () {
-            $('#mb6 .progText').text("Loading Reference Codes ...");
+            $('#mb6 .progText').text("Syncing Reference Codes ...");
             $('#modalProgress').modal();
         },
         "headers": {
@@ -182,7 +182,7 @@ function syncPHRefCodes() {
     }
     $.ajax(settings).done(function (data) {
         //alert(JSON.stringify(response));
-        PHRefCodes = JSON.parse(data);
+        PHRefCodes = data;
         db.transaction(function (tx) {
             tx.executeSql("DELETE FROM phrefcodes", [], function (tx, res) {
                 //alert("Rows deleted.");
@@ -205,118 +205,14 @@ function syncPHRefCodes() {
         }, function (err) {
             $.growl({ title: "Application Error", message: "An error occured while updating PHRefCodes to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
         });
-
-        statType = '<option value="NONE">- select -</option>';
-        $.each(PHRefCodes.PlantHealthReferenceCodes.PlantStatisticType, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.code + '">';
-            option1 = option1 + val.desc + "</option>";
-            statType = statType + option1;
-        });
-        MoB = '<option value="NONE">- select -</option>';
-        $.each(PHRefCodes.PlantHealthReferenceCodes.PlantObservationMethod, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.code + '">';
-            option1 = option1 + val.desc + "</option>";
-            MoB = MoB + option1;
-        });
-        elifeStage = '<option value="NONE">- select -</option>';
-        $.each(PHRefCodes.PlantHealthReferenceCodes.EntoLifeStage, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.code + '">';
-            option1 = option1 + val.desc + "</option>";
-            elifeStage = elifeStage + option1;
-        });
-        percInfested = '<option value="NONE">- select -</option>';
-        $.each(PHRefCodes.PlantHealthReferenceCodes.EntoInfestedPct, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.code + '">';
-            option1 = option1 + val.desc + "</option>";
-            percInfested = percInfested + option1;
-        });
-        damageLevel = '<option value="NONE">- select -</option>';
-        $.each(PHRefCodes.PlantHealthReferenceCodes.EntoDamageLevel, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.code + '">';
-            option1 = option1 + val.desc + "</option>";
-            damageLevel = damageLevel + option1;
-        });
-        plifeStage = '<option value="NONE">- select -</option>';
-        $.each(PHRefCodes.PlantHealthReferenceCodes.PlantLifeStage, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.code + '">';
-            option1 = option1 + val.desc + "</option>";
-            plifeStage = plifeStage + option1;
-        });
-        eCollMethod = '<option value="NONE">- select -</option>';
-        $.each(PHRefCodes.PlantHealthReferenceCodes.EntoCollectionMethod, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.code + '">';
-            option1 = option1 + val.desc + "</option>";
-            eCollMethod = eCollMethod + option1;
-        });
-        pestLevel = '<option value="NONE">- select -</option>';
-        $.each(PHRefCodes.PlantHealthReferenceCodes.EntoPestLevel, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.code + '">';
-            option1 = option1 + val.desc + "</option>";
-            pestLevel = pestLevel + option1;
-        });
-        incidence = '<option value="NONE">- select -</option>';
-        $.each(PHRefCodes.PlantHealthReferenceCodes.PathIncidence, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.code + '">';
-            option1 = option1 + val.desc + "</option>";
-            incidence = incidence + option1;
-        });
-        severity = '<option value="NONE">- select -</option>';
-        $.each(PHRefCodes.PlantHealthReferenceCodes.PathSeverity, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.code + '">';
-            option1 = option1 + val.desc + "</option>";
-            severity = severity + option1;
-        });
         $('#modalProgress').modal('hide');
-        $('#modalAuth').modal('hide');
     }).fail(function (response) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
         $.growl({ title: "Application Error", message: "An error occurred while fetching reference codes. " + err.message, location: "bc", size: "large" });
     });
-
-    $.getJSON("data/activity.json", function (data) {
-        var option = $('<option />');
-        option.attr('value', data.activities.activity.metadata.id).text(data.activities.activity.metadata.name);
-        $("#form1").find('select[name="SurvActivityId_M_N"]').append(option);
-    });
-
-    Loading sites //
-    $.getJSON("data/activity.json", function (data) {
-        siteData = data.activities.activity.metadata.sites;
-        $.each(data.activities.activity.metadata.sites, function (key, val) {
-            var option = $('<option />');
-            option.attr('value', val.id).text(val.name);
-            $("#form1").find('select[name="SiteId_O_N"]').append(option);
-        });
-    });
-
-    Loading Team Defaults //
-    $.getJSON("data/staff_team.json", function (data) {
-        $.each(data.staffs.staff, function (key, val) {
-            var option = $('<option />');
-            option.attr('value', val.id).text(val.displayName);
-            $("#form1").find('select[name="ObservationStaffId_M_N"]').append(option);
-        });
-        staffData = '<option value="NONE">- select -</option>';
-        $.each(data.staffs.staff, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.id + '">';
-            option1 = option1 + val.displayName + "</option>";
-            staffData = staffData + option1;
-        });
-    });
 }
-function loadPHDefaultsV2() {
+function loadPHRefCodes() {
     statType = '<option value="NONE">- select -</option>';
     $.each(PHRefCodes.PlantHealthReferenceCodes.PlantStatisticType, function (key, val) {
         var option1 = '<option';
@@ -387,65 +283,154 @@ function loadPHDefaultsV2() {
         option1 = option1 + val.desc + "</option>";
         severity = severity + option1;
     });
-    $('#modalProgress').modal('hide');
-    $('#modalAuth').modal('hide');
-
-    $.getJSON("data/activity.json", function (data) {
+}
+function syncActivityData() {
+    var x = "simsuser";
+    var y = "sims@123";
+    var settings = {
+        "async": false,
+        "crossDomain": true,
+        "url": "http://dev-sims.oztaxa.com/BasicAuth/api/activity",
+        "method": "GET",
+        "beforeSend": function () {
+            $('#mb6 .progText').text("Syncing Activity Data ...");
+            $('#modalProgress').modal();
+        },
+        "headers": {
+            "authorization": "Basic " + btoa(x + ":" + y),
+            "cache-control": "no-cache"
+        }
+    }
+    $.ajax(settings).done(function (data) {
+        ActivityData = data;
+        siteData = data[0].sites;
+        db.transaction(function (tx) {
+            tx.executeSql("DELETE FROM activitydata", [], function (tx, res) {
+                //alert("Rows deleted.");
+            });
+        }, function (err) {
+            $.growl({ title: "Application Error", message: "An error occured while deleting ActivityData from DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+        });
+        db.transaction(function (tx) {
+            tx.executeSql("INSERT INTO activitydata (id, settingstext, settingsval) VALUES (?,?,?)", [1, 'activity', JSON.stringify(ActivityData)], function (tx, res) {
+                //alert("Row inserted.");
+            });
+        }, function (err) {
+            $.growl({ title: "Application Error", message: "An error occured while updating ActivityData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+        });
+        db.transaction(function (tx) {
+            tx.executeSql("UPDATE activitydata SET settingsval = ? WHERE id = ?", [JSON.stringify(ActivityData), 1], function (tx, res) {
+                //alert("Dataset updated.");
+                //$.growl({ title: "Changes Saved!", message: "Your changes have been saved!", location: "bc", size: "large", fixed: "true" });
+            });
+        }, function (err) {
+            $.growl({ title: "Application Error", message: "An error occured while updating ActivityData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+        });
+        $('#modalProgress').modal('hide');
+    }).fail(function (response) {
+        $('#mb6 .progText').text("");
+        $('#modalProgress').modal('hide');
+        $.growl({ title: "Application Error", message: "An error occurred while fetching ActivityData. " + err.message, location: "bc", size: "large" });
+    });
+}
+function loadActivityData() {
+    $.each(ActivityData, function (key, val) {
         var option = $('<option />');
-        option.attr('value', data.activities.activity.metadata.id).text(data.activities.activity.metadata.name);
+        option.attr('value', val.activityId).text(val.activityName);
         $("#form1").find('select[name="SurvActivityId_M_N"]').append(option);
     });
-
-    //Loading sites //
-    $.getJSON("data/activity.json", function (data) {
-        siteData = data.activities.activity.metadata.sites;
-        $.each(data.activities.activity.metadata.sites, function (key, val) {
-            var option = $('<option />');
-            option.attr('value', val.id).text(val.name);
-            $("#form1").find('select[name="SiteId_O_N"]').append(option);
-        });
+    $.each(siteData, function (key, val) {
+        var option = $('<option />');
+        option.attr('value', val.id).text(val.name);
+        $("#form1").find('select[name="SiteId_O_N"]').append(option);
     });
-
-    //Loading Team Defaults //
-    $.getJSON("data/staff_team.json", function (data) {
-        $.each(data.staffs.staff, function (key, val) {
-            var option = $('<option />');
-            option.attr('value', val.id).text(val.displayName);
-            $("#form1").find('select[name="ObservationStaffId_M_N"]').append(option);
+}
+function syncstaffData() {
+    var x = "simsuser";
+    var y = "sims@123";
+    var settings = {
+        "async": false,
+        "crossDomain": true,
+        "url": "http://dev-sims.oztaxa.com/BasicAuth/api/staff",
+        "method": "GET",
+        "beforeSend": function () {
+            $('#mb6 .progText').text("Syncing Staff Data ...");
+            $('#modalProgress').modal();
+        },
+        "headers": {
+            "authorization": "Basic " + btoa(x + ":" + y),
+            "cache-control": "no-cache"
+        }
+    }
+    $.ajax(settings).done(function (data) {
+        staffDataS = data;
+        db.transaction(function (tx) {
+            tx.executeSql("DELETE FROM staffdata", [], function (tx, res) {
+                //alert("Rows deleted.");
+            });
+        }, function (err) {
+            $.growl({ title: "Application Error", message: "An error occured while deleting StaffData from DB. " + err.message, location: "bc", size: "large", fixed: "true" });
         });
-        staffData = '<option value="NONE">- select -</option>';
-        $.each(data.staffs.staff, function (key, val) {
-            var option1 = '<option';
-            option1 = option1 + ' value="' + val.id + '">';
-            option1 = option1 + val.displayName + "</option>";
-            staffData = staffData + option1;
+        db.transaction(function (tx) {
+            tx.executeSql("INSERT INTO staffdata (id, settingstext, settingsval) VALUES (?,?,?)", [1, 'staff', JSON.stringify(staffDataS)], function (tx, res) {
+                //alert("Row inserted.");
+            });
+        }, function (err) {
+            $.growl({ title: "Application Error", message: "An error occured while updating StaffData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
         });
+        db.transaction(function (tx) {
+            tx.executeSql("UPDATE staffdata SET settingsval = ? WHERE id = ?", [JSON.stringify(staffDataS), 1], function (tx, res) {
+                //alert("Dataset updated.");
+                //$.growl({ title: "Changes Saved!", message: "Your changes have been saved!", location: "bc", size: "large", fixed: "true" });
+            });
+        }, function (err) {
+            $.growl({ title: "Application Error", message: "An error occured while updating StaffData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+        });
+        $('#modalProgress').modal('hide');
+    }).fail(function (response) {
+        $('#mb6 .progText').text("");
+        $('#modalProgress').modal('hide');
+        $.growl({ title: "Application Error", message: "An error occurred while fetching StaffData. " + err.message, location: "bc", size: "large" });
+    });
+}
+function loadstaffData() {
+    // Loading Team Defaults //
+    $.each(staffDataS.staffs.staff, function (key, val) {
+        var option = $('<option />');
+        option.attr('value', val.id).text(val.displayName);
+        $("#form1").find('select[name="ObservationStaffId_M_N"]').append(option);
+    });
+    staffData = '<option value="NONE">- select -</option>';
+    $.each(staffDataS.staffs.staff, function (key, val) {
+        var option1 = '<option';
+        option1 = option1 + ' value="' + val.id + '">';
+        option1 = option1 + val.displayName + "</option>";
+        staffData = staffData + option1;
     });
 }
 function loadSitePolygons() {
-    $.getJSON("data/activity.json", function (data) {
-        $.each(data.activities.activity.metadata.sites, function (key, val) {
-            var wkt = new Wkt.Wkt();
-            wkt.read(val.locationDatum.wkt);
-            wkt.toObject();
+    $.each(siteData, function (key, val) {
+        var wkt = new Wkt.Wkt();
+        wkt.read(val.locationDatum.wkt);
+        wkt.toObject();
 
-            var tC = [];
-            // Add each GPS entry to an array
-            for (var k = 0; k < wkt.toJson().coordinates[0].length; k++) {
-                var latlngc = new google.maps.LatLng(wkt.toJson().coordinates[0][k][1], wkt.toJson().coordinates[0][k][0]);
-                tC.push(latlngc);
-            };
-            // Plot the GPS entries as a line on the Google Map
-            var tP = new google.maps.Polygon({
-                map: map,
-                path: tC,
-                strokeColor: "#FF0000",
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-            });
-            //mapc.fitBounds(trackCoords);
-            tP.setMap(map);
+        var tC = [];
+        // Add each GPS entry to an array
+        for (var k = 0; k < wkt.toJson().coordinates[0].length; k++) {
+            var latlngc = new google.maps.LatLng(wkt.toJson().coordinates[0][k][1], wkt.toJson().coordinates[0][k][0]);
+            tC.push(latlngc);
+        };
+        // Plot the GPS entries as a line on the Google Map
+        var tP = new google.maps.Polygon({
+            map: map,
+            path: tC,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+            fillOpacity: 0.0
         });
+        //mapc.fitBounds(trackCoords);
+        tP.setMap(map);
     });
 }
 function loadBotanySample() {
@@ -571,7 +556,9 @@ function loadModal(pagename) {
         $('#form1').find("input[type='radio'].minimal").iCheck('uncheck');
         $.ajax({
             beforeSend: function () {
-                loadPHDefaults()
+                loadPHRefCodes();
+                loadActivityData();
+                loadstaffData();
             }
         }).complete(function () {
             if (curIdx > -1) {

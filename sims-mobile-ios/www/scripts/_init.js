@@ -13,6 +13,7 @@ var newMarker;
 var db = null;  
 var markers = [];
 var markersc = [];
+var markerCluster;
 var table;
 var curIdx;
 var curLat;
@@ -129,7 +130,7 @@ function initSettings() {
             };
         });
     }, function (err) {
-        $.growl({ title: "Application Error", message: "An error occured while loading PH RefenceCodes. " + err.message, location: "bc", size: "large", fixed: "true" });
+        $.growl({ title: "Application Error", message: "An error occured while loading PH RefenceCodes. ", location: "bc", size: "large", fixed: "true" });
     });
     //Loading Activity Data
     db.transaction(function (tx) {
@@ -331,6 +332,8 @@ function initSettings() {
                                         map.setCenter(this.position);
                                     });
                                 }
+                                var mcOptions = { gridSize: 50, maxZoom: 8, imagePath: 'mapfiles/markers2/m' };
+                                markerCluster = new MarkerClusterer(map, markers, mcOptions);
                                 db.transaction(function (tx) {
                                     tx.executeSql("UPDATE observations SET data = ?,filedt = ? WHERE id = ?", [JSON.stringify(results), today, 1], function (tx, res) {
                                         //alert("Dataset updated.");
@@ -420,6 +423,8 @@ function loadMapMarkers() {
                         map.setCenter(this.position);
                     });
                 }
+                var mcOptions = { gridSize: 50, maxZoom: 8, imagePath: 'mapfiles/markers2/m' };
+                markerCluster = new MarkerClusterer(map, markers, mcOptions);
             }
         });
     }, function (err) {

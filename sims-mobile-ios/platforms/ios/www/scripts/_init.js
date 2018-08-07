@@ -1,6 +1,6 @@
-﻿var mapPath; // = "file:///storage/emulated/0/maps/PNG/";
-var emptyTilePath; // = "maps/empty.png";
-var AppMode; // = 'PH';
+﻿var mapPath; 
+var emptyTilePath; 
+var AppMode; 
 var infoWindow;
 var zoomlevel = document.getElementById('zoomlevel');
 var settings = document.getElementById('AppMode');
@@ -109,6 +109,8 @@ function initSettings() {
         tx.executeSql("CREATE TABLE IF NOT EXISTS observations (id integer primary key, filedt text, data blob)");
         tx.executeSql("CREATE TABLE IF NOT EXISTS settings (id integer primary key, settingstext text, settingsval text default '{}')");
         tx.executeSql("CREATE TABLE IF NOT EXISTS phrefcodes (id integer primary key, settingstext text, settingsval text default '{}')");
+        tx.executeSql("CREATE TABLE IF NOT EXISTS activitydata (id integer primary key, settingstext text, settingsval text default '{}')");
+        tx.executeSql("CREATE TABLE IF NOT EXISTS staffdata (id integer primary key, settingstext text, settingsval text default '{}')");
     }, function (err) {
         $.growl({ title: "Application Error", message: "An error occurred while initializing the DB. " + err.message, location: "bc", size: "large" });
     });
@@ -118,15 +120,51 @@ function initSettings() {
             //This is not the first load
             if (res.rows && res.rows.length > 0) {
                 PHRefCodes = JSON.parse(res.rows.item(0).settingsval);
-                loadPHDefaultsV2();
+                loadPHRefCodes();
             }
             else {
                 //This is the first load
                 syncPHRefCodes();
+                loadPHRefCodes();
             };
         });
     }, function (err) {
-        $.growl({ title: "Application Error", message: "An error occured while loading app settings. " + err.message, location: "bc", size: "large", fixed: "true" });
+        $.growl({ title: "Application Error", message: "An error occured while loading PH RefenceCodes. " + err.message, location: "bc", size: "large", fixed: "true" });
+    });
+    //Loading Activity Data
+    db.transaction(function (tx) {
+        tx.executeSql("SELECT * FROM activitydata WHERE id = ?", [1], function (tx, res) {
+            //This is not the first load
+            if (res.rows && res.rows.length > 0) {
+                ActivityData = JSON.parse(res.rows.item(0).settingsval);
+                siteData = ActivityData[0].sites;
+                loadActivityData();
+            }
+            else {
+                //This is the first load
+                syncActivityData();
+                loadActivityData();
+            };
+        });
+    }, function (err) {
+        $.growl({ title: "Application Error", message: "An error occured while loading Activity Data. " + err.message, location: "bc", size: "large", fixed: "true" });
+    });
+    //Loading Staff Data
+    db.transaction(function (tx) {
+        tx.executeSql("SELECT * FROM staffdata WHERE id = ?", [1], function (tx, res) {
+            //This is not the first load
+            if (res.rows && res.rows.length > 0) {
+                staffDataS = JSON.parse(res.rows.item(0).settingsval);
+                loadstaffData();
+            }
+            else {
+                //This is the first load
+                syncstaffData();
+                loadstaffData();
+            };
+        });
+    }, function (err) {
+        $.growl({ title: "Application Error", message: "An error occured while loading staff Data. " + err.message, location: "bc", size: "large", fixed: "true" });
     });
     //Loading maps and Markers
     db.transaction(function (tx) {
@@ -1279,6 +1317,7 @@ $(document).on('click', '.sync', function (event) {
                 },
                 success: function () {
                     //$.growl({ title: "Apply Changes", message: "Success! Observations synced to cloud.", location: "bc", size: "large" });
+                    results.observations.splice(curIdx - 1, 1);
                 },
                 complete: function () {
                     //$.growl({ title: "Apply Changes", message: "Success! Observations synced to cloud.", location: "bc", size: "large" });
@@ -1295,12 +1334,32 @@ $(document).on('click', '.sync', function (event) {
             return false;
         }
     });
-    if (success == true) { $.growl({ title: "Submit Observations", message: "Success! Observations " + rowsSuccess.join(',') + " synced to cloud.", location: "tc", size: "large", fixed: "true" }) }
+    if (success == true) {
+        $.growl({ title: "Submit Observations", message: "Success! Observations " + rowsSuccess.join(',') + " synced to cloud.", location: "tc", size: "large", fixed: "true" });
+        db.transaction(function (tx) {
+            tx.executeSql("UPDATE observations SET data = ? WHERE id = ?", [JSON.stringify(results), 1], function (tx, res) {
+                //alert("Dataset updated.");
+            });
+        }, function (err) {
+            $.growl({ title: "Application Error", message: "An error occured while updating row to DB. " + err.message, location: "bc", size: "large" });
+        });
+    }
     else { $.growl({ title: "Submit Observations", message: "Submit Failed for rows:" + rowsFailed.join(',') + "<br/>Errors:<br/>" + rowsFailedErr.join('<br/>'), location: "tc", size: "large", fixed: "true" }); }
+    syncPHRefCodes();
+    syncActivityData();
+    syncstaffData();
 })
 $(document).on('shown.bs.modal', '#modalPHGrid', function () {
-    loadPHDefaults();
+    loadPHRefCodes();
+    loadActivityData();
+    loadstaffData();
     loadData();
+    if (statusElem.innerHTML == 'online') {
+        $('.sync').removeClass('hide');
+    }
+    if (statusElem.innerHTML == 'offline') {
+        $('.sync').addClass('hide');
+    }
 })
 $(document).on('hidden.bs.modal', '#modalPHGrid', function () {
     table.destroy();
