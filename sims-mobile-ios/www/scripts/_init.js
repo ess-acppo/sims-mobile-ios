@@ -182,7 +182,7 @@ function initSettings() {
                     zoomlevel.innerHTML = 'zoom: ' + zoom;
                     curZoom = zoom;
                     var div = ownerDocument.createElement('div');
-                    var image = $('<img name="" src="' + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>');
+                    var image = $('<img name="" src="' + cordova.file.documentsDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>');
                     image.error(function () {
                         div.innerHTML = '<img name="" src="' + emptyTilePath + '"/>';
                     });
@@ -247,7 +247,7 @@ function initSettings() {
                             zoomlevel.innerHTML = 'zoom: ' + zoom;
                             curZoom = zoom;
                             var div = ownerDocument.createElement('div');
-                            var image = $('<img name="" src="' + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>');
+                            var image = $('<img name="" src="' + cordova.file.documentsDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>');
                             image.error(function () {
                                 div.innerHTML = '<img name="" src="' + emptyTilePath + '"/>';
                             });
