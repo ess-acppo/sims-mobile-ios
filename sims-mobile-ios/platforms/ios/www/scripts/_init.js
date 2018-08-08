@@ -13,6 +13,7 @@ var newMarker;
 var db = null;  
 var markers = [];
 var markersc = [];
+var markerCluster;
 var table;
 var curIdx;
 var curLat;
@@ -32,6 +33,7 @@ var psamples = 0;
 var addlObservers;
 var resizeId;
 var firstLoad = 0;
+var ActiveMapSet;
 /* AH Initialized variables */
 //var species = '<div class="row col-md-12 sims dynarow"><div class="form-group col-xs-2"><input type="text" class="form-control speciesText"/></div><div class="form-group col-xs-2"><label>Taxon Name<span class="bold-red">*</span></label></div><div class="form-group col-xs-2"><input type="text" class="form-control taxonText" placeholder="Taxon Name" name="taxonName"></div><div class="form-group col-xs-3" ><label>Number in Group<span class="bold-red">*</span></label></div><div class="form-group col-xs-1"><input type="text" class="form-control" placeholder="#" name="Number"></div><div class="form-group col-xs-1"><button type="button" class="btn btn-danger btn-circle btn-xs pull-right removeSpecies"><i class="fa fa-times-circle fa-2x"></i></button></div></div>';
 //var fieldtest = '<div class="row col-md-12 sims dynarow fieldtest"><div class="form-group col-xs-12"><label class="ftName">Field Test 1</label><i class="fa fa-times-circle fa-2x text-default removeFieldTest pull-right"></i></div><div class="form-group col-xs-6"><label>Fieldtest Name<span class="bold-red">*</span></label><input type="text" class="form-control hide" placeholder="Field Test ID" name="ftId"/><select class="form-control" name="fieldTest"></select></div><div class="form-group col-xs-6"><label>&nbsp;</label><br/><input type="checkbox" name="ftInvalid" class="minimal"><label>Invalid</label></div><div class="row col-xs-12 diseases indentLeft"></div><div class="form-group col-xs-11"><label>Field Test Comment</label><input type="text" class="form-control" name="ftComment"/></div></div>';
@@ -93,17 +95,6 @@ function checkPermissions() {
     }
 }
 function initSettings() {
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth() + 1; //January is 0!
-    var yyyy = today.getFullYear();
-    if (dd < 10) {
-        dd = '0' + dd
-    }
-    if (mm < 10) {
-        mm = '0' + mm
-    }
-    today = yyyy.toString() + '-' + mm.toString() + '-' + dd.toString();
     db = window.sqlitePlugin.openDatabase({ name: "sims.db", location: 'default' });
     db.transaction(function (tx) {
         tx.executeSql("CREATE TABLE IF NOT EXISTS observations (id integer primary key, filedt text, data blob)");
@@ -129,7 +120,7 @@ function initSettings() {
             };
         });
     }, function (err) {
-        $.growl({ title: "Application Error", message: "An error occured while loading PH RefenceCodes. " + err.message, location: "bc", size: "large", fixed: "true" });
+        $.growl({ title: "Application Error", message: "An error occured while loading PH RefenceCodes. ", location: "bc", size: "large", fixed: "true" });
     });
     //Loading Activity Data
     db.transaction(function (tx) {
@@ -175,6 +166,7 @@ function initSettings() {
                 var arr = resSettings.settings.mapSets.filter(function (el) {
                     return (el.activeFlag === 1);
                 });
+                ActiveMapSet = arr[0].mapsetID - 1;
                 mapPath = arr[0].mapPath;
                 emptyTilePath = arr[0].emptyTilePath;
                 myCenter = new google.maps.LatLng(Number(arr[0].mapCenter.lat), Number(arr[0].mapCenter.lng));
@@ -200,16 +192,11 @@ function initSettings() {
                 };
                 var mapOptions = { zoom: arr[0].startZoom, center: myCenter, streetViewControl: false, panControl: false, zoomControl: false, mapTypeControl: false, scaleControl: false, overviewMapControl: false, mapTypeControlOptions: { mapTypeIds: ["xx"] } };
                 map = new google.maps.Map(document.getElementById("map"), mapOptions); map.mapTypes.set('xx', mymap); map.setMapTypeId('xx');
+                clearMarkers();
                 loadMapMarkers();
                 google.maps.event.addListener(map, 'click', function (event) {
                     placeMarker(event.latLng);
                 });
-                //google.maps.event.addListener(map, 'dblclick', function (event) {
-                //    map.setZoom(curZoom + 1);
-                //});
-                //google.maps.event.addListener(map, 'click', function (event) {
-                //    map.setZoom(curZoom - 1);
-                //});
             }
             else {
                 //This is the first load
@@ -244,6 +231,7 @@ function initSettings() {
                         var arr = resSettings.settings.mapSets.filter(function (el) {
                             return (el.activeFlag === 1);
                         });
+                        ActiveMapSet = arr[0].mapsetID - 1;
                         mapPath = arr[0].mapPath;
                         emptyTilePath = arr[0].emptyTilePath;
                         myCenter = new google.maps.LatLng(Number(arr[0].mapCenter.lat), Number(arr[0].mapCenter.lng));
@@ -331,6 +319,8 @@ function initSettings() {
                                         map.setCenter(this.position);
                                     });
                                 }
+                                var mcOptions = { gridSize: 50, maxZoom: 8, imagePath: 'mapfiles/markers2/m' };
+                                markerCluster = new MarkerClusterer(map, markers, mcOptions);
                                 db.transaction(function (tx) {
                                     tx.executeSql("UPDATE observations SET data = ?,filedt = ? WHERE id = ?", [JSON.stringify(results), today, 1], function (tx, res) {
                                         //alert("Dataset updated.");
@@ -348,12 +338,6 @@ function initSettings() {
                         google.maps.event.addListener(map, 'click', function (event) {
                             placeMarker(event.latLng);
                         });
-                        //google.maps.event.addListener(map, 'dblclick', function (event) {
-                        //    map.setZoom(curZoom + 1);
-                        //});
-                        //google.maps.event.addListener(map, 'click', function (event) {
-                        //    map.setZoom(curZoom - 1);
-                        //});
                     },
                     failure: function () {
                         $.growl({ title: "Application Error", message: "Error loading settings!", location: "bc", size: "large", fixed: "true" });
@@ -384,8 +368,6 @@ function initLoad() {
     //OTP functionality ends -----------------
 }
 function loadMapMarkers() {
-    //Read from DB
-    var d;
     db.readTransaction(function (tx) {
         tx.executeSql("SELECT * FROM observations WHERE id = ?", [1], function (tx, res) {
             if (res.rows && res.rows.length > 0) {
@@ -420,16 +402,20 @@ function loadMapMarkers() {
                         map.setCenter(this.position);
                     });
                 }
+                var mcOptions = { gridSize: 50, maxZoom: 8, imagePath: 'mapfiles/markers2/m' };
+                markerCluster = new MarkerClusterer(map, markers, mcOptions);
             }
         });
     }, function (err) {
         $.growl({ title: "Application Error", message: "An error occured while retrieving observations. " + err.message, location: "bc", size: "large" });
     });
-};
+}
 function clearMarkers() {
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
     }
+    if (markerCluster) { markerCluster.clearMarkers(); }
+    markers = [];
 }
 function checkMapBoundsByLoc(location) {
     var nM = new google.maps.Marker({
@@ -567,8 +553,6 @@ function myLoc() {
     }
 }
 function getAltitude() {
-    //var t0, t1;
-    //t0 = performance.now();
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             //$('#form1').find("input[type='text'][name='latitude']").val(position.coords.latitude);
@@ -582,8 +566,6 @@ function getAltitude() {
         // Browser doesn't support Geolocation
         $.growl({ title: "Application Error", message: "GeoLocation Failed.", location: "bc", size: "large" });
     };
-    //t1 = performance.now();
-    //$('#perfTime').html("<i class='fa fa-clock-o text-info'></i>" + Math.round((t1 - t0)) + " ms");
 }
 function downloadCSV() {
     $('#mt1').text('All Observations');
@@ -1137,7 +1119,6 @@ $(document).on('click', '#settings', function (e) {
             $('#mt5').empty();
             $(document).find('script[id="pageScript"]').remove();
             $('#mb5').load('settings.html');
-            t0 = performance.now();
         }
     })
         .complete(function (e) {
@@ -1146,6 +1127,7 @@ $(document).on('click', '#settings', function (e) {
                 return (el.activeFlag === 1);
             });
             $('#form3').find('input[name="optMaps"][data-id="' + (arr[0].mapsetID - 1) + '"]').iCheck('check');
+            $('#form3').find('label.mapNotes').eq(arr[0].mapsetID - 1).text("Last downloaded on:" + arr[0].lastDownloadDate);
         }).done(function () {
             $('#modalProgress').modal('hide');
         });
@@ -1184,7 +1166,6 @@ $(document).on('click', '#Delete', function (e) {
     });
 })
 $(document).on('click', '#srchTable tbody tr', function () {
-    var t0, t1;
     if ($(this).hasClass('selected')) {
         $(this).removeClass('selected');
     }
@@ -1198,7 +1179,6 @@ $(document).on('click', '#srchTable tbody tr', function () {
     $.ajax({
         url: "",
         beforeSend: function (xhr) {
-            t0 = performance.now();
             $('#modalProgress').modal();
             $('#mb6 .progText').text("Loading ...");
         }
@@ -1227,12 +1207,9 @@ $(document).on('click', '#srchTable tbody tr', function () {
         }).done(function () {
             $('#modalProgress').modal('hide');
             $('#modalGrid').modal('hide');
-            t1 = performance.now();
-            $('#perfTime').html("<i class='fa fa-clock-o text-info'></i>" + Math.round((t1 - t0)) + " ms");
         });
 })
 $(document).on('click', '#srchPHTable tbody tr', function () {
-    var t0, t1;
     if ($(this).hasClass('selected')) {
         $(this).removeClass('selected');
     }
@@ -1246,7 +1223,6 @@ $(document).on('click', '#srchPHTable tbody tr', function () {
     $.ajax({
         url: "",
         beforeSend: function (xhr) {
-            t0 = performance.now();
             $('#modalProgress').modal();
             $('#mb6 .progText').text("Loading ...");
         }
@@ -1275,8 +1251,6 @@ $(document).on('click', '#srchPHTable tbody tr', function () {
         }).done(function () {
             $('#modalProgress').modal('hide');
             $('#modalPHGrid').modal('hide');
-            t1 = performance.now();
-            $('#perfTime').html("<i class='fa fa-clock-o text-info'></i>" + Math.round((t1 - t0)) + " ms");
         });
 })
 $(document).on('click', '.export', function (event) {

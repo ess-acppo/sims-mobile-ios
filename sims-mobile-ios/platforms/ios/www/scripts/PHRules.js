@@ -19,6 +19,8 @@ var HostStatCountFlag = 0;
 var HostStatAreaFlag = 0;
 var PathTargetObservedCodeFlag = 0;
 var PHRefCodes;
+var ActivityData;
+var t0 = 0, t1 = 0, t3 = 0;
 
 function loadPHDefaults() {
     // Loading Activity Defaults //
@@ -1984,7 +1986,7 @@ $(document).on('click', '#SaveSettingsExit', function (e) {
     });
     /* Set active Mapset */
     var activeMapset = $("input[name='optMaps']:checked").data('id');
-    resSettings.settings.mapSets[activeMapset].activeFlag = 1;
+    if (activeMapset) { resSettings.settings.mapSets[activeMapset].activeFlag = 1; }
     //console.log(JSON.stringify(resSettings));
     /* Save to DB */
     db.transaction(function (tx) {
@@ -1998,25 +2000,92 @@ $(document).on('click', '#SaveSettingsExit', function (e) {
         $.growl({ title: "Application Error", message: "An error occured while updating settings. " + err.message, location: "bc", size: "large" });
     });
 })
+//$(document).on('click', 'a.downloadMaps', function (e) {
+//    var url2 = $('#form3').find("input[name='optMaps']:checked").data("url");
+//    var filename = $('#form3').find("input[name='optMaps']:checked").data("filename");
+//    var fileURL = cordova.file.documentsDirectory + "maps/" +  filename;
+//    var fileTransfer = new FileTransfer();
+//    $('#modalProgress').modal();
+//    $('#mb6 .progText').text("Download in progress ...");
+//    fileTransfer.download(
+//        url2,
+//        fileURL,
+//        function (entry) {
+//            //console.log("Successful download...");
+//            $('#mb6 .progText').text("Download complete ...");
+//            $('#mb6 .progText').text("Extracting Zip file. This might take a while ...");
+//            processZip(fileURL, cordova.file.documentsDirectory + "maps");
+//        },
+//        function (error) {
+//            $('#mb6 .progText').text(error.source);
+//        },
+//        null, {}
+//    );
+//})
 $(document).on('click', 'a.downloadMaps', function (e) {
-    var url2 = $('#form3').find("input[name='optMaps']:checked").data("url");
-    var filename = $('#form3').find("input[name='optMaps']:checked").data("filename");
-    var fileURL = cordova.file.documentsDirectory + "maps/" +  filename;
-    var fileTransfer = new FileTransfer();
+    var url = $('#form3').find("input[name='optMaps']:checked").data("url");
+    var numfiles = $('#form3').find("input[name='optMaps']:checked").data("files");
+    var mapset = $('#form3').find("input[name='optMaps']:checked").val();
+    var filename;
+    var filenum = 0;
+    t0 = performance.now();
     $('#modalProgress').modal();
-    $('#mb6 .progText').text("Download in progress ...");
+    getFileandExtract(url, mapset, 1, numfiles);
+})
+function getFileandExtract(url, mapset, i, n) {
+    t1 = performance.now();
+    t3 = t3 + Math.round((t1 - t0));
+    $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...(" + Math.round(t3 / 1000 / 60) + "m)");
+    url2 = url + mapset + pad(i, 2) + ".zip";
+    filename = mapset + pad(i, 2) + ".zip";
+    var fileURL = cordova.file.documentsDirectory + "maps/" + filename;
+    var fileTransfer = new FileTransfer();
     fileTransfer.download(
         url2,
         fileURL,
         function (entry) {
-            //console.log("Successful download...");
-            $('#mb6 .progText').text("Download complete ...");
-            $('#mb6 .progText').text("Extracting Zip file. This might take a while ...");
-            processZip(fileURL, cordova.file.documentsDirectory + "maps");
+            processZip(fileURL, cordova.file.documentsDirectory + "maps/" + mapset, url, mapset, i, n);
         },
         function (error) {
             $('#mb6 .progText').text(error.source);
         },
         null, {}
     );
-})
+}
+function processZip(zipSource, destination, url, mapset, i, n) {
+    // Handle the progress event
+    t1 = performance.now();
+    t3 = t3 + Math.round((t1 - t0));
+    $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...(" + Math.round(t3 / 1000 / 60) + "m)");
+
+    var progressHandler = function (progressEvent) {
+        var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+        $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ..." + percent + "%");
+    };
+    // Proceed to unzip the file
+    window.zip.unzip(zipSource, destination, (status) => {
+        if (status == 0) {
+            i++;
+            if (i > n) {
+                resSettings.settings.mapSets[ActiveMapSet].downloaded = 1;
+                resSettings.settings.mapSets[ActiveMapSet].lastDownloadDate = new Date().toUTCString();
+                db.transaction(function (tx) {
+                    tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
+                        //alert("Row inserted.");
+                        //return e + pad(nextID.toString(), 4);
+                    });
+                }, function (err) {
+                    $.growl({ title: "Application Error", message: "An error occured while updating mapsets. " + err.message, location: "bc", size: "large" });
+                });
+                $('#modalProgress').modal('hide');
+                $('#form3').find('label.mapNotes').eq(ActiveMapSet).text("Last downloaded on:" + new Date().toUTCString());
+                initSettings();
+                $.growl({ title: "Download Maps", message: "Maps downloaded successfully.", location: "bc", size: "large" });
+            }
+            else { getFileandExtract(url, mapset, i, n); }
+        }
+        if (status == -1) {
+            $.growl({ title: "Download Maps", message: "Failed extracting zip file.", location: "bc", size: "large" });
+        }
+    }, progressHandler);
+}
