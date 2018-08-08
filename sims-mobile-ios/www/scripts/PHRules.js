@@ -1802,7 +1802,7 @@ $(document).on('click', '.getCoords', function (e) {
     var xlat = $('#form1').find('input.obslat');
     var xlng = $('#form1').find('input.obslng');
     var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
-    var siteID = $('#form1').find('select[name="SiteId_O_N"]').val();
+    var siteID = $('#form1').find('select[name="SiteId_O_N"] option:selected').val();
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             if (siteID < 99999 && checkMapBoundsBySite(position, siteID)) {
