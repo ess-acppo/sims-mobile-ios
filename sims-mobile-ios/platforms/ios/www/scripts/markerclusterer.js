@@ -1092,6 +1092,7 @@ ClusterIcon.prototype.onAdd = function() {
       if (ev.stopPropagation) {
           ev.stopPropagation();
       }
+      ev.returnValue = false;
       that.triggerClusterClick(); 
   });
 };

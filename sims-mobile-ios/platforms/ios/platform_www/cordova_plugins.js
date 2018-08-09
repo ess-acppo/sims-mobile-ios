@@ -238,6 +238,14 @@ module.exports = [
         "runs": true
     },
     {
+        "id": "cordova-plugin-file-opener2.FileOpener2",
+        "file": "plugins/cordova-plugin-file-opener2/www/plugins.FileOpener2.js",
+        "pluginId": "cordova-plugin-file-opener2",
+        "clobbers": [
+            "cordova.plugins.fileOpener2"
+        ]
+    },
+    {
         "id": "cordova-plugin-file-transfer.FileTransferError",
         "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
         "pluginId": "cordova-plugin-file-transfer",
@@ -325,14 +333,6 @@ module.exports = [
         "clobbers": [
             "SQLitePlugin"
         ]
-    },
-    {
-        "id": "cordova-plugin-file-opener2.FileOpener2",
-        "file": "plugins/cordova-plugin-file-opener2/www/plugins.FileOpener2.js",
-        "pluginId": "cordova-plugin-file-opener2",
-        "clobbers": [
-            "cordova.plugins.fileOpener2"
-        ]
     }
 ];
 module.exports.metadata = 
@@ -341,18 +341,18 @@ module.exports.metadata =
     "cordova-plugin-android-permissions": "1.0.0",
     "cordova-plugin-app-version": "0.1.9",
     "cordova-plugin-appversion": "1.0.0",
+    "cordova-plugin-compat": "1.2.0",
     "cordova-plugin-camera": "2.4.1",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-file": "4.3.3",
+    "cordova-plugin-file-opener2": "2.0.19",
     "cordova-plugin-file-transfer": "1.7.1",
     "cordova-plugin-geolocation": "2.4.3",
     "cordova-plugin-network-information": "2.0.1",
     "cordova-plugin-splashscreen": "5.0.2",
     "cordova-plugin-whitelist": "1.2.2",
     "cordova-plugin-zip": "3.1.0",
-    "cordova-sqlite-storage": "2.3.2",
-    "cordova-plugin-compat": "1.2.0",
-    "cordova-plugin-file-opener2": "2.0.19"
+    "cordova-sqlite-storage": "2.3.2"
 };
 // BOTTOM OF METADATA
 });
