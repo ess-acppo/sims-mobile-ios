@@ -1171,7 +1171,7 @@ function objectifyPHFormforSave(formArray) {
                     vPlantSampleTab.EntoLifeStgTab.push(vEntoLifeStgTab);
                     continue;
                 }
-                if (fname.startsWith('SampleAttachment')) {
+                if (fname.startsWith('PlantSampleAttachment')) {
                     //var x = fname.substr(fname.length - 1);
                     var attachment = { "AttachmentNo": "", "AttachmentPath": "" };
                     attachment.AttachmentNo = sampleAttachment;
