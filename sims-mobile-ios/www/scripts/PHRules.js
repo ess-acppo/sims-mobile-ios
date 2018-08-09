@@ -1840,6 +1840,7 @@ $(document).on('ifUnchecked', 'input[type="checkbox"].minimal', function (event)
 $(document).on('click', '.getCoords', function (e) {
     var xlat = $('#form1').find('input.obslat');
     var xlng = $('#form1').find('input.obslng');
+    var xdat = $('#form1').find('input.obsdat');
     var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
     var siteID = $('#form1').find('select[name="SiteId_O_N"] option:selected').val();
     if (navigator.geolocation) {
@@ -1848,11 +1849,13 @@ $(document).on('click', '.getCoords', function (e) {
                 xlat.val(position.coords.latitude);
                 xlng.val(position.coords.longitude);
                 xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
             }
             if (siteID == 99999 && checkMapBoundsByPos(position)) {
                 xlat.val(position.coords.latitude);
                 xlng.val(position.coords.longitude);
                 xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
             }
         }, function () {
             $.growl({ title: "Get GPS Failed!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
@@ -1866,6 +1869,7 @@ $(document).on('click', '.getCoords', function (e) {
 $(document).on('click', '.getPlantCoords', function (e) {
     var xlat = $(this).closest('.hostweed').find('input.hostweedlat');
     var xlng = $(this).closest('.hostweed').find('input.hostweedlng');
+    var xdat = $(this).closest('.hostweed').find('input.hostweeddat');
     var xwkt = $(this).closest('.hostweed').find('input[name^="LocationPointWktClob"]');
     var siteID = $('#form1').find('select[name="SiteId_O_N"] option:selected').val();
     if (navigator.geolocation) {
@@ -1874,11 +1878,13 @@ $(document).on('click', '.getPlantCoords', function (e) {
                 xlat.val(position.coords.latitude);
                 xlng.val(position.coords.longitude);
                 xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
             }
             if (siteID == 99999 && checkMapBoundsByPos(position)) {
                 xlat.val(position.coords.latitude);
                 xlng.val(position.coords.longitude);
                 xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
             }
         }, function () {
             $.growl({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
@@ -1892,6 +1898,7 @@ $(document).on('click', '.getPlantCoords', function (e) {
 $(document).on('click', '.getEntoHostCoords', function (e) {
     var xlat = $(this).closest('.entobox').find('input.entolat');
     var xlng = $(this).closest('.entobox').find('input.entolng');
+    var xdat = $(this).closest('.entobox').find('input.entodat');
     var xwkt = $(this).closest('.entobox').find('input[name^="LocationPointWktClob"]');
     var siteID = $('#form1').find('select[name="SiteId_O_N"] option:selected').val();
     if (navigator.geolocation) {
@@ -1900,11 +1907,13 @@ $(document).on('click', '.getEntoHostCoords', function (e) {
                 xlat.val(position.coords.latitude);
                 xlng.val(position.coords.longitude);
                 xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
             }
             if (siteID == 99999 && checkMapBoundsByPos(position)) {
                 xlat.val(position.coords.latitude);
                 xlng.val(position.coords.longitude);
                 xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
             }
         }, function () {
             $.growl({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
@@ -1918,6 +1927,7 @@ $(document).on('click', '.getEntoHostCoords', function (e) {
 $(document).on('click', '.getPathHostCoords', function (e) {
     var xlat = $(this).closest('.pathbox').find('input.pathlat');
     var xlng = $(this).closest('.pathbox').find('input.pathlng');
+    var xdat = $(this).closest('.sample').find('input.pathdat');
     var xwkt = $(this).closest('.pathbox').find('input[name^="LocationPointWktClob"]');
     var siteID = $('#form1').find('select[name="SiteId_O_N"] option:selected').val();
     if (navigator.geolocation) {
@@ -1926,11 +1936,13 @@ $(document).on('click', '.getPathHostCoords', function (e) {
                 xlat.val(position.coords.latitude);
                 xlng.val(position.coords.longitude);
                 xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
             }
             if (siteID == 99999 && checkMapBoundsByPos(position)) {
                 xlat.val(position.coords.latitude);
                 xlng.val(position.coords.longitude);
                 xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
             }
         }, function () {
             $.growl({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
@@ -1945,6 +1957,7 @@ $(document).on('click', '.getSampleCoords', function (e) {
     var xlat = $(this).closest('.sample').find('input.samplelat');
     var xlng = $(this).closest('.sample').find('input.samplelng');
     var xalt = $(this).closest('.sample').find('input.samplealt');
+    var xdat = $(this).closest('.sample').find('input.sampledat');
     var xwkt = $(this).closest('.sample').find('input[name^="SamplePointWktClob"]');
     var siteID = $('#form1').find('select[name="SiteId_O_N"] option:selected').val();
     if (navigator.geolocation) {
@@ -1954,12 +1967,14 @@ $(document).on('click', '.getSampleCoords', function (e) {
                 xlng.val(position.coords.longitude);
                 xalt.val(position.coords.altitude);
                 xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
             }
             if (siteID == 99999 && checkMapBoundsByPos(position)) {
                 xlat.val(position.coords.latitude);
                 xlng.val(position.coords.longitude);
                 xalt.val(position.coords.altitude);
                 xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
             }
         }, function () {
             $.growl({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
