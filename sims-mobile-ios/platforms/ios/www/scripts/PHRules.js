@@ -2142,13 +2142,13 @@ function processZip(zipSource, destination, url, mapset, i, n) {
                     dir.getFile(filename, { create: false }, function (fileEntry) {
                         fileEntry.remove(function () {
                             // The file has been removed succesfully
-                            $.growl({ title: "Application Error", message: "Zip file is removed successfully.", location: "bc", size: "large" });
+                            $.growl({ title: "Application Info", message: "Zip file is removed successfully.", location: "bc", size: "large" });
                         }, function (error) {
                             // Error deleting the file
                             $.growl({ title: "Application Error", message: "Error removing zip file.", location: "bc", size: "large" });
                         }, function () {
                             // The file doesn't exist
-                            $.growl({ title: "Application Error", message: "Zip file does not exist.", location: "bc", size: "large" });
+                            $.growl({ title: "Application Info", message: "Zip file does not exist.", location: "bc", size: "large" });
                         });
                     });
                 });
