@@ -2088,18 +2088,16 @@ $(document).on('click', 'a.downloadMaps', function (e) {
 function getFileandExtract(url, mapset, i, n) {
     t1 = performance.now();
     t3 = t3 + Math.round((t1 - t0));
-    $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...");
-    $('.progress-bar').css('width', '25%').attr('aria-valuenow', 25).text('25%');
+    $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...(" + Math.round(t3 / 1000 / 60) + "m)");
     url2 = url + mapset + pad(i, 2) + ".zip";
     filename = mapset + pad(i, 2) + ".zip";
-    var fileURL = cordova.file.externalRootDirectory + "maps/" + filename;
+    var fileURL = cordova.file.documentsDirectory + "maps/" + filename;
     var fileTransfer = new FileTransfer();
     fileTransfer.download(
         url2,
         fileURL,
         function (entry) {
-            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
-            processZip(fileURL, cordova.file.externalRootDirectory + "maps/" + mapset, url, mapset, i, n);
+            processZip(fileURL, cordova.file.documentsDirectory + "maps/" + mapset, url, mapset, i, n);
         },
         function (error) {
             $('#mb6 .progText').text(error.source);
@@ -2111,33 +2109,15 @@ function processZip(zipSource, destination, url, mapset, i, n) {
     // Handle the progress event
     t1 = performance.now();
     t3 = t3 + Math.round((t1 - t0));
-    $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
-    //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
+    $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...(" + Math.round(t3 / 1000 / 60) + "m)");
 
     var progressHandler = function (progressEvent) {
         var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-        $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
-        $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent).text(percent + '%');
+        $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ..." + percent + "%");
     };
     // Proceed to unzip the file
     window.zip.unzip(zipSource, destination, (status) => {
         if (status == 0) {
-            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
-            var filename = mapset + pad(i, 2) + ".zip";
-            window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + "maps", function (dir) {
-                dir.getFile(filename, { create: false }, function (fileEntry) {
-                    fileEntry.remove(function () {
-                        // The file has been removed succesfully
-                        //$.growl({ title: "Application Info", message: "Zip file is removed successfully.", location: "bc", size: "large" });
-                    }, function (error) {
-                        // Error deleting the file
-                        $.growl({ title: "Application Error", message: "Error removing zip file.", location: "bc", size: "large" });
-                    }, function () {
-                        // The file doesn't exist
-                        $.growl({ title: "Application Info", message: "Zip file does not exist.", location: "bc", size: "large" });
-                    });
-                });
-            });
             i++;
             if (i > n) {
                 resSettings.settings.mapSets[ActiveMapSet].downloaded = 1;
@@ -2156,6 +2136,22 @@ function processZip(zipSource, destination, url, mapset, i, n) {
                 $.growl({ title: "Download Maps", message: "Maps downloaded successfully.", location: "bc", size: "large" });
             }
             else {
+                var filename = zipSource.substr(zipSource.lastIndexOf('/') + 1);
+                console.log(filename);
+                window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + "maps", function (dir) {
+                    dir.getFile(filename, { create: false }, function (fileEntry) {
+                        fileEntry.remove(function () {
+                            // The file has been removed succesfully
+                            $.growl({ title: "Application Error", message: "Zip file is removed successfully.", location: "bc", size: "large" });
+                        }, function (error) {
+                            // Error deleting the file
+                            $.growl({ title: "Application Error", message: "Error removing zip file.", location: "bc", size: "large" });
+                        }, function () {
+                            // The file doesn't exist
+                            $.growl({ title: "Application Error", message: "Zip file does not exist.", location: "bc", size: "large" });
+                        });
+                    });
+                });
                 getFileandExtract(url, mapset, i, n);
             }
         }
