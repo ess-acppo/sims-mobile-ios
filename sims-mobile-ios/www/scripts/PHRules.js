@@ -1,5 +1,6 @@
 ﻿var siteData;
 var staffData;
+var staffDataS;
 var statType;
 var MoB;
 var elifeStage;
@@ -32,7 +33,6 @@ function loadPHDefaults() {
         option.attr('value', data.activities.activity.metadata.id).text(data.activities.activity.metadata.name);
         $("#form1").find('select[name="SurvActivityId_M_N"]').append(option);
     });
-
     // Loading sites //
     $.getJSON("data/activity.json", function (data) {
         siteData = data.activities.activity.metadata.sites;
@@ -42,7 +42,6 @@ function loadPHDefaults() {
             $("#form1").find('select[name="SiteId_O_N"]').append(option);
         });
     });
-
     // Loading Team Defaults //
     $.getJSON("data/staff_team.json", function (data) {
         $.each(data.staffs.staff, function (key, val) {
@@ -58,7 +57,6 @@ function loadPHDefaults() {
             staffData = staffData + option1;
         });
     });
-
     // Loading Plant Statistic Type //
     $.getJSON("data/PHDefaults.json", function (data) {
         statType = '<option value="NONE">- select -</option>';
@@ -69,7 +67,6 @@ function loadPHDefaults() {
             statType = statType + option1;
         });
     });
-
     // Loading Plant Observation Method //
     $.getJSON("data/PHDefaults.json", function (data) {
         MoB = '<option value="NONE">- select -</option>';
@@ -80,7 +77,6 @@ function loadPHDefaults() {
             MoB = MoB + option1;
         });
     });
-
     // Loading Life Stage //
     $.getJSON("data/PHDefaults.json", function (data) {
         elifeStage = '<option value="NONE">- select -</option>';
@@ -100,7 +96,6 @@ function loadPHDefaults() {
             plifeStage = plifeStage + option1;
         });
     });
-
     // Loading Ento Collection Method //
     $.getJSON("data/PHDefaults.json", function (data) {
         eCollMethod = '<option value="NONE">- select -</option>';
@@ -111,7 +106,6 @@ function loadPHDefaults() {
             eCollMethod = eCollMethod + option1;
         });
     });
-
     // Loading Ento Percentage Infested //
     $.getJSON("data/PHDefaults.json", function (data) {
         percInfested = '<option value="NONE">- select -</option>';
@@ -122,7 +116,6 @@ function loadPHDefaults() {
             percInfested = percInfested + option1;
         });
     });
-
     // Loading Ento Damage Level //
     $.getJSON("data/PHDefaults.json", function (data) {
         damageLevel = '<option value="NONE">- select -</option>';
@@ -133,7 +126,6 @@ function loadPHDefaults() {
             damageLevel = damageLevel + option1;
         });
     });
-
     // Loading Ento Pest Level //
     $.getJSON("data/PHDefaults.json", function (data) {
         pestLevel = '<option value="NONE">- select -</option>';
@@ -144,7 +136,6 @@ function loadPHDefaults() {
             pestLevel = pestLevel + option1;
         });
     });
-
     // Loading Path Incidence //
     $.getJSON("data/PHDefaults.json", function (data) {
         incidence = '<option value="NONE">- select -</option>';
@@ -155,7 +146,6 @@ function loadPHDefaults() {
             incidence = incidence + option1;
         });
     });
-
     // Loading Path Severity //
     $.getJSON("data/PHDefaults.json", function (data) {
         severity = '<option value="NONE">- select -</option>';
@@ -215,7 +205,7 @@ function syncPHRefCodes() {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
         $.growl({ title: "Application Error", message: "An error occurred while fetching reference codes. " + err.message, location: "bc", size: "large" });
-    });
+        });
 }
 function loadPHRefCodes() {
     statType = '<option value="NONE">- select -</option>';
@@ -330,7 +320,7 @@ function syncActivityData() {
             });
         }, function (err) {
             $.growl({ title: "Application Error", message: "An error occured while updating ActivityData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
-        });
+            });
         $('#modalProgress').modal('hide');
     }).fail(function (response) {
         $('#mb6 .progText').text("");
@@ -390,7 +380,7 @@ function syncstaffData() {
             });
         }, function (err) {
             $.growl({ title: "Application Error", message: "An error occured while updating StaffData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
-        });
+            });
         $('#modalProgress').modal('hide');
     }).fail(function (response) {
         $('#mb6 .progText').text("");
@@ -415,7 +405,7 @@ function loadstaffData() {
 }
 function loadSitePolygons() {
     $.each(siteData, function (key, val) {
-        if (val.id == 99999) { return true; }
+        if (val.id == 99999) { return true;}
         var wkt = new Wkt.Wkt();
         wkt.read(val.locationDatum.wkt);
         wkt.toObject();
@@ -533,7 +523,7 @@ function getNextID(e) {
     }, function (err) {
         $.growl({ title: "Application Error", message: "An error occured while incrementing ID. " + err.message, location: "bc", size: "large" });
     });
-}
+};
 function loadModal(pagename) {
     var t0, t1;
     $.ajax({
@@ -1048,7 +1038,7 @@ function loadModal(pagename) {
     }).done(function () {
         $('#modalProgress').modal('hide');
         t1 = performance.now();
-        $('#perfTime').html("<i class='fa fa-clock-o text-info'></i>" + Math.round((t1 - t0)) + " ms");
+        $('#perfTime').html("<i class='fa fa-clock-o text-info'></i>&nbsp;" + Math.round((t1 - t0)) + " ms");
     });
 };
 function objectifyPHFormforSave(formArray) {
@@ -1272,7 +1262,7 @@ function Iterate(data) {
     if (vFailed == true) {
         return { "vError": vError, "vErrDescription": vErrDescription.join('<br/>') };
     } else { return { "vError": 0, "vErrDescription": "" }; }
-}
+};
 function SubmitRecord(formArray) {//serialize data function
     var guid1 = guid();
     var obsWrapper = {
@@ -1640,6 +1630,9 @@ $(document).on('click', '#addBotanySample', function (e) {
     that.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + bsamples + '_S');
     })
+    that.find('img').each(function () {
+        $(this).attr('name', $(this).attr('name') + '_' + bsamples + '_S');
+    })
     that.find('select').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + bsamples + '_S');
     })
@@ -1649,7 +1642,9 @@ $(document).on('click', '#addBotanySample', function (e) {
     that.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that.find("input[type='radio'].minimal").iCheck('uncheck');
     that.find("input.nextid").val(getNextID("SM"));
+    that.find('.badge').text(bsamples);
     $('#samples').append(that);
+    $('#numSamples').text(bsamples);
 })
 $(document).on('click', '.removeBotSample', function (e) {
     var x = $(this);
@@ -1694,6 +1689,9 @@ $(document).on('click', '#addEntoSample', function (e) {
     that.find('select[name^="EntoInfestedPctCode"]').find('option').remove().end().append($(percInfested));
     that.find('select[name^="EntoDamageLevelCode"]').find('option').remove().end().append($(damageLevel));
     that.find('select[name^="EntoPestLevelCode"]').find('option').remove().end().append($(pestLevel));
+    that.find('img').each(function () {
+        $(this).attr('name', $(this).attr('name') + '_' + esamples + '_S');
+    })
     that.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + esamples + '_S');
     })
@@ -1706,7 +1704,9 @@ $(document).on('click', '#addEntoSample', function (e) {
     that.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that.find("input[type='radio'].minimal").iCheck('uncheck');
     that.find("input.nextid").val(getNextID("SM"));
+    that.find('.badge').text(esamples);
     $('#samples').append(that);
+    $('#numSamples').text(esamples);
 })
 $(document).on('click', '.removeEntoSample', function (e) {
     var x = $(this);
@@ -1749,6 +1749,9 @@ $(document).on('click', '#addPathSample', function (e) {
     that.find('select[name^="HostIdentifiedUserId"]').find('option').remove().end().append($(staffData));
     that.find('select[name^="PathIncidCode"]').find('option').remove().end().append($(incidence));
     that.find('select[name^="PathSevCode"]').find('option').remove().end().append($(severity));
+    that.find('img').each(function () {
+        $(this).attr('name', $(this).attr('name') + '_' + psamples + '_S');
+    })
     that.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + psamples + '_S');
     })
@@ -1761,7 +1764,9 @@ $(document).on('click', '#addPathSample', function (e) {
     //that.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that.find("input[type='radio'].minimal").iCheck('uncheck');
     that.find("input.nextid").val(getNextID("SM"));
+    that.find('.badge').text(psamples);
     $('#samples').append(that);
+    $('#numSamples').text(psamples);
 })
 $(document).on('click', '.removePathSample', function (e) {
     var x = $(this);
@@ -2062,7 +2067,6 @@ $(document).on('click', '#SaveSettingsExit', function (e) {
     /* Set active Mapset */
     var activeMapset = $("input[name='optMaps']:checked").data('id');
     if (activeMapset) { resSettings.settings.mapSets[activeMapset].activeFlag = 1; }
-    //console.log(JSON.stringify(resSettings));
     /* Save to DB */
     db.transaction(function (tx) {
         tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
@@ -2083,21 +2087,24 @@ $(document).on('click', 'a.downloadMaps', function (e) {
     var filenum = 0;
     t0 = performance.now();
     $('#modalProgress').modal();
+    $('#mb6 .progText').text("Download in progress ...");
     getFileandExtract(url, mapset, 1, numfiles);
 })
 function getFileandExtract(url, mapset, i, n) {
     t1 = performance.now();
     t3 = t3 + Math.round((t1 - t0));
-    $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...(" + Math.round(t3 / 1000 / 60) + "m)");
+    $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...");
+    $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
     url2 = url + mapset + pad(i, 2) + ".zip";
     filename = mapset + pad(i, 2) + ".zip";
-    var fileURL = cordova.file.documentsDirectory + "maps/" + filename;
+    var fileURL = cordova.file.externalRootDirectory + "maps/" + filename;
     var fileTransfer = new FileTransfer();
     fileTransfer.download(
         url2,
         fileURL,
         function (entry) {
-            processZip(fileURL, cordova.file.documentsDirectory + "maps/" + mapset, url, mapset, i, n);
+            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
+            processZip(fileURL, cordova.file.externalRootDirectory + "maps/" + mapset, url, mapset, i, n);
         },
         function (error) {
             $('#mb6 .progText').text(error.source);
@@ -2109,15 +2116,33 @@ function processZip(zipSource, destination, url, mapset, i, n) {
     // Handle the progress event
     t1 = performance.now();
     t3 = t3 + Math.round((t1 - t0));
-    $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...(" + Math.round(t3 / 1000 / 60) + "m)");
+    $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
+    //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
 
     var progressHandler = function (progressEvent) {
         var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-        $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ..." + percent + "%");
+        $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
+        $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent).text(percent + '%');  
     };
     // Proceed to unzip the file
     window.zip.unzip(zipSource, destination, (status) => {
         if (status == 0) {
+            var filename = mapset + pad(i, 2) + ".zip";
+            window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + "maps", function (dir) {
+                dir.getFile(filename, { create: false }, function (fileEntry) {
+                    fileEntry.remove(function () {
+                        // The file has been removed succesfully
+                        $.growl({ title: "Application Info", message: "Zip file is removed successfully.", location: "bc", size: "large" });
+                    }, function (error) {
+                        // Error deleting the file
+                        $.growl({ title: "Application Error", message: "Error removing zip file.", location: "bc", size: "large" });
+                    }, function () {
+                        // The file doesn't exist
+                        $.growl({ title: "Application Info", message: "Zip file does not exist.", location: "bc", size: "large" });
+                    });
+                });
+            });
+            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
             i++;
             if (i > n) {
                 resSettings.settings.mapSets[ActiveMapSet].downloaded = 1;
@@ -2136,22 +2161,8 @@ function processZip(zipSource, destination, url, mapset, i, n) {
                 $.growl({ title: "Download Maps", message: "Maps downloaded successfully.", location: "bc", size: "large" });
             }
             else {
-                var filename = zipSource.substr(zipSource.lastIndexOf('/') + 1);
-                console.log(filename);
-                window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + "maps", function (dir) {
-                    dir.getFile(filename, { create: false }, function (fileEntry) {
-                        fileEntry.remove(function () {
-                            // The file has been removed succesfully
-                            $.growl({ title: "Application Error", message: "Zip file is removed successfully.", location: "bc", size: "large" });
-                        }, function (error) {
-                            // Error deleting the file
-                            $.growl({ title: "Application Error", message: "Error removing zip file.", location: "bc", size: "large" });
-                        }, function () {
-                            // The file doesn't exist
-                            $.growl({ title: "Application Error", message: "Zip file does not exist.", location: "bc", size: "large" });
-                        });
-                    });
-                });
+                $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
+                //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
                 getFileandExtract(url, mapset, i, n);
             }
         }
@@ -2178,7 +2189,7 @@ $(document).on('change', 'select[name="SiteId_O_N"]', function () {
                 var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
                 if (xlat.val() != "") { cLatitude = xlat.val(); }
                 if (xlng.val() != "") { cLongitude = xlng.val(); }
-                if (xwkt.val() != "") { cWkt = xwkt.val(); }
+                if (xwkt.val() != "") { cWkt = xwkt.val(); } 
                 xlat.val("");
                 xlng.val("");
                 xwkt.val("");
@@ -2190,7 +2201,7 @@ $(document).on('change', 'select[name="SiteId_O_N"]', function () {
                 var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
                 if (cLatitude != "") { xlat.val(cLatitude); }
                 if (cLongitude != "") { xlng.val(cLongitude); }
-                if (cWkt != "") { xwkt.val(cWkt); }
+                if (cWkt != "") { xwkt.val(cWkt); } 
             }
         }).done(function () {
             $('#modalProgress').modal('hide');

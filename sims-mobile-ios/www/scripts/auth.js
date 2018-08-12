@@ -22,8 +22,8 @@ function initAuth() {
             }
         });
 };
-function authenticate(x, y) {
-
+function authenticate(x, y) {  
+    
     var settings = {
         "async": false,
         "crossDomain": true,
@@ -79,7 +79,7 @@ function authenticate2(x, y) {
         icon.classList.add('fa-check');
         icon.classList.remove('fa-times');
         text.innerHTML = 'Login success!';
-        derive_key(x, y);
+        derive_key(x,y);
         $('#modalProgress').modal('hide');
         $('#modalAuth').modal('hide');
     }).fail(function (response) {
