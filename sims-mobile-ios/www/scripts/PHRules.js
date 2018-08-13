@@ -1288,7 +1288,7 @@ function guid() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 function checkIfFileExists(path) {
-    window.resolveLocalFileSystemURL(cordova.file.documentsDirectory + "/maps/", function (fileSystem) {
+    window.resolveLocalFileSystemURL(cordova.file.dataDirectory + "/maps/", function (fileSystem) {
         fileSystem.getFile(path, { create: false }, fileExists, fileDoesNotExist);
     }, getFSFail); //of requestFileSystem
 }
@@ -2097,14 +2097,14 @@ function getFileandExtract(url, mapset, i, n) {
     $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
     url2 = url + mapset + pad(i, 2) + ".zip";
     filename = mapset + pad(i, 2) + ".zip";
-    var fileURL = cordova.file.documentsDirectory + "maps/" + filename;
+    var fileURL = cordova.file.dataDirectory + "maps/" + filename;
     var fileTransfer = new FileTransfer();
     fileTransfer.download(
         url2,
         fileURL,
         function (entry) {
             $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
-            processZip(fileURL, cordova.file.documentsDirectory + "maps/" + mapset, url, mapset, i, n);
+            processZip(fileURL, cordova.file.dataDirectory + "maps/" + mapset, url, mapset, i, n);
         },
         function (error) {
             $('#mb6 .progText').text(error.source);
@@ -2128,7 +2128,7 @@ function processZip(zipSource, destination, url, mapset, i, n) {
     window.zip.unzip(zipSource, destination, (status) => {
         if (status == 0) {
             var filename = mapset + pad(i, 2) + ".zip";
-            window.resolveLocalFileSystemURL(cordova.file.documentsDirectory + "maps", function (dir) {
+            window.resolveLocalFileSystemURL(cordova.file.dataDirectory + "maps", function (dir) {
                 dir.getFile(filename, { create: false }, function (fileEntry) {
                     fileEntry.remove(function () {
                         // The file has been removed succesfully
