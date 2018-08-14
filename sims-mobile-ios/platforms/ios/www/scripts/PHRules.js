@@ -159,8 +159,6 @@ function loadPHDefaults() {
 }
 function syncPHRefCodes() {
     // Loading Activity Defaults //
-    var x = "simsuser";
-    var y = "sims@123";
     var settings = {
         "async": false,
         "crossDomain": true,
@@ -171,7 +169,7 @@ function syncPHRefCodes() {
             $('#modalProgress').modal();
         },
         "headers": {
-            "authorization": "Basic " + btoa(x + ":" + y),
+            "authorization": authCode,
             "cache-control": "no-cache"
         }
     }
@@ -183,14 +181,14 @@ function syncPHRefCodes() {
                 //alert("Rows deleted.");
             });
         }, function (err) {
-            $.growl({ title: "Application Error", message: "An error occured while deleting PHRefCodes from DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+            $.growl.error({ title: "", message: "An error occured while deleting PHRefCodes from DB. " + err.message, location: "bc", size: "large", fixed: "true" });
         });
         db.transaction(function (tx) {
             tx.executeSql("INSERT INTO phrefcodes (id, settingstext, settingsval) VALUES (?,?,?)", [1, 'refcodes', JSON.stringify(PHRefCodes)], function (tx, res) {
                 //alert("Row inserted.");
             });
         }, function (err) {
-            $.growl({ title: "Application Error", message: "An error occured while updating PHRefCodes to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+            $.growl.error({ title: "", message: "An error occured while updating PHRefCodes to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
         });
         db.transaction(function (tx) {
             tx.executeSql("UPDATE phrefcodes SET settingsval = ? WHERE id = ?", [JSON.stringify(PHRefCodes), 1], function (tx, res) {
@@ -198,14 +196,14 @@ function syncPHRefCodes() {
                 //$.growl({ title: "Changes Saved!", message: "Your changes have been saved!", location: "bc", size: "large", fixed: "true" });
             });
         }, function (err) {
-            $.growl({ title: "Application Error", message: "An error occured while updating PHRefCodes to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+            $.growl.error({ title: "", message: "An error occured while updating PHRefCodes to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
         });
         $('#modalProgress').modal('hide');
     }).fail(function (response) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
-        $.growl({ title: "Application Error", message: "An error occurred while fetching reference codes. " + err.message, location: "bc", size: "large" });
-    });
+        $.growl.error({ title: "", message: "An error occurred while fetching reference codes. " + err.message, location: "bc", size: "large" });
+        });
 }
 function loadPHRefCodes() {
     statType = '<option value="NONE">- select -</option>';
@@ -280,8 +278,6 @@ function loadPHRefCodes() {
     });
 }
 function syncActivityData() {
-    var x = "simsuser";
-    var y = "sims@123";
     var settings = {
         "async": false,
         "crossDomain": true,
@@ -292,7 +288,7 @@ function syncActivityData() {
             $('#modalProgress').modal();
         },
         "headers": {
-            "authorization": "Basic " + btoa(x + ":" + y),
+            "authorization": authCode,
             "cache-control": "no-cache"
         }
     }
@@ -304,14 +300,14 @@ function syncActivityData() {
                 //alert("Rows deleted.");
             });
         }, function (err) {
-            $.growl({ title: "Application Error", message: "An error occured while deleting ActivityData from DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+            $.growl.error({ title: "", message: "An error occured while deleting ActivityData from DB. " + err.message, location: "bc", size: "large", fixed: "true" });
         });
         db.transaction(function (tx) {
             tx.executeSql("INSERT INTO activitydata (id, settingstext, settingsval) VALUES (?,?,?)", [1, 'activity', JSON.stringify(ActivityData)], function (tx, res) {
                 //alert("Row inserted.");
             });
         }, function (err) {
-            $.growl({ title: "Application Error", message: "An error occured while updating ActivityData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+            $.growl.error({ title: "", message: "An error occured while updating ActivityData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
         });
         db.transaction(function (tx) {
             tx.executeSql("UPDATE activitydata SET settingsval = ? WHERE id = ?", [JSON.stringify(ActivityData), 1], function (tx, res) {
@@ -319,13 +315,13 @@ function syncActivityData() {
                 //$.growl({ title: "Changes Saved!", message: "Your changes have been saved!", location: "bc", size: "large", fixed: "true" });
             });
         }, function (err) {
-            $.growl({ title: "Application Error", message: "An error occured while updating ActivityData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
-        });
+            $.growl.error({ title: "", message: "An error occured while updating ActivityData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+            });
         $('#modalProgress').modal('hide');
     }).fail(function (response) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
-        $.growl({ title: "Application Error", message: "An error occurred while fetching ActivityData. " + err.message, location: "bc", size: "large" });
+        $.growl.error({ title: "", message: "An error occurred while fetching ActivityData. " + err.message, location: "bc", size: "large" });
     });
 }
 function loadActivityData() {
@@ -341,8 +337,6 @@ function loadActivityData() {
     });
 }
 function syncstaffData() {
-    var x = "simsuser";
-    var y = "sims@123";
     var settings = {
         "async": false,
         "crossDomain": true,
@@ -353,7 +347,7 @@ function syncstaffData() {
             $('#modalProgress').modal();
         },
         "headers": {
-            "authorization": "Basic " + btoa(x + ":" + y),
+            "authorization": authCode,
             "cache-control": "no-cache"
         }
     }
@@ -364,14 +358,14 @@ function syncstaffData() {
                 //alert("Rows deleted.");
             });
         }, function (err) {
-            $.growl({ title: "Application Error", message: "An error occured while deleting StaffData from DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+            $.growl.error({ title: "", message: "An error occured while deleting StaffData from DB. " + err.message, location: "bc", size: "large", fixed: "true" });
         });
         db.transaction(function (tx) {
             tx.executeSql("INSERT INTO staffdata (id, settingstext, settingsval) VALUES (?,?,?)", [1, 'staff', JSON.stringify(staffDataS)], function (tx, res) {
                 //alert("Row inserted.");
             });
         }, function (err) {
-            $.growl({ title: "Application Error", message: "An error occured while updating StaffData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+            $.growl.error({ title: "", message: "An error occured while updating StaffData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
         });
         db.transaction(function (tx) {
             tx.executeSql("UPDATE staffdata SET settingsval = ? WHERE id = ?", [JSON.stringify(staffDataS), 1], function (tx, res) {
@@ -379,13 +373,13 @@ function syncstaffData() {
                 //$.growl({ title: "Changes Saved!", message: "Your changes have been saved!", location: "bc", size: "large", fixed: "true" });
             });
         }, function (err) {
-            $.growl({ title: "Application Error", message: "An error occured while updating StaffData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
-        });
+            $.growl.error({ title: "", message: "An error occured while updating StaffData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
+            });
         $('#modalProgress').modal('hide');
     }).fail(function (response) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
-        $.growl({ title: "Application Error", message: "An error occurred while fetching StaffData. " + err.message, location: "bc", size: "large" });
+        $.growl.error({ title: "", message: "An error occurred while fetching StaffData. " + err.message, location: "bc", size: "large" });
     });
 }
 function loadstaffData() {
@@ -405,7 +399,7 @@ function loadstaffData() {
 }
 function loadSitePolygons() {
     $.each(siteData, function (key, val) {
-        if (val.id == 99999) { return true; }
+        if (val.id == 99999) { return true;}
         var wkt = new Wkt.Wkt();
         wkt.read(val.locationDatum.wkt);
         wkt.toObject();
@@ -533,7 +527,7 @@ function getNextID(e) {
             $("#form1").find('input[type="text"].nextid').last().val(e + pad(nextID.toString(), 6));
         });
     }, function (err) {
-        $.growl({ title: "Application Error", message: "An error occured while incrementing ID. " + err.message, location: "bc", size: "large" });
+        $.growl.error({ title: "", message: "An error occured while incrementing ID. " + err.message, location: "bc", size: "large" });
     });
 };
 function loadModal(pagename) {
@@ -1038,7 +1032,9 @@ function loadModal(pagename) {
                 }
                 $('#form1').find("input[type='date'][name^='ObservationDate']").val(today);
                 $('#form1').find("input[type='number'][name^='DurationMinsCount']").val("0");
-                $('#form1').find("input[type='number'][name^='id']").val(results.observations.length + 1);
+                if (results.observations.length == 0) {
+                    $('#form1').find("input[type='number'][name^='id']").val(1);
+                } else { $('#form1').find("input[type='number'][name^='id']").val(results.observations[results.observations.length - 1].id_M_N + 1);}               
                 //$('#form1').find("input[type='text'][name^='track_id']").val(results.observations.length + 1);
                 $('#form1').find("input[type='number'][name^='status']").val("0");
                 $('#form1').find("input[type='text'][name^='PlantDisciplineCode']").val(curDiscipline);
@@ -1281,7 +1277,7 @@ function SubmitRecord(formArray) {//serialize data function
         "header": {
             "ebmCID": guid1,
             "ebmMID": guid1,
-            "ebmSID": "SIMS Mobile App",
+            "ebmSID": "ESFA - Enterprise Surveillance Field App",
             "ebmTimestamp": new Date().toISOString()
         },
         "body": {
@@ -1300,7 +1296,7 @@ function guid() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 function checkIfFileExists(path) {
-    window.resolveLocalFileSystemURL(cordova.file.dataDirectory + "/maps/", function (fileSystem) {
+    window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + "/maps/", function (fileSystem) {
         fileSystem.getFile(path, { create: false }, fileExists, fileDoesNotExist);
     }, getFSFail); //of requestFileSystem
 }
@@ -1855,11 +1851,11 @@ $(document).on('click', '.getCoords', function (e) {
                 xdat.val("WGS84");
             }
         }, function () {
-            $.growl({ title: "Get GPS Failed!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
+            $.growl.error({ title: "Get GPS Failed!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
         });
     } else {
         // Browser doesn't support Geolocation
-        $.growl({ title: "GeoLocation Failed!", message: "Geolocation Failed!", location: "bc", size: "large" });
+        $.growl.error({ title: "GeoLocation Failed!", message: "Geolocation Failed!", location: "bc", size: "large" });
     };
     e.preventDefault();
 })
@@ -1884,11 +1880,11 @@ $(document).on('click', '.getPlantCoords', function (e) {
                 xdat.val("WGS84");
             }
         }, function () {
-            $.growl({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
+            $.growl.error({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
         });
     } else {
         // Browser doesn't support Geolocation
-        $.growl({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
+        $.growl.error({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
     };
     e.preventDefault();
 })
@@ -1913,11 +1909,11 @@ $(document).on('click', '.getEntoHostCoords', function (e) {
                 xdat.val("WGS84");
             }
         }, function () {
-            $.growl({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
+            $.growl.error({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
         });
     } else {
         // Browser doesn't support Geolocation
-        $.growl({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
+        $.growl.error({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
     };
     e.preventDefault();
 })
@@ -1942,11 +1938,11 @@ $(document).on('click', '.getPathHostCoords', function (e) {
                 xdat.val("WGS84");
             }
         }, function () {
-            $.growl({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
+            $.growl.error({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
         });
     } else {
         // Browser doesn't support Geolocation
-        $.growl({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
+        $.growl.error({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
     };
     e.preventDefault();
 })
@@ -1974,11 +1970,11 @@ $(document).on('click', '.getSampleCoords', function (e) {
                 xdat.val("WGS84");
             }
         }, function () {
-            $.growl({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
+            $.growl.error({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
         });
     } else {
         // Browser doesn't support Geolocation
-        $.growl({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
+        $.growl.error({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
     };
     e.preventDefault();
 })
@@ -2001,7 +1997,7 @@ $(document).on('click', 'img.pp', function () {
     };
 
     navigator.camera.getPicture(
-        function onSuccess(imgURI) {
+        function onSuccess(imgURI) {        
             that.attr("src", imgURI);
             $("#form1").find('input:hidden[name=' + inpname + ']').val(imgURI);
         },
@@ -2067,7 +2063,7 @@ $(document).on('change', 'select[name^="PlantStatisticType"]', function () {
 $(document).on('click', '#SaveSettingsExit', function (e) {
     var v_appMode = $('#form3').find('#appMode').val();
     if (!v_appMode) {
-        $.growl({ title: "Application Error", message: "Provide a valid mode: PH!", location: "bc", size: "large" });
+        $.growl.warning({ title: "", message: "Provide a valid mode: PH!", location: "bc", size: "large" });
         return false;
     }
     /* Set AppMode */
@@ -2088,7 +2084,7 @@ $(document).on('click', '#SaveSettingsExit', function (e) {
             $('#modalSettings').modal('hide');
         });
     }, function (err) {
-        $.growl({ title: "Application Error", message: "An error occured while updating settings. " + err.message, location: "bc", size: "large" });
+        $.growl.error({ title: "", message: "An error occured while updating settings. " + err.message, location: "bc", size: "large" });
     });
 })
 $(document).on('click', 'a.downloadMaps', function (e) {
@@ -2106,17 +2102,17 @@ function getFileandExtract(url, mapset, i, n) {
     t1 = performance.now();
     t3 = t3 + Math.round((t1 - t0));
     $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...");
-    $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
+    $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
     url2 = url + mapset + pad(i, 2) + ".zip";
     filename = mapset + pad(i, 2) + ".zip";
-    var fileURL = cordova.file.dataDirectory + "maps/" + filename;
+    var fileURL = "maps/" + filename;
     var fileTransfer = new FileTransfer();
     fileTransfer.download(
         url2,
         fileURL,
         function (entry) {
-            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
-            processZip(fileURL, cordova.file.dataDirectory + "maps/" + mapset, url, mapset, i, n);
+            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
+            processZip(fileURL, "maps/" + mapset, url, mapset, i, n);
         },
         function (error) {
             $('#mb6 .progText').text(error.source);
@@ -2134,27 +2130,27 @@ function processZip(zipSource, destination, url, mapset, i, n) {
     var progressHandler = function (progressEvent) {
         var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
         $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
-        $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent).text(percent + '%');
+        $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent).text(percent + '%');  
     };
     // Proceed to unzip the file
     window.zip.unzip(zipSource, destination, (status) => {
         if (status == 0) {
             var filename = mapset + pad(i, 2) + ".zip";
-            window.resolveLocalFileSystemURL(cordova.file.dataDirectory + "maps", function (dir) {
+            window.resolveLocalFileSystemURL("maps", function (dir) {
                 dir.getFile(filename, { create: false }, function (fileEntry) {
                     fileEntry.remove(function () {
                         // The file has been removed succesfully
-                        $.growl({ title: "Application Info", message: "Zip file is removed successfully.", location: "bc", size: "large" });
+                        $.growl.notice({ title: "", message: "Zip file is removed successfully.", location: "bc", size: "large" });
                     }, function (error) {
                         // Error deleting the file
-                        $.growl({ title: "Application Error", message: "Error removing zip file.", location: "bc", size: "large" });
+                        $.growl.error({ title: "", message: "Error removing zip file.", location: "bc", size: "large" });
                     }, function () {
                         // The file doesn't exist
-                        $.growl({ title: "Application Info", message: "Zip file does not exist.", location: "bc", size: "large" });
+                        $.growl.notice({ title: "", message: "Zip file does not exist.", location: "bc", size: "large" });
                     });
                 });
             });
-            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
+            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
             i++;
             if (i > n) {
                 resSettings.settings.mapSets[ActiveMapSet].downloaded = 1;
@@ -2165,21 +2161,21 @@ function processZip(zipSource, destination, url, mapset, i, n) {
                         //return e + pad(nextID.toString(), 4);
                     });
                 }, function (err) {
-                    $.growl({ title: "Application Error", message: "An error occured while updating mapsets. " + err.message, location: "bc", size: "large" });
+                    $.growl.error({ title: "", message: "An error occured while updating mapsets. " + err.message, location: "bc", size: "large" });
                 });
                 $('#modalProgress').modal('hide');
                 $('#form3').find('label.mapNotes').eq(ActiveMapSet).text("Last downloaded on:" + new Date().toUTCString());
                 initSettings();
-                $.growl({ title: "Download Maps", message: "Maps downloaded successfully.", location: "bc", size: "large" });
+                $.growl({ title: "", message: "Maps downloaded successfully.", location: "bc", size: "large" });
             }
             else {
-                $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
+                $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
                 //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
                 getFileandExtract(url, mapset, i, n);
             }
         }
         if (status == -1) {
-            $.growl({ title: "Download Maps", message: "Failed extracting zip file.", location: "bc", size: "large" });
+            $.growl.error({ title: "", message: "Failed extracting zip file.", location: "bc", size: "large" });
         }
     }, progressHandler);
 }
@@ -2201,7 +2197,7 @@ $(document).on('change', 'select[name="SiteId_O_N"]', function () {
                 var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
                 if (xlat.val() != "") { cLatitude = xlat.val(); }
                 if (xlng.val() != "") { cLongitude = xlng.val(); }
-                if (xwkt.val() != "") { cWkt = xwkt.val(); }
+                if (xwkt.val() != "") { cWkt = xwkt.val(); } 
                 xlat.val("");
                 xlng.val("");
                 xwkt.val("");
@@ -2213,7 +2209,7 @@ $(document).on('change', 'select[name="SiteId_O_N"]', function () {
                 var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
                 if (cLatitude != "") { xlat.val(cLatitude); }
                 if (cLongitude != "") { xlng.val(cLongitude); }
-                if (cWkt != "") { xwkt.val(cWkt); }
+                if (cWkt != "") { xwkt.val(cWkt); } 
             }
         }).done(function () {
             $('#modalProgress').modal('hide');
