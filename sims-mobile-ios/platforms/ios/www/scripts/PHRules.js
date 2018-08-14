@@ -203,7 +203,7 @@ function syncPHRefCodes() {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
         $.growl.error({ title: "", message: "An error occurred while fetching reference codes. " + err.message, location: "bc", size: "large" });
-        });
+    });
 }
 function loadPHRefCodes() {
     statType = '<option value="NONE">- select -</option>';
@@ -316,7 +316,7 @@ function syncActivityData() {
             });
         }, function (err) {
             $.growl.error({ title: "", message: "An error occured while updating ActivityData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
-            });
+        });
         $('#modalProgress').modal('hide');
     }).fail(function (response) {
         $('#mb6 .progText').text("");
@@ -374,7 +374,7 @@ function syncstaffData() {
             });
         }, function (err) {
             $.growl.error({ title: "", message: "An error occured while updating StaffData to DB. " + err.message, location: "bc", size: "large", fixed: "true" });
-            });
+        });
         $('#modalProgress').modal('hide');
     }).fail(function (response) {
         $('#mb6 .progText').text("");
@@ -399,7 +399,7 @@ function loadstaffData() {
 }
 function loadSitePolygons() {
     $.each(siteData, function (key, val) {
-        if (val.id == 99999) { return true;}
+        if (val.id == 99999) { return true; }
         var wkt = new Wkt.Wkt();
         wkt.read(val.locationDatum.wkt);
         wkt.toObject();
@@ -1034,7 +1034,7 @@ function loadModal(pagename) {
                 $('#form1').find("input[type='number'][name^='DurationMinsCount']").val("0");
                 if (results.observations.length == 0) {
                     $('#form1').find("input[type='number'][name^='id']").val(1);
-                } else { $('#form1').find("input[type='number'][name^='id']").val(results.observations[results.observations.length - 1].id_M_N + 1);}               
+                } else { $('#form1').find("input[type='number'][name^='id']").val(results.observations[results.observations.length - 1].id_M_N + 1); }
                 //$('#form1').find("input[type='text'][name^='track_id']").val(results.observations.length + 1);
                 $('#form1').find("input[type='number'][name^='status']").val("0");
                 $('#form1').find("input[type='text'][name^='PlantDisciplineCode']").val(curDiscipline);
@@ -1294,22 +1294,6 @@ function guid() {
             .substring(1);
     }
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-}
-function checkIfFileExists(path) {
-    window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + "/maps/", function (fileSystem) {
-        fileSystem.getFile(path, { create: false }, fileExists, fileDoesNotExist);
-    }, getFSFail); //of requestFileSystem
-}
-function fileExists(fileEntry) {
-    //alert("File " + fileEntry.fullPath + " exists!");
-    return 1;
-}
-function fileDoesNotExist() {
-    //alert("file does not exist");
-    return 0;
-}
-function getFSFail(evt) {
-    console.log(evt.target.error.code);
 }
 $(document).on('click', '.qtyplus', function (e) {
     e.preventDefault();
@@ -1851,11 +1835,11 @@ $(document).on('click', '.getCoords', function (e) {
                 xdat.val("WGS84");
             }
         }, function () {
-            $.growl.error({ title: "Get GPS Failed!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
+            $.growl.error({ title: "", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
         });
     } else {
         // Browser doesn't support Geolocation
-        $.growl.error({ title: "GeoLocation Failed!", message: "Geolocation Failed!", location: "bc", size: "large" });
+        $.growl.error({ title: "", message: "Geolocation Failed!", location: "bc", size: "large" });
     };
     e.preventDefault();
 })
@@ -1880,11 +1864,11 @@ $(document).on('click', '.getPlantCoords', function (e) {
                 xdat.val("WGS84");
             }
         }, function () {
-            $.growl.error({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
+            $.growl.error({ title: "", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
         });
     } else {
         // Browser doesn't support Geolocation
-        $.growl.error({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
+        $.growl.error({ title: "", message: "Geolocation Failed!", location: "bc", size: "large" });
     };
     e.preventDefault();
 })
@@ -1909,11 +1893,11 @@ $(document).on('click', '.getEntoHostCoords', function (e) {
                 xdat.val("WGS84");
             }
         }, function () {
-            $.growl.error({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
+            $.growl.error({ title: "", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
         });
     } else {
         // Browser doesn't support Geolocation
-        $.growl.error({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
+        $.growl.error({ title: "", message: "Geolocation Failed!", location: "bc", size: "large" });
     };
     e.preventDefault();
 })
@@ -1938,11 +1922,11 @@ $(document).on('click', '.getPathHostCoords', function (e) {
                 xdat.val("WGS84");
             }
         }, function () {
-            $.growl.error({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
+            $.growl.error({ title: "", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
         });
     } else {
         // Browser doesn't support Geolocation
-        $.growl.error({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
+        $.growl.error({ title: "", message: "Geolocation Failed!", location: "bc", size: "large" });
     };
     e.preventDefault();
 })
@@ -1970,11 +1954,11 @@ $(document).on('click', '.getSampleCoords', function (e) {
                 xdat.val("WGS84");
             }
         }, function () {
-            $.growl.error({ title: "Out of bounds!", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
+            $.growl.error({ title: "", message: "GPS GetCurrentPosition Failed!", location: "bc", size: "large" });
         });
     } else {
         // Browser doesn't support Geolocation
-        $.growl.error({ title: "Out of bounds!", message: "Geolocation Failed!", location: "bc", size: "large" });
+        $.growl.error({ title: "", message: "Geolocation Failed!", location: "bc", size: "large" });
     };
     e.preventDefault();
 })
@@ -1997,7 +1981,7 @@ $(document).on('click', 'img.pp', function () {
     };
 
     navigator.camera.getPicture(
-        function onSuccess(imgURI) {        
+        function onSuccess(imgURI) {
             that.attr("src", imgURI);
             $("#form1").find('input:hidden[name=' + inpname + ']').val(imgURI);
         },
@@ -2102,7 +2086,7 @@ function getFileandExtract(url, mapset, i, n) {
     t1 = performance.now();
     t3 = t3 + Math.round((t1 - t0));
     $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...");
-    $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
+    $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
     url2 = url + mapset + pad(i, 2) + ".zip";
     filename = mapset + pad(i, 2) + ".zip";
     var fileURL = "maps/" + filename;
@@ -2111,7 +2095,7 @@ function getFileandExtract(url, mapset, i, n) {
         url2,
         fileURL,
         function (entry) {
-            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
+            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
             processZip(fileURL, "maps/" + mapset, url, mapset, i, n);
         },
         function (error) {
@@ -2130,7 +2114,7 @@ function processZip(zipSource, destination, url, mapset, i, n) {
     var progressHandler = function (progressEvent) {
         var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
         $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
-        $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent).text(percent + '%');  
+        $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent).text(percent + '%');
     };
     // Proceed to unzip the file
     window.zip.unzip(zipSource, destination, (status) => {
@@ -2150,7 +2134,7 @@ function processZip(zipSource, destination, url, mapset, i, n) {
                     });
                 });
             });
-            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
+            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
             i++;
             if (i > n) {
                 resSettings.settings.mapSets[ActiveMapSet].downloaded = 1;
@@ -2169,7 +2153,7 @@ function processZip(zipSource, destination, url, mapset, i, n) {
                 $.growl({ title: "", message: "Maps downloaded successfully.", location: "bc", size: "large" });
             }
             else {
-                $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');  
+                $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
                 //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
                 getFileandExtract(url, mapset, i, n);
             }
@@ -2197,7 +2181,7 @@ $(document).on('change', 'select[name="SiteId_O_N"]', function () {
                 var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
                 if (xlat.val() != "") { cLatitude = xlat.val(); }
                 if (xlng.val() != "") { cLongitude = xlng.val(); }
-                if (xwkt.val() != "") { cWkt = xwkt.val(); } 
+                if (xwkt.val() != "") { cWkt = xwkt.val(); }
                 xlat.val("");
                 xlng.val("");
                 xwkt.val("");
@@ -2209,7 +2193,7 @@ $(document).on('change', 'select[name="SiteId_O_N"]', function () {
                 var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
                 if (cLatitude != "") { xlat.val(cLatitude); }
                 if (cLongitude != "") { xlng.val(cLongitude); }
-                if (cWkt != "") { xwkt.val(cWkt); } 
+                if (cWkt != "") { xwkt.val(cWkt); }
             }
         }).done(function () {
             $('#modalProgress').modal('hide');
