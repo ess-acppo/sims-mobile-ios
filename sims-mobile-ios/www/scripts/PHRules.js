@@ -2082,87 +2082,6 @@ $(document).on('click', 'a.downloadMaps', function (e) {
     $('#mb6 .progText').text("Download in progress ...");
     getFileandExtract(url, mapset, 1, numfiles);
 })
-function getFileandExtract(url, mapset, i, n) {
-    t1 = performance.now();
-    t3 = t3 + Math.round((t1 - t0));
-    $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...");
-    $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
-    url2 = url + mapset + pad(i, 2) + ".zip";
-    filename = mapset + pad(i, 2) + ".zip";
-    var fileURL = "maps/" + filename;
-    var fileTransfer = new FileTransfer();
-    fileTransfer.download(
-        url2,
-        fileURL,
-        function (entry) {
-            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
-            processZip(fileURL, "maps/" + mapset, url, mapset, i, n);
-        },
-        function (error) {
-            $('#mb6 .progText').text(error.source);
-        },
-        null, {}
-    );
-}
-function processZip(zipSource, destination, url, mapset, i, n) {
-    // Handle the progress event
-    t1 = performance.now();
-    t3 = t3 + Math.round((t1 - t0));
-    $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
-    //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
-
-    var progressHandler = function (progressEvent) {
-        var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-        $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
-        $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent).text(percent + '%');
-    };
-    // Proceed to unzip the file
-    window.zip.unzip(zipSource, destination, (status) => {
-        if (status == 0) {
-            var filename = mapset + pad(i, 2) + ".zip";
-            window.resolveLocalFileSystemURL("maps", function (dir) {
-                dir.getFile(filename, { create: false }, function (fileEntry) {
-                    fileEntry.remove(function () {
-                        // The file has been removed succesfully
-                        $.growl.notice({ title: "", message: "Zip file is removed successfully.", location: "bc", size: "large" });
-                    }, function (error) {
-                        // Error deleting the file
-                        $.growl.error({ title: "", message: "Error removing zip file.", location: "bc", size: "large" });
-                    }, function () {
-                        // The file doesn't exist
-                        $.growl.notice({ title: "", message: "Zip file does not exist.", location: "bc", size: "large" });
-                    });
-                });
-            });
-            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
-            i++;
-            if (i > n) {
-                resSettings.settings.mapSets[ActiveMapSet].downloaded = 1;
-                resSettings.settings.mapSets[ActiveMapSet].lastDownloadDate = new Date().toUTCString();
-                db.transaction(function (tx) {
-                    tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
-                        //alert("Row inserted.");
-                        //return e + pad(nextID.toString(), 4);
-                    });
-                }, function (err) {
-                    $.growl.error({ title: "", message: "An error occured while updating mapsets. " + err.message, location: "bc", size: "large" });
-                });
-                $('#modalProgress').modal('hide');
-                $('#form3').find('label.mapNotes').eq(ActiveMapSet).text("Last downloaded on:" + new Date().toUTCString());
-                initSettings();
-                $.growl({ title: "", message: "Maps downloaded successfully.", location: "bc", size: "large" });
-            }
-            else {
-                $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
-                //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
-                getFileandExtract(url, mapset, i, n);
-            }
-        }
-        if (status == -1) {
-            $.growl.error({ title: "", message: "Failed extracting zip file.", location: "bc", size: "large" });
-        }
-    }, progressHandler);
-}
 $(document).on('change', 'select[name="SiteId_O_N"]', function () {
     var that = $(this);
     $.ajax({
@@ -2200,3 +2119,84 @@ $(document).on('change', 'select[name="SiteId_O_N"]', function () {
             $('#mb6 .progText').text("");
         });
 })
+function getFileandExtract(url, mapset, i, n) {
+    t1 = performance.now();
+    t3 = t3 + Math.round((t1 - t0));
+    $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...");
+    $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
+    url2 = url + mapset + pad(i, 2) + ".zip";
+    filename = mapset + pad(i, 2) + ".zip";
+    var fileURL = "maps/" + filename;
+    var fileTransfer = new FileTransfer();
+    fileTransfer.download(
+        url2,
+        fileURL,
+        function (entry) {
+            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
+            setTimeout(processZip(fileURL, "maps/" + mapset, url, mapset, i, n), 30000);
+        },
+        function (error) {
+            $('#mb6 .progText').text(error.source);
+        },
+        null, {}
+    );
+}
+function processZip(zipSource, destination, url, mapset, i, n) {
+    // Handle the progress event
+    t1 = performance.now();
+    t3 = t3 + Math.round((t1 - t0));
+    $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
+    //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
+
+    var progressHandler = function (progressEvent) {
+        var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+        $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
+        $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent).text(percent + '%');
+    };
+    // Proceed to unzip the file
+    window.zip.unzip(zipSource, destination, (status) => {
+        if (status == 0) {
+            var filename = mapset + pad(i, 2) + ".zip";
+            setTimeout(window.resolveLocalFileSystemURL("maps", function (dir) {
+                dir.getFile(filename, { create: false }, function (fileEntry) {
+                    fileEntry.remove(function () {
+                        // The file has been removed succesfully
+                        $.growl.notice({ title: "", message: "Zip file is removed successfully.", location: "bc", size: "large" });
+                    }, function (error) {
+                        // Error deleting the file
+                        $.growl.error({ title: "", message: "Error removing zip file.", location: "bc", size: "large" });
+                    }, function () {
+                        // The file doesn't exist
+                        $.growl.notice({ title: "", message: "Zip file does not exist.", location: "bc", size: "large" });
+                    });
+                });
+            }), 20000);
+            $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
+            i++;
+            if (i > n) {
+                resSettings.settings.mapSets[ActiveMapSet].downloaded = 1;
+                resSettings.settings.mapSets[ActiveMapSet].lastDownloadDate = new Date().toUTCString();
+                db.transaction(function (tx) {
+                    tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
+                        //alert("Row inserted.");
+                        //return e + pad(nextID.toString(), 4);
+                    });
+                }, function (err) {
+                    $.growl.error({ title: "", message: "An error occured while updating mapsets. " + err.message, location: "bc", size: "large" });
+                });
+                $('#modalProgress').modal('hide');
+                $('#form3').find('label.mapNotes').eq(ActiveMapSet).text("Last downloaded on:" + new Date().toUTCString());
+                initSettings();
+                $.growl({ title: "", message: "Maps downloaded successfully.", location: "bc", size: "large" });
+            }
+            else {
+                $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
+                //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
+                setTimeout(getFileandExtract(url, mapset, i, n), 10000);
+            }
+        }
+        if (status == -1) {
+            $.growl.error({ title: "", message: "Failed extracting zip file.", location: "bc", size: "large" });
+        }
+    }, progressHandler);
+}
