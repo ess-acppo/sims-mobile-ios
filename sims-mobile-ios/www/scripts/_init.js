@@ -357,12 +357,6 @@ function initLoad() {
     /* Not required for Windows platform */
     checkPermissions();
     /* Not required for Windows platform */
-    initSettings();
-    /* Not required for Android and iOS platforms */
-    //var myElement = document.getElementById('map');
-    //var hammertime = new Hammer(myElement);
-    //hammertime.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-    /* Not required for Android and iOS platform */
     initAuth();
     $('#modalAuth').modal();
     //return;
