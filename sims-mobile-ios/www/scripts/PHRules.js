@@ -2126,14 +2126,14 @@ function getFileandExtract(url, mapset, i, n) {
     $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
     url2 = url + mapset + pad(i, 2) + ".zip";
     filename = mapset + pad(i, 2) + ".zip";
-    var fileURL = "maps/" + filename;
+    var fileURL = cordova.file.dataDirectory +  "maps/" + filename;
     var fileTransfer = new FileTransfer();
     fileTransfer.download(
         url2,
         fileURL,
         function (entry) {
             $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
-            setTimeout(processZip(fileURL, "maps/" + mapset, url, mapset, i, n), 30000);
+            setTimeout(processZip(fileURL, cordova.file.dataDirectory +  "maps/" + mapset, url, mapset, i, n), 30000);
         },
         function (error) {
             $('#mb6 .progText').text(error.source);
@@ -2157,7 +2157,7 @@ function processZip(zipSource, destination, url, mapset, i, n) {
     window.zip.unzip(zipSource, destination, (status) => {
         if (status == 0) {
             var filename = mapset + pad(i, 2) + ".zip";
-            setTimeout(window.resolveLocalFileSystemURL("maps", function (dir) {
+            setTimeout(window.resolveLocalFileSystemURL(cordova.file.dataDirectory +  "maps", function (dir) {
                 dir.getFile(filename, { create: false }, function (fileEntry) {
                     fileEntry.remove(function () {
                         // The file has been removed succesfully
