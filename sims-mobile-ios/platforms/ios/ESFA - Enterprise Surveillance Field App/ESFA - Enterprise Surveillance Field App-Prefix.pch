@@ -17,7 +17,7 @@
  under the License.
  */
 //
-// Prefix header for all source files of the 'SIMS Mobile' target in the 'SIMS Mobile' project
+// Prefix header for all source files of the 'ESFA - Enterprise Surveillance Field App' target in the 'ESFA - Enterprise Surveillance Field App' project
 //
 
 #ifdef __OBJC__
