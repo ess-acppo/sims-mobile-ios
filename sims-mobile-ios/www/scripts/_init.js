@@ -156,7 +156,7 @@ function initSettings() {
                     tx.executeSql("SELECT * FROM staffdata WHERE settingstext = ?", [programId + 'staff'], function (tx, res) {
                         //This is not the first load
                         if (res.rows && res.rows.length > 0) {
-                            alert(JSON.stringify(res.rows.item(0).settingsval));
+                            //alert(JSON.stringify(res.rows.item(0).settingsval));
                             staffDataS = JSON.parse(res.rows.item(0).settingsval);
                             loadstaffData();
                         }
@@ -199,11 +199,11 @@ function initSettings() {
                     zoomlevel.innerHTML = 'zoom: ' + zoom;
                     curZoom = zoom;
                     var div = ownerDocument.createElement('div');
-                    var image = $('<img name="" src="' + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>');
+                    var image = $('<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>');
                     image.error(function () {
                         div.innerHTML = '<img name="" src="' + emptyTilePath + '"/>';
                     });
-                    div.innerHTML = '<img name="" src="' + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>';
+                    div.innerHTML = '<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>';
                     div.style.width = this.tileSize.width + 'px'; div.style.height = this.tileSize.height + 'px';
                     return div;
                 };
@@ -264,11 +264,11 @@ function initSettings() {
                             zoomlevel.innerHTML = 'zoom: ' + zoom;
                             curZoom = zoom;
                             var div = ownerDocument.createElement('div');
-                            var image = $('<img name="" src="' + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>');
+                            var image = $('<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>');
                             image.error(function () {
                                 div.innerHTML = '<img name="" src="' + emptyTilePath + '"/>';
                             });
-                            div.innerHTML = '<img name="" src="' + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>';
+                            div.innerHTML = '<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>';
                             div.style.width = this.tileSize.width + 'px'; div.style.height = this.tileSize.height + 'px';
                             return div;
                         };
