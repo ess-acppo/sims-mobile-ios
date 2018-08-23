@@ -2052,49 +2052,6 @@ $(document).on('click', '#addPathSample', function (e) {
     $('#samples').append(that);
     $('#numSamples').text(psamples);
     BindAutoCompletePS(that.find('.taxonTextPS'));
-}) {
-    if (psamples > 0) {
-        var sampleLat = $('div.sample').last().find('input[name^="Latitude"]').val();
-        var sampleLng = $('div.sample').last().find('input[name^="Longitude"]').val();
-        var sampleTime = $('div.sample').last().find('input[name^="CollectedDatetime"]').val();
-        var samplePrelimID = $('div.sample').last().find('input[name^="PrelimTaxonText"]').val();
-        var errString = "The following attributes cannot be NULL in the current Sample:<br/> Sample Latitude, Longitude, CollectedTime and PrelimTaxonText.";
-        if (sampleLat == null || sampleLat == 0 || sampleLng == null || sampleLng == 0 || sampleTime == null || sampleTime == '' || samplePrelimID == null || samplePrelimID == '') {
-            $.growl.warning({ title: "Error", message: errString, location: "bc", size: "large" });
-            return;
-        }
-    }
-    psamples = psamples + 1;
-    var that = $(pathsample);
-    that.find("input[type='checkbox']").iCheck({
-        checkboxClass: 'icheckbox_square-blue',
-        radioClass: 'iradio_square-blue'
-    });
-    that.find("input[type='radio']").iCheck({
-        checkboxClass: 'icheckbox_square-blue',
-        radioClass: 'iradio_square-blue'
-    });
-    that.find('select[name^="HostIdentifiedUserId"]').find('option').remove().end().append($(staffData));
-    that.find('select[name^="PathIncidCode"]').find('option').remove().end().append($(incidence));
-    that.find('select[name^="PathSevCode"]').find('option').remove().end().append($(severity));
-    that.find('img').each(function () {
-        $(this).attr('name', $(this).attr('name') + '_' + psamples + '_S');
-    })
-    that.find('input').each(function () {
-        $(this).attr('name', $(this).attr('name') + '_' + psamples + '_S');
-    })
-    that.find('select').each(function () {
-        $(this).attr('name', $(this).attr('name') + '_' + psamples + '_S');
-    })
-    that.find('textarea').each(function () {
-        $(this).attr('name', $(this).attr('name') + '_' + psamples + '_S');
-    })
-    //that.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
-    that.find("input[type='radio'].minimal").iCheck('uncheck');
-    that.find("input.nextid").val(getNextID(resSettings.settings.device.samplePrefix));
-    that.find('.badge').text(psamples);
-    $('#samples').append(that);
-    $('#numSamples').text(psamples);
 })
 $(document).on('click', '.removePathSample', function (e) {
     var x = $(this);
