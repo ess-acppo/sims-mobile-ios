@@ -294,7 +294,7 @@ function syncActivityData() {
             "authorization": authCode,
             "cache-control": "no-cache"
         }
-    }
+    };
     $.ajax(settings).done(function (data) {
         ActivityData = data;
         siteData = data[0].sites;
@@ -545,7 +545,7 @@ function loadstaffData() {
 }
 function loadSitePolygons() {
     $.each(siteData, function (key, val) {
-        if (val.id == 99999) { return true; }
+        if (val.id === 99999) { return true; }
         var wkt = new Wkt.Wkt();
         wkt.read(val.locationDatum.wkt);
         wkt.toObject();
@@ -718,14 +718,14 @@ function loadModal(pagename) {
                 //console.time('load Modal');
                 $.each(data, function (key, value) {
                     //console.time('load Modal 1');
-                    if (key.startsWith('ObservationWhereWktClob') && value != "") {
+                    if (key.startsWith('ObservationWhereWktClob') && value !== "") {
                         var wkt = new Wkt.Wkt();
                         wkt.read(value);
                         wkt.toObject();
                         $('#form1').find("input[type='number'][name='Longitude']").val(wkt.toJson().coordinates[0]);
                         $('#form1').find("input[type='number'][name='Latitude']").val(wkt.toJson().coordinates[1]);
                     }
-                    if (key == "AdditionalObserverTab" && value.length > 0) {
+                    if (key === "AdditionalObserverTab" && value.length > 0) {
                         $('#form1').find("input[type='checkbox'][name='AdditionalObserverTab']").iCheck('check');
                         addlObservers = '<option value="NONE">- select -</option>';
                         $.each(value, function (key1, value1) {
@@ -737,7 +737,7 @@ function loadModal(pagename) {
                             addlObservers = addlObservers + option1;
                         });
                     }
-                    if (key == "PlantObsTab" && curDiscipline == "B" && value.length > 0) {
+                    if (key === "PlantObsTab" && curDiscipline === "B" && value.length > 0) {
                         $.each(value, function (key1, value1) {
                             $.ajax({
                                 url: "",
@@ -780,14 +780,14 @@ function loadModal(pagename) {
                                     $('div.hostweed').eq(key1).find("input:not([name^='CountList'])[type='radio'][name^='" + key2 + "']").val(value2);
                                     $('div.hostweed').eq(key1).find("select[name^='" + key2 + "']").val(value2);
                                     $('div.hostweed').eq(key1).find("textarea[name^='" + key2 + "']").val(value2);
-                                    if (key2 == "PlantObsAttachmentTab") {
+                                    if (key2 === "PlantObsAttachmentTab") {
                                         $.each(value2, function (key3, value3) {
                                             var pKey = key3 + 1;
-                                            if (value3.AttachmentPath != "") {
+                                            if (value3.AttachmentPath !== "") {
                                                 $('div.hostweed').eq(key1).find("input:hidden[name^='PlantObsAttachment" + pKey + "']").val(value3.AttachmentPath);
                                                 $('div.hostweed').eq(key1).find("img[name^='iPlantObsAttachment" + pKey + "']").attr("src", value3.AttachmentPath);
                                             }
-                                            if (value3.AttachmentPath == "") {
+                                            if (value3.AttachmentPath === "") {
                                                 $('div.hostweed').eq(key1).find("input:hidden[name^='PlantObsAttachment" + pKey + "']").val("");
                                                 $('div.hostweed').eq(key1).find("img[name^='iPlantObsAttachment" + pKey + "']").attr("src", "images/plant.png");
                                             }
@@ -797,7 +797,7 @@ function loadModal(pagename) {
                             });
                         });
                     }
-                    if (key == "PlantObsTab" && curDiscipline == "E" && value.length > 0) {
+                    if (key === "PlantObsTab" && curDiscipline === "E" && value.length > 0) {
                         $.each(value, function (key1, value1) {
                             $.ajax({
                                 url: "",
@@ -838,7 +838,7 @@ function loadModal(pagename) {
                                     $('div.entobox').eq(key1).find("input[type='radio'][name^='" + key2 + "']").val(value2);
                                     $('div.entobox').eq(key1).find("select[name^='" + key2 + "']").val(value2);
                                     $('div.entobox').eq(key1).find("textarea[name^='" + key2 + "']").val(value2);
-                                    if (key2 == "PlantObsTargetTab") {
+                                    if (key2 === "PlantObsTargetTab") {
                                         $.each(value2, function (key3, value3) {
                                             $.ajax({
                                                 url: "",
@@ -862,14 +862,14 @@ function loadModal(pagename) {
                                             });
                                         });
                                     }
-                                    if (key2 == "PlantObsAttachmentTab") {
+                                    if (key2 === "PlantObsAttachmentTab") {
                                         $.each(value2, function (key3, value3) {
                                             var pKey = key3 + 1;
-                                            if (value3.AttachmentPath != "") {
+                                            if (value3.AttachmentPath !== "") {
                                                 $('div.hostweed').eq(key1).find("input:hidden[name^='PlantObsAttachment" + pKey + "']").val(value3.AttachmentPath);
                                                 $('div.hostweed').eq(key1).find("img[name^='iPlantObsAttachment" + pKey + "']").attr("src", value3.AttachmentPath);
                                             }
-                                            if (value3.AttachmentPath == "") {
+                                            if (value3.AttachmentPath === "") {
                                                 $('div.hostweed').eq(key1).find("input:hidden[name^='PlantObsAttachment" + pKey + "']").val("");
                                                 $('div.hostweed').eq(key1).find("img[name^='iPlantObsAttachment" + pKey + "']").attr("src", "images/plant.png");
                                             }
