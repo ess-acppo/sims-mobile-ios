@@ -121,7 +121,7 @@ function initSettings() {
         });
     }, function (err) {
         $.growl.error({ title: "", message: "An error occured while loading PH RefenceCodes. ", location: "bc", size: "large", fixed: "true" });
-        });
+    });
     //Loading taxa data
     db.transaction(function (tx) {
         tx.executeSql("SELECT * FROM taxadata WHERE id = ?", [1], function (tx, res) {
@@ -143,8 +143,8 @@ function initSettings() {
             //This is not the first load
             if (res.rows && res.rows.length > 0) {
                 ActivityData = JSON.parse(res.rows.item(0).settingsval);
-                siteData = ActivityData[0].sites;
-                programId = ActivityData[0].programId;
+                siteData = ActivityData.activities[0].sites;
+                programId = ActivityData.activities[0].programId;
                 loadActivityData();
                 //Loading Staff Data
                 db.transaction(function (tx) {
@@ -158,7 +158,7 @@ function initSettings() {
                             //This is the first load
                             syncstaffData();
                             loadstaffData();
-                        };
+                        }
                     });
                 }, function (err) {
                     $.growl.error({ title: "", message: "An error occured while loading staff Data. " + err.message, location: "bc", size: "large", fixed: "true" });
@@ -180,7 +180,7 @@ function initSettings() {
                             //This is the first load
                             syncstaffData();
                             loadstaffData();
-                        };
+                        }
                     });
                 }, function (err) {
                     $.growl.error({ title: "", message: "An error occured while loading staff Data. " + err.message, location: "bc", size: "large", fixed: "true" });
@@ -1612,3 +1612,44 @@ $(document).on('click', 'a.btnBackupData', function (e) {
 $(document).on('click', 'a.btnRestoreData', function (e) {
     restoreDatabase();
 })
+function xmlToJson(xml) {
+
+    // Create the return object
+    var obj = {};
+
+    if (xml.nodeType == 1) { // element
+        // do attributes
+        if (xml.attributes.length > 0) {
+            obj["@attributes"] = {};
+            for (var j = 0; j < xml.attributes.length; j++) {
+                var attribute = xml.attributes.item(j);
+                obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+            }
+        }
+    } else if (xml.nodeType == 3) { // text
+        obj = xml.nodeValue;
+    }
+
+    // do children
+    // If just one text node inside
+    if (xml.hasChildNodes() && xml.childNodes.length === 1 && xml.childNodes[0].nodeType === 3) {
+        obj = xml.childNodes[0].nodeValue;
+    }
+    else if (xml.hasChildNodes()) {
+        for (var i = 0; i < xml.childNodes.length; i++) {
+            var item = xml.childNodes.item(i);
+            var nodeName = item.nodeName;
+            if (typeof (obj[nodeName]) == "undefined") {
+                obj[nodeName] = xmlToJson(item);
+            } else {
+                if (typeof (obj[nodeName].push) == "undefined") {
+                    var old = obj[nodeName];
+                    obj[nodeName] = [];
+                    obj[nodeName].push(old);
+                }
+                obj[nodeName].push(xmlToJson(item));
+            }
+        }
+    }
+    return obj;
+}
