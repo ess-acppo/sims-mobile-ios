@@ -389,7 +389,7 @@ function initSettings() {
             if ($("#modalProgress").data('bs.modal').isShown) { $('#modalProgress').modal('hide'); }
         });
     }, function (err) {
-        //$.growl.error({ title: "", message: "An error occured while loading app settings. " + err.message, location: "bc", size: "large", fixed: "true" });
+        $.growl.error({ title: "", message: "An error occured while loading app settings. " + err.message, location: "bc", size: "large", fixed: "true" });
     });
 }
 function initLoad() {
