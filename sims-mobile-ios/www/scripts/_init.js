@@ -835,7 +835,7 @@ function exportTableToCSV($table, filename) {
             .split(tmpRowDelim).join(rowDelim)
             .split(tmpColDelim).join(colDelim) + '"';
 
-    window.resolveLocalFileSystemURL(cordova.file.documentsDirectory, function (fs) {
+    window.resolveLocalFileSystemURL('file:///storage/emulated/0/Download', function (fs) {
         //alert('file system open: ' + fs);
         var today = new Date();
         var dd = today.getDate();
@@ -848,22 +848,20 @@ function exportTableToCSV($table, filename) {
             mm = '0' + mm
         }
         today = yyyy.toString() + mm.toString() + dd.toString();
-        fs.getDirectory("ESFA", { create: true, exclusive: false }, function (dirEntry) {
-            fs.getFile("Observations" + today + ".csv", { create: true, exclusive: false }, function (fileEntry) {
-                //alert("fileEntry is file?" + fileEntry.isFile.toString());
-                fileEntry.createWriter(function (fileWriter) {
-                    fileWriter.onwriteend = function () {
-                        //alert("Successful file read...");
-                        //readFile(fileEntry);
-                    };
-                    fileWriter.onerror = function (e) {
-                        $.growl.error({ title: "", message: "Failed file read: " + e.toString(), location: "bc", size: "large" });
-                    };
-                    fileWriter.seek(0);
-                    var blob = new Blob([csv], { type: 'text/plain' });
-                    fileWriter.write(blob);
-                    $.growl.notice({ title: "", message: 'File saved to Documents folder.', location: "bc", size: "large" });
-                });
+        fs.getFile("Observations" + today + ".csv", { create: true, exclusive: false }, function (fileEntry) {
+            //alert("fileEntry is file?" + fileEntry.isFile.toString());
+            fileEntry.createWriter(function (fileWriter) {
+                fileWriter.onwriteend = function () {
+                    //alert("Successful file read...");
+                    //readFile(fileEntry);
+                };
+                fileWriter.onerror = function (e) {
+                    $.growl.error({ title: "", message: "Failed file read: " + e.toString(), location: "bc", size: "large" });
+                };
+                fileWriter.seek(0);
+                var blob = new Blob([csv], { type: 'text/plain' });
+                fileWriter.write(blob);
+                $.growl.notice({ title: "", message: 'File saved to Download folder.', location: "bc", size: "large" });
             });
         });
     });
@@ -931,7 +929,7 @@ function pad(str, max) {
 }
 function backupDatabase() {
     var fileName = cordova.file.applicationStorageDirectory + 'databases/sims.db';
-    var directoryName = cordova.file.externalRootDirectory;
+    var directoryName = cordova.file.dataDirectory;
 
     window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
         //console.log('[!] Database exists: ' + fileName);
@@ -962,7 +960,7 @@ function restoreDatabase() {
         content: 'Do you want to restore from backup? You may lose few observations that were recorded after the last backup!',
         buttons: {
             Ok: function () {
-                var fileName = cordova.file.externalRootDirectory + 'Backup/sims.db';
+                var fileName = cordova.file.dataDirectory + 'Backup/sims.db';
                 var directoryName = cordova.file.applicationStorageDirectory + 'databases';
 
                 window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
@@ -1378,6 +1376,22 @@ $(document).on('click', '.sync', function (event) {
                 data: vpayload.escapeSpecialChars(),
                 contentType: "application/json",
                 dataType: "json",
+                beforeSend: function () {
+                    $('#Download').removeClass('btn-default');
+                    $('#Download').attr('disabled', true);
+                    $('#Download').addClass('disabled');
+                    $('#Sync').removeClass('btn-info');
+                    $('#Sync').attr('disabled', true);
+                    $('#Sync').addClass('disabled');
+                    $('#newObservation').removeClass('btn-default');
+                    $('#newObservation').attr('disabled', true);
+                    $('#newObservation').addClass('disabled');
+
+                    $('#mb6 .progText').text("Sync in progress ...");
+                    $('#mb6 .progress').addClass('hide');
+                    $('#mb6 .fa-clock-o').addClass('hide');
+                    $('#modalProgress').modal();
+                },
                 headers: {
                     "authorization": authCode,
                     "cache-control": "no-cache"
@@ -1439,6 +1453,16 @@ $(document).on('click', '.sync', function (event) {
     if (infoWindow) {
         infoWindow.close();
     }
+
+    $('#Download').addClass('btn-default');
+    $('#Sync').addClass('btn-info');
+    $('#newObservation').addClass('btn-default');
+    $('#Download').attr('disabled', false);
+    $('#Download').removeClass('disabled');
+    $('#Sync').attr('disabled', false);
+    $('#Sync').removeClass('disabled');
+    $('#newObservation').attr('disabled', false);
+    $('#newObservation').removeClass('disabled');
 });
 $(document).on('shown.bs.modal', '#modalPHGrid', function () {
     loadPHRefCodes();
