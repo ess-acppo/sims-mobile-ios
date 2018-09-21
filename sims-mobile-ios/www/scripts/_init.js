@@ -641,7 +641,7 @@ function downloadCSV() {
 function launchModal(e, f) {
     curIdx = e;
     curDiscipline = f;
-    var arr = results.observations.filter(function (index, el) {
+    var arr = results.observations.filter(function (el, index) {
         if (el.id_M_N === e) { curPos = index; }
         return (el.id_M_N === e);
     });
@@ -1096,7 +1096,8 @@ $(document).on('click', '#Save', function (e) {
     else {
         //console.log(JSON.stringify(obj));
         results.observations.push(obj);
-        curIdx = results.observations.length;
+        curIdx = obj.id_M_N;
+        curPos = results.observations.length - 1;
     }
     db.transaction(function (tx) {
         tx.executeSql("UPDATE observations SET data = ? WHERE id = ?", [JSON.stringify(results), 1], function (tx, res) {
@@ -1140,6 +1141,7 @@ $(document).on('click', '#SaveExit', function (e) {
     else {
         //console.log(JSON.stringify(obj));
         results.observations.push(obj);
+        curIdx = obj.id_M_N;
         //curIdx = results.observations.length;
     }
     db.transaction(function (tx) {
@@ -1157,6 +1159,7 @@ $(document).on('click', '#Submit2', function (e) {
     vError = 0;
     vErrDescription = [];
     vFailed = false;
+    attachmentFlag = 0;
     CountListFlag = 0;
     HostStatCountFlag = 0;
     HostStatAreaFlag = 0;
@@ -1190,6 +1193,7 @@ $(document).on('click', '#Submit2', function (e) {
         }
         else {
             results.observations.push(obj);
+            curIdx = obj.id_M_N;
             //curIdx = results.observations.length;
         }
         db.transaction(function (tx) {
@@ -1208,7 +1212,7 @@ $(document).on('click', '#Submit2', function (e) {
     }
     else {
         rowsFailedErr.push(result.vErrDescription);
-        $.growl.error({ title: "", message: "Submit Failed!<br/>" + rowsFailedErr.join('<br/>'), location: "bc", size: "large" });
+        $.growl.error({ title: "", message: "Submit Failed!<br/>" + rowsFailedErr.join('<br/>'), location: "bc", size: "large", fixed: "true" });
     }
 });
 $(document).on('click', '#settings', function (e) {

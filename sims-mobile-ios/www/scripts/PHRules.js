@@ -23,6 +23,8 @@ var cWkt;
 var vError = 0;
 var vErrDescription = [];
 var vFailed = false;
+var attachmentFlag = 0;
+var plantDisciplineCode;
 var CountListFlag = 0;
 var HostStatCountFlag = 0;
 var HostStatAreaFlag = 0;
@@ -474,16 +476,16 @@ function loadBotanySample() {
     //that.find('select[name^="HostIdentifiedUserId"]').find('option').remove().end().append($(staffData));
     that.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + bsamples + '_S');
-    })
+    });
     that.find('img').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + bsamples + '_S');
-    })
+    });
     that.find('select').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + bsamples + '_S');
-    })
+    });
     that.find('textarea').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + bsamples + '_S');
-    })
+    });
     that.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that.find("input[type='radio'].minimal").iCheck('uncheck');
     $('#samples').append(that);
@@ -508,21 +510,22 @@ function loadEntoSample() {
     that.find('select[name^="EntoPestLevelCode"]').find('option').remove().end().append($(pestLevel));
     that.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + esamples + '_S');
-    })
+    });
     that.find('img').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + esamples + '_S');
-    })
+    });
     that.find('select').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + esamples + '_S');
-    })
+    });
     that.find('textarea').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + esamples + '_S');
-    })
+    });
     that.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that.find("input[type='radio'].minimal").iCheck('uncheck');
     $('#samples').append(that);
     $('#numSamples').text(esamples);
     BindAutoCompleteES(that.find('.taxonTextES'));
+    BindAutoCompleteHES(that.find('.taxonTextHES'));
 }
 function loadPathSample() {
     psamples = psamples + 1;
@@ -540,21 +543,22 @@ function loadPathSample() {
     that.find('select[name^="PathSevCode"]').find('option').remove().end().append($(severity));
     that.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + psamples + '_S');
-    })
+    });
     that.find('img').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + psamples + '_S');
-    })
+    });
     that.find('select').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + psamples + '_S');
-    })
+    });
     that.find('textarea').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + psamples + '_S');
-    })
+    });
     //that.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that.find("input[type='radio'].minimal").iCheck('uncheck');
     $('#samples').append(that);
     $('#numSamples').text(psamples);
     BindAutoCompletePS(that.find('.taxonTextPS'));
+    BindAutoCompleteHPS(that.find('.taxonTextHPS'));
 }
 function getNextID(e) {
     //Read from DB
@@ -759,7 +763,7 @@ function loadModal(pagename) {
                                                     $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='date'][name^='" + key4 + "']").val(value4);
                                                     $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='number'][name^='" + key4 + "']").val(value4);
                                                     $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='checkbox'][name^='" + key4 + "']").val(value4);
-                                                    $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='checkbox'][name^='" + key4 + "'][value='on']").iCheck('check');
+                                                    $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='checkbox'][name^='" + key4 + "'][value='Y']").iCheck('check');
                                                     $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='radio'][name^='" + key4 + "'][value='" + value4 + "']").iCheck('check');
                                                     //$('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='radio'][name^='" + key4 + "']").val(value4);
                                                     $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("select[name^='" + key4 + "']").val(value4);
@@ -850,7 +854,7 @@ function loadModal(pagename) {
                                                     $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='date'][name^='" + key4 + "']").val(value4);
                                                     $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='number'][name^='" + key4 + "']").val(value4);
                                                     $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='checkbox'][name^='" + key4 + "']").val(value4);
-                                                    $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='checkbox'][name^='" + key4 + "'][value='on']").iCheck('check');
+                                                    $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='checkbox'][name^='" + key4 + "'][value='Y']").iCheck('check');
                                                     $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='radio'][name^='" + key4 + "'][value='" + value4 + "']").iCheck('check');
                                                     //$('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='radio'][name^='" + key4 + "']").val(value4);
                                                     $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("select[name^='" + key4 + "']").val(value4);
@@ -924,7 +928,7 @@ function loadModal(pagename) {
                                     $('div.sample').eq(key1).find("input[type='datetime-local'][name^='" + key2 + "']").val(value2);
                                     $('div.sample').eq(key1).find("input[type='number'][name^='" + key2 + "']").val(value2);
                                     $('div.sample').eq(key1).find("input[type='checkbox'][name^='" + key2 + "']").val(value2);
-                                    $('div.sample').eq(key1).find("input[type='checkbox'][name^='" + key2 + "'][value='on']").iCheck('check');
+                                    $('div.sample').eq(key1).find("input[type='checkbox'][name^='" + key2 + "'][value='Y']").iCheck('check');
                                     $('div.sample').eq(key1).find("input[type='radio'][name^='" + key2 + "'][value='" + value2 + "']").iCheck('check');
                                     //$('div.sample').eq(key1).find("input[type='radio'][name^='" + key2 + "']").val(value2);
                                     $('div.sample').eq(key1).find("select[name^='" + key2 + "']").val(value2);
@@ -1000,7 +1004,7 @@ function loadModal(pagename) {
                                     $('div.sample').eq(key1).find("input[type='datetime-local'][name^='" + key2 + "']").val(value2);
                                     $('div.sample').eq(key1).find("input[type='number'][name^='" + key2 + "']").val(value2);
                                     $('div.sample').eq(key1).find("input[type='checkbox'][name^='" + key2 + "']").val(value2);
-                                    $('div.sample').eq(key1).find("input[type='checkbox'][name^='" + key2 + "'][value='on']").iCheck('check');
+                                    $('div.sample').eq(key1).find("input[type='checkbox'][name^='" + key2 + "'][value='Y']").iCheck('check');
                                     $('div.sample').eq(key1).find("input[type='radio'][name^='" + key2 + "'][value='" + value2 + "']").iCheck('check');
                                     //$('div.sample').eq(key1).find("input[type='radio'][name^='" + key2 + "']").val(value2);
                                     $('div.sample').eq(key1).find("select[name^='" + key2 + "']").val(value2);
@@ -1071,7 +1075,7 @@ function loadModal(pagename) {
                                     $('div.sample').eq(key1).find("input[type='datetime-local'][name^='" + key2 + "']").val(value2);
                                     $('div.sample').eq(key1).find("input[type='number'][name^='" + key2 + "']").val(value2);
                                     $('div.sample').eq(key1).find("input[type='checkbox'][name^='" + key2 + "']").val(value2);
-                                    $('div.sample').eq(key1).find("input[type='checkbox'][name^='" + key2 + "'][value='on']").iCheck('check');
+                                    $('div.sample').eq(key1).find("input[type='checkbox'][name^='" + key2 + "'][value='Y']").iCheck('check');
                                     $('div.sample').eq(key1).find("input[type='radio'][name^='" + key2 + "'][value='" + value2 + "']").iCheck('check');
                                     //$('div.sample').eq(key1).find("input[type='radio'][name^='" + key2 + "']").val(value2);
                                     $('div.sample').eq(key1).find("select[name^='" + key2 + "']").val(value2);
@@ -1107,7 +1111,7 @@ function loadModal(pagename) {
                     $('#form1').find("input[type='datetime-local'][name^='" + key + "']").val(value);
                     $('#form1').find("input:not([name^='WaypointNumber'])[type='number'][name^='" + key + "']").val(value);
                     $('#form1').find("input[type='checkbox'][name^='" + key + "']").val(value);
-                    $('#form1').find("input[type='checkbox'][name^='" + key + "'][value='on']").iCheck('check');
+                    $('#form1').find("input[type='checkbox'][name^='" + key + "'][value='Y']").iCheck('check');
                     $('#form1').find("input[type='radio'][name^='" + key + "'][value='" + value + "']").iCheck('check');
                     //$('#form1').find("input[type='radio'][name^='" + key + "']").val(value);
                     $('#form1').find("select[name^='" + key + "']").val(value);
@@ -1416,6 +1420,15 @@ function objectifyPHFormforSubmit(data) {//serialize data function
             if (item.PathSevCode === "NONE") {
                 delete item.PathSevCode;
             }
+            if (item.EntoInfestedPctCode === "NONE") {
+                delete item.EntoInfestedPctCode;
+            }
+            if (item.EntoDamageLevelCode === "NONE") {
+                delete item.EntoDamageLevelCode;
+            }
+            if (item.EntoPestLevelCode === "NONE") {
+                delete item.EntoPestLevelCode;
+            }
         });
     };
     $.each(jsonData.PlantObsTab, function (i, item) {
@@ -1479,6 +1492,9 @@ function Iterate(data) {
                 //var vPlantPreservation = fname.split("-")[1];
                 //if (vPlantPreservation === 'O') { PlantPreservationOtherFlag = 1; }
             }
+            if (index === 'attachment') {
+                attachmentFlag = 1;
+            }
             //if (index == 'PlantSampleTab' && value.length == 0) {
             //    vError = 1;
             //    vErrDescription.push('Minimum one Sample expected.You can Save & Exit instead.');
@@ -1490,11 +1506,20 @@ function Iterate(data) {
         else {
             //console.log(index + ":" + value);
             if (isNaN(index)) {
+                if (index === 'name' && attachmentFlag === 1 && $.trim(value) === ".jpg") {
+                    vError = 1;
+                    vErrDescription.push("Please fill Attachment Name.");
+                    vFailed = true;
+                    return false;
+                }
+
                 var fname = index.split("_")[0];
                 var fMOC = index.split("_")[1];
                 var fNSD = index.split("_")[2];
                 var fnum = index.split("_")[3];
                 var ftype = index.split("_")[4];
+
+                if (fname == 'PlantDisciplineCode') { plantDisciplineCode = value; }
 
                 if (fname == 'SubmittedByStaffId' && value < 2) {
                     vError = 1;
@@ -1504,7 +1529,21 @@ function Iterate(data) {
                 }
                 if (fname == 'CountList') { CountListFlag = value; }
                 if (fname == 'HostStatCount' && value == 0) { HostStatCountFlag = 1; }
-                if (fname == 'HostStatAreaNo' && value == 0 && HostStatCountFlag == 1 && CountListFlag == 'Count') {
+                if (fname == 'HostStatAreaNo' && value == 0 && HostStatCountFlag == 1 && CountListFlag == 'Count' && plantDisciplineCode === 'B') {
+                    //console.log('HostStatCount and Area fields - both cannot be NULL');
+                    vError = 1;
+                    vErrDescription.push("<a href='#' class='btn btn-sm btn-default btnError' data-j='" + index + "' data-k='" + ftype + "' data-l='" + fnum + "'>Go</a>HostStatCount and Area fields - both cannot be NULL.");
+                    vFailed = true;
+                    return false;
+                }
+                if (fname == 'HostStatAreaNo' && value == 0 && HostStatCountFlag == 1 && plantDisciplineCode === 'E') {
+                    //console.log('HostStatCount and Area fields - both cannot be NULL');
+                    vError = 1;
+                    vErrDescription.push("<a href='#' class='btn btn-sm btn-default btnError' data-j='" + index + "' data-k='" + ftype + "' data-l='" + fnum + "'>Go</a>HostStatCount and Area fields - both cannot be NULL.");
+                    vFailed = true;
+                    return false;
+                }
+                if (fname == 'HostStatAreaNo' && value == 0 && HostStatCountFlag == 1 && plantDisciplineCode === 'P') {
                     //console.log('HostStatCount and Area fields - both cannot be NULL');
                     vError = 1;
                     vErrDescription.push("<a href='#' class='btn btn-sm btn-default btnError' data-j='" + index + "' data-k='" + ftype + "' data-l='" + fnum + "'>Go</a>HostStatCount and Area fields - both cannot be NULL.");
@@ -1606,6 +1645,7 @@ function Iterate(data) {
                     if (fname == 'TargetTaxonId') return true;
                     if (fname == 'PrelimTaxonId') return true;
                     if (fname == 'HostTaxonId') return true;
+                    if (fname == 'CollectedAltitudeNo') return true;
                     if (fname == 'WaypointNumber' && $('input[name="' + index + '"]').val() === "") return true;
                     if (fname == 'WaypointNumber' && ($('input[name="' + index + '"]').val() !== "") && (value < 1 || value > 99999)) {
                         vError = 1;
@@ -1621,11 +1661,12 @@ function Iterate(data) {
             }
         }
     });
-    if (vFailed == true) {
+    if (vFailed === true) {
         return { "vError": vError, "vErrDescription": vErrDescription.join('<br/>') };
     } else { return { "vError": 0, "vErrDescription": "" }; }
 }
 function Iterate2(data) {
+    var plantDisciplineCode;
     var modData = JSON.parse(JSON.stringify(data));
     //if (modData && modData.status_M_N) { delete modData.status_M_N; }
     $.each(modData, function (index, value) {
@@ -1643,6 +1684,9 @@ function Iterate2(data) {
                 //var vPlantPreservation = fname.split("-")[1];
                 //if (vPlantPreservation === 'O') { PlantPreservationOtherFlag = 1; }
             }
+            if (index === 'attachment') {
+                attachmentFlag = 1;
+            }
             //if (index == 'PlantSampleTab' && value.length == 0) {
             //    vError = 1;
             //    vErrDescription.push('Minimum one Sample expected.You can Save & Exit instead.');
@@ -1654,11 +1698,21 @@ function Iterate2(data) {
         else {
             //console.log(index + ":" + value);
             if (isNaN(index)) {
+
+                if (index === 'name' && attachmentFlag === 1 && $.trim(value) === ".jpg") {
+                    vError = 1;
+                    vErrDescription.push("Please fill Attachment Name.");
+                    vFailed = true;
+                    return false;
+                }
+
                 var fname = index.split("_")[0];
                 var fMOC = index.split("_")[1];
                 var fNSD = index.split("_")[2];
                 var fnum = index.split("_")[3];
                 var ftype = index.split("_")[4];
+
+                if (fname == 'PlantDisciplineCode') { plantDisciplineCode = value; }
 
                 if (fname == 'SubmittedByStaffId' && value < 2) {
                     vError = 1;
@@ -1668,17 +1722,31 @@ function Iterate2(data) {
                 }
                 if (fname == 'CountList') { CountListFlag = value; }
                 if (fname == 'HostStatCount' && value == 0) { HostStatCountFlag = 1; }
-                if (fname.startsWith('PlantPreservationTab') && ($.inArray("O", value) !== -1)) {
-                    //var vPlantPreservation = fname.split("-")[1];
-                    //if (vPlantPreservation === 'O') { PlantPreservationOtherFlag = 1; }
-                    PlantPreservationOtherFlag = 1;
-                }
-                if (fname == 'HostStatAreaNo' && value == 0 && HostStatCountFlag == 1 && CountListFlag == 'Count') {
+                if (fname == 'HostStatAreaNo' && value == 0 && HostStatCountFlag == 1 && CountListFlag == 'Count' && plantDisciplineCode === 'B') {
                     //console.log('HostStatCount and Area fields - both cannot be NULL');
                     vError = 1;
                     vErrDescription.push("HostStatCount and Area fields - both cannot be NULL.");
                     vFailed = true;
                     return false;
+                }
+                if (fname == 'HostStatAreaNo' && value == 0 && HostStatCountFlag == 1 && plantDisciplineCode === 'E') {
+                    //console.log('HostStatCount and Area fields - both cannot be NULL');
+                    vError = 1;
+                    vErrDescription.push("HostStatCount and Area fields - both cannot be NULL.");
+                    vFailed = true;
+                    return false;
+                }
+                if (fname == 'HostStatAreaNo' && value == 0 && HostStatCountFlag == 1 && plantDisciplineCode === 'P') {
+                    //console.log('HostStatCount and Area fields - both cannot be NULL');
+                    vError = 1;
+                    vErrDescription.push("HostStatCount and Area fields - both cannot be NULL.");
+                    vFailed = true;
+                    return false;
+                }
+                if (fname.startsWith('PlantPreservationTab') && ($.inArray("O", value) !== -1)) {
+                    //var vPlantPreservation = fname.split("-")[1];
+                    //if (vPlantPreservation === 'O') { PlantPreservationOtherFlag = 1; }
+                    PlantPreservationOtherFlag = 1;
                 }
                 if (fname == 'TimeHourCount' && fNSD == 'S' && value.indexOf('_') > -1) {
                     vError = 1;
@@ -1775,6 +1843,7 @@ function Iterate2(data) {
                     if (fname == 'TargetTaxonId') return true;
                     if (fname == 'PrelimTaxonId') return true;
                     if (fname == 'HostTaxonId') return true;
+                    if (fname == 'CollectedAltitudeNo') return true;
                     if (fname == 'WaypointNumber') return true;
                     vError = 1;
                     vErrDescription.push(fname + " field cannot be ZERO");
@@ -1784,7 +1853,7 @@ function Iterate2(data) {
             }
         }
     });
-    if (vFailed == true) {
+    if (vFailed === true) {
         return { "vError": vError, "vErrDescription": vErrDescription.join('<br/>') };
     } else { return { "vError": 0, "vErrDescription": "" }; }
 }
@@ -2840,7 +2909,7 @@ $(document).on('focus', 'select[name="SiteId_O_N"]', function (e) {
     lastValue = $(this).val();
 }).on('change', 'select[name="SiteId_O_N"]', function (e) {
     var that = $(this);
-    if (that.val() === "0") return;
+    if (that.val() === "0" || lastValue === "0") return;
     if (curDiscipline === "B" && numPlants === 0 && bsamples === 0) return;
     if (curDiscipline === "E" && numEntoHosts === 0 && esamples === 0) return;
     if (curDiscipline === "P" && numPathHosts === 0 && psamples === 0) return;
