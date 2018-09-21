@@ -9,12 +9,10 @@ function initAuth() {
         .addEventListener('click', function () {
             var unameValue = document.querySelector('.auth-username').value;
             var pwdValue = document.querySelector('.auth-password').value;
-
             s = document.querySelector('.auth-send .fa-spin');
             s.classList.remove('hide');
             text = document.querySelector('.auth-result .text');
             icon = document.querySelector('.auth-result .fa');
-
             if (statusElem.innerHTML === 'online') {
                 authenticate2(unameValue, pwdValue);
             }
@@ -24,7 +22,6 @@ function initAuth() {
         });
 };
 function authenticate(x, y) {
-
     var settings = {
         "async": false,
         "crossDomain": true,
@@ -42,8 +39,7 @@ function authenticate(x, y) {
             "username": x,
             "password": y
         }
-    }
-
+    };
     $.ajax(settings).done(function (response) {
         //alert(JSON.stringify(response));
         s.classList.add('hide');
@@ -64,6 +60,7 @@ function authenticate2(x, y) {
         "async": false,
         "crossDomain": true,
         "url": "https://online-dev.agriculture.gov.au/ords-int/rest/sims/plant_health/taxa",
+        //"url": "http://dev-sims.oztaxa.com/BasicAuth/api/Values",
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Authenticating ...");
@@ -73,7 +70,7 @@ function authenticate2(x, y) {
             "authorization": "Basic " + btoa(x + ":" + y),
             "cache-control": "no-cache"
         }
-    }
+    };
     $.ajax(settings).done(function (response) {
         //alert(JSON.stringify(response));
         s.classList.add('hide');
@@ -85,14 +82,15 @@ function authenticate2(x, y) {
         initSettings();
         //$('#modalProgress').modal('hide');
         $('#modalAuth').modal('hide');
-    }).fail(function (response) {
+    }).fail(function (xhr, textStatus, errorThrown) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
         s.classList.add('hide');
         icon.classList.add('fa-times');
         icon.classList.remove('fa-check');
         text.innerHTML = 'Login Failed!';
-        $.growl.error({ title: "", message: "Username or Password is incorrect.", location: "bc", size: "large" });
+        //$.growl.error({ title: "", message: "Username or Password is incorrect.", location: "bc", size: "large" });
+        $.growl.error({ title: "", message: xhr.status + ': ' + textStatus + ', ' + errorThrown + ', ' + xhr.responseText, location: "bc" });
     });
 }
 function authenticate3(x, y) {
@@ -190,7 +188,7 @@ function derive_key(u, p) {
         resSettings.settings.auth.authenticated = 1;
         resSettings.settings.auth.hashedPassword = key;
         resSettings.settings.auth.lastLoggedInUser = u;
-        resSettings.settings.auth.lastLoggedInDateTime = new Date().toUTCString;
+        resSettings.settings.auth.lastLoggedInDateTime = new Date().toString();
         db.transaction(function (tx) {
             tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
                 //alert("Row inserted.");
@@ -202,3 +200,21 @@ function derive_key(u, p) {
     };
     mypbkdf2.deriveKey(status_callback, result_callback);
 }
+$('#modalAuth').keypress(function (e) {
+    if (e.which == 13) {
+        var unameValue = document.querySelector('.auth-username').value;
+        var pwdValue = document.querySelector('.auth-password').value;
+
+        s = document.querySelector('.auth-send .fa-spin');
+        s.classList.remove('hide');
+        text = document.querySelector('.auth-result .text');
+        icon = document.querySelector('.auth-result .fa');
+
+        if (statusElem.innerHTML === 'online') {
+            authenticate2(unameValue, pwdValue);
+        }
+        if (statusElem.innerHTML === 'offline') {
+            authenticate3(unameValue, pwdValue);
+        }
+    }
+});

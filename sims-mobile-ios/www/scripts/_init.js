@@ -69,7 +69,6 @@ var trackCoords;
 var myLatLng;
 var paths = [];
 var trackPath;
-
 setInterval(function () {
     statusElem.className = navigator.onLine ? 'label label-success' : 'label label-info';
     statusElem.innerHTML = navigator.onLine ? 'online' : 'offline';
@@ -1093,7 +1092,7 @@ $(document).on('click', '#Save', function (e) {
         }
     });
     if (curIdx > 0) {
-        results.observations[curIdx - 1] = obj;
+        results.observations[curPos] = obj;
     }
     else {
         //console.log(JSON.stringify(obj));
@@ -1137,7 +1136,7 @@ $(document).on('click', '#SaveExit', function (e) {
         }
     });
     if (curIdx > 0) {
-        results.observations[curIdx - 1] = obj;
+        results.observations[curPos] = obj;
     }
     else {
         //console.log(JSON.stringify(obj));
@@ -1188,7 +1187,7 @@ $(document).on('click', '#Submit2', function (e) {
             }
         });
         if (curIdx > 0) {
-            results.observations[curIdx - 1] = obj;
+            results.observations[curPos] = obj;
         }
         else {
             results.observations.push(obj);
@@ -1313,12 +1312,12 @@ $(document).on('click', '#srchPHTable tbody tr', function () {
                     loadModal('mo_PatObservation');
                     break;
             }
-            var zi = $('#modalPHGrid').css('z-index');
-            $('#modalForm').css('z-index', zi + 100);
+            //var zi = $('#modalPHGrid').css('z-index');
+            //$('#modalForm').css('z-index', zi + 100);
+            $('#modalPHGrid').modal('hide');
             $('#modalForm').modal();
         }).done(function () {
             $('#modalProgress').modal('hide');
-            $('#modalPHGrid').modal('hide');
         });
 });
 $(document).on('click', '.export', function (event) {
@@ -1391,7 +1390,7 @@ $(document).on('click', '.sync', function (event) {
                     //results.observations.splice(index, 1);
                 },
                 error: function (xhr, textStatus, errorThrown) {
-                    //$.growl.error({ title: "", message: xhr.status + ': ' + textStatus + ', ' + errorThrown + ', ' + xhr.responseText, location: "bc" });
+                    //$.growl.error({ title: "", message: xhr.status + ': ' + textStatus + ', ' + errorThrown + ', ' + xhr.responseText , location: "bc" });   
                     $.dialog({
                         title: 'Sync Failed!',
                         content: xhr.status + ': ' + textStatus + ', ' + errorThrown + ', ' + xhr.responseText,
@@ -1435,7 +1434,6 @@ $(document).on('click', '.sync', function (event) {
     if (infoWindow) {
         infoWindow.close();
     }
-    //$.growl({ title: "", message: "Sync Complete!.", location: "bc", size: "large" });
 });
 $(document).on('shown.bs.modal', '#modalPHGrid', function () {
     loadPHRefCodes();
@@ -1718,10 +1716,10 @@ $(document).on('click', '#newObservation', function () {
             $('#modalAHMenu').modal();
             break;
         case 'PH':
-            var zi = $('#modalPHGrid').css('z-index');
-            $('#modalPHMenu').css('z-index', zi + 100);
-            $('#modalPHMenu').modal();
+            //var zi = $('#modalPHGrid').css('z-index');
+            //$('#modalPHMenu').css('z-index', zi + 100);
             $('#modalPHGrid').modal('hide');
+            $('#modalPHMenu').modal();
             break;
     }
 });
@@ -1788,6 +1786,46 @@ String.prototype.escapeSpecialChars = function () {
 };
 $(document).on('click', 'a.btnError', function (e) {
     e.preventDefault();
-    var x = $(this).data("jump");
+    var x = $(this).data("j");
+    var y = $(this).data("k");
+    var z = $(this).data("l");
+    switch (y) {
+        case 'H':
+            $('#tab1').trigger('click');
+            switch (curDiscipline) {
+                case 'B':
+                    $('.hostweed').eq(z).find("[data-action=expand]").trigger("click");;
+                    break;
+                case 'E':
+                    $('.entobox').eq(z).find("[data-action=expand]").trigger("click");;
+                    break;
+                case 'P':
+                    $('.pathbox').eq(z).find("[data-action=expand]").trigger("click");;
+                    break;
+            }
+            break;
+        case 'T':
+            $('#tab1').trigger('click');
+            switch (curDiscipline) {
+                case 'B':
+                    $('.hostweed').eq(z).find("[data-action=expand]").trigger("click");;
+                    break;
+                case 'E':
+                    $('.entobox').eq(z).find("[data-action=expand]").trigger("click");;
+                    break;
+                case 'P':
+                    $('.pathbox').eq(z).find("[data-action=expand]").trigger("click");;
+                    break;
+            }
+            break;
+        case 'S':
+            $('#tab2').trigger('click');
+            $('.sample').eq(z * 1 - 1).find("[data-action=expand]").trigger("click");
+            break;
+        default:
+            $('#tab0').trigger('click');
+            break;
+    }
     $("#form1").find("input[name='" + x + "']").focus();
+    $('div.growl-close').triggerHandler('click');
 });
