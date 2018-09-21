@@ -220,11 +220,11 @@ function initSettings() {
                     zoomlevel.innerHTML = 'zoom: ' + zoom;
                     curZoom = zoom;
                     var div = ownerDocument.createElement('div');
-                    var image = $('<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>');
+                    var image = $('<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>');
                     image.error(function () {
                         div.innerHTML = '<img name="" src="' + emptyTilePath + '"/>';
                     });
-                    div.innerHTML = '<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>';
+                    div.innerHTML = '<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>';
                     div.style.width = this.tileSize.width + 'px'; div.style.height = this.tileSize.height + 'px';
                     return div;
                 };
@@ -285,11 +285,11 @@ function initSettings() {
                             zoomlevel.innerHTML = 'zoom: ' + zoom;
                             curZoom = zoom;
                             var div = ownerDocument.createElement('div');
-                            var image = $('<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>');
+                            var image = $('<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>');
                             image.error(function () {
                                 div.innerHTML = '<img name="" src="' + emptyTilePath + '"/>';
                             });
-                            div.innerHTML = '<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.png"/>';
+                            div.innerHTML = '<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>';
                             div.style.width = this.tileSize.width + 'px'; div.style.height = this.tileSize.height + 'px';
                             return div;
                         };
@@ -389,7 +389,7 @@ function initSettings() {
             if ($("#modalProgress").data('bs.modal').isShown) { $('#modalProgress').modal('hide'); }
         });
     }, function (err) {
-        $.growl.error({ title: "", message: "An error occured while loading app settings. " + err.message, location: "bc", size: "large", fixed: "true" });
+        //$.growl.error({ title: "", message: "An error occured while loading app settings. " + err.message, location: "bc", size: "large", fixed: "true" });
     });
 }
 function initLoad() {
