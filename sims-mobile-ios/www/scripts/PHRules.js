@@ -44,6 +44,8 @@ function syncPHRefCodes() {
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing Reference Codes ...");
+            $('#mb6 .progress').addClass('hide');
+            $('#mb6 .fa-clock-o').addClass('hide');
         },
         "headers": {
             "authorization": authCode,
@@ -162,6 +164,8 @@ function syncActivityData() {
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing Activity Data ...");
+            $('#mb6 .progress').addClass('hide');
+            $('#mb6 .fa-clock-o').addClass('hide');
         },
         "headers": {
             "authorization": authCode,
@@ -222,6 +226,8 @@ function syncstaffData() {
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing NPH Staff Data ...");
+            $('#mb6 .progress').addClass('hide');
+            $('#mb6 .fa-clock-o').addClass('hide');
         },
         "headers": {
             "authorization": authCode,
@@ -268,6 +274,8 @@ function syncBPHstaffData() {
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing BPH Staff Data ...");
+            $('#mb6 .progress').addClass('hide');
+            $('#mb6 .fa-clock-o').addClass('hide');
         },
         "headers": {
             "authorization": authCode,
@@ -313,6 +321,8 @@ function syncIPHstaffData() {
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing IPH Staff Data ...");
+            $('#mb6 .progress').addClass('hide');
+            $('#mb6 .fa-clock-o').addClass('hide');
         },
         "headers": {
             "authorization": authCode,
@@ -368,6 +378,8 @@ function syncTaxaData() {
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing Taxa ...");
+            $('#mb6 .progress').addClass('hide');
+            $('#mb6 .fa-clock-o').addClass('hide');
         },
         "headers": {
             "authorization": authCode,
@@ -565,6 +577,8 @@ function loadModal(pagename) {
         beforeSend: function (xhr) {
             $('#modalProgress').modal();
             $('#mb6 .progText').text("Loading ...");
+            $('#mb6 .progress').addClass('hide');
+            $('#mb6 .fa-clock-o').addClass('hide');
             $('#mb').empty();
             $('#mt').empty();
             $('#mt2').empty();
@@ -2817,6 +2831,8 @@ $(document).on('click', 'a.downloadMaps', function (e) {
     t0 = performance.now();
     $('#modalProgress').modal();
     $('#mb6 .progText').text("Download in progress ...");
+    $('#mb6 .progress').removeClass('hide');
+    $('#mb6 .fa-clock-o').removeClass('hide');
     $('#mb6 .progTime').text(new Date().toString());
     getFileandExtract(url, mapset, 1, numfiles);
 });
@@ -2882,6 +2898,8 @@ function getFileandExtract(url, mapset, i, n) {
     t1 = performance.now();
     t3 = t3 + Math.round((t1 - t0));
     $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...");
+    $('#mb6 .progress').removeClass('hide');
+    $('#mb6 .fa-clock-o').removeClass('hide');
     $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
     url2 = url + mapset + pad(i, 2) + ".zip";
     filename = mapset + pad(i, 2) + ".zip";
@@ -2905,11 +2923,15 @@ function processZip(zipSource, destination, url, mapset, i, n) {
     t1 = performance.now();
     t3 = t3 + Math.round((t1 - t0));
     $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
+    $('#mb6 .progress').removeClass('hide');
+    $('#mb6 .fa-clock-o').removeClass('hide');
     //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
 
     var progressHandler = function (progressEvent) {
         var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
         $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
+        $('#mb6 .progress').removeClass('hide');
+        $('#mb6 .fa-clock-o').removeClass('hide');
         $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent).text(percent + '%');
     };
     // Proceed to unzip the file

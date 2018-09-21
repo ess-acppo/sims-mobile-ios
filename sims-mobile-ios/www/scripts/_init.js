@@ -1162,8 +1162,8 @@ $(document).on('click', '#Submit2', function (e) {
     CountListFlag = 0;
     HostStatCountFlag = 0;
     HostStatAreaFlag = 0;
-    PlantTargetObservedCodeFlag = 0;
     PlantPreservationOtherFlag = 0;
+    PlantTargetObservedCodeFlag = 0;
     var obj = objectifyPHFormforSave(form1);
     //console.log(JSON.stringify(obj));
     var result = Iterate(obj);
@@ -1219,6 +1219,8 @@ $(document).on('click', '#settings', function (e) {
         beforeSend: function (xhr) {
             $('#modalProgress').modal();
             $('#mb6 .progText').text("Loading ...");
+            $('#mb6 .progress').addClass('hide');
+            $('#mb6 .fa-clock-o').addClass('hide');
             $('#mb5').empty();
             $('#mt5').empty();
             $(document).find('script[id="pageScript"]').remove();
@@ -1293,6 +1295,8 @@ $(document).on('click', '#srchPHTable tbody tr', function () {
         beforeSend: function (xhr) {
             $('#modalProgress').modal();
             $('#mb6 .progText').text("Loading ...");
+            $('#mb6 .progress').addClass('hide');
+            $('#mb6 .fa-clock-o').addClass('hide');
         }
     })
         .complete(function (data) {
