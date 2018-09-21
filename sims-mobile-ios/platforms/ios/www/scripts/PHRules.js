@@ -1527,7 +1527,7 @@ function Iterate(data) {
                     vFailed = true;
                     return false;
                 }
-                if (fname == 'CountList') { CountListFlag = value; }
+                if (fname == 'CountList') { CountListFlag = $('input[name="' + index +'"]:checked').val(); }
                 if (fname == 'HostStatCount' && value == 0) { HostStatCountFlag = 1; }
                 if (fname == 'HostStatAreaNo' && value == 0 && HostStatCountFlag == 1 && CountListFlag == 'Count' && plantDisciplineCode === 'B') {
                     //console.log('HostStatCount and Area fields - both cannot be NULL');
@@ -1856,6 +1856,22 @@ function Iterate2(data) {
     if (vFailed === true) {
         return { "vError": vError, "vErrDescription": vErrDescription.join('<br/>') };
     } else { return { "vError": 0, "vErrDescription": "" }; }
+}
+function SubmitRecord(formArray) {//serialize data function
+    var guid1 = guid().toUpperCase();
+    var obsWrapper = {
+        "header": {
+            "ebmCID": guid1,
+            "ebmMID": guid1,
+            "ebmSID": "ESFA",
+            "ebmTimestamp": new Date().toISOString()
+        },
+        "body": {
+            "plantHealthObservation": ""
+        }
+    };
+    obsWrapper.body.plantHealthObservation = formArray;
+    return obsWrapper;
 }
 function guid() {
     function s4() {
