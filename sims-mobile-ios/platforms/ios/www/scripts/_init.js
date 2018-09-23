@@ -99,6 +99,7 @@ function checkPermissions() {
     }
 }
 function initSettings() {
+    $('#mb6 .progText').text("Loading App Defaults ...");
     db = window.sqlitePlugin.openDatabase({ name: "sims.db", location: 'default' });
     db.transaction(function (tx) {
         tx.executeSql("CREATE TABLE IF NOT EXISTS observations (id integer primary key, filedt text, data blob)");
@@ -371,6 +372,7 @@ function initSettings() {
                                     $.growl.error({ title: "", message: "An error occured while updating data to DB. " + err.message, location: "tc", size: "large", fixed: "true" });
                                 });
                                 //$.growl.notice({ title: "", message: "Data loaded!", location: "tc", size: "large", fixed: "true" });
+                                if ($("#modalProgress").data('bs.modal').isShown) { $('#modalProgress').modal('hide'); }
                             },
                             failure: function () {
                                 $.growl.error({ title: "", message: "Error!", location: "tc", size: "large", fixed: "true" });
@@ -386,7 +388,7 @@ function initSettings() {
                 });
             };
             loadSitePolygons();
-            if ($("#modalProgress").data('bs.modal').isShown) { $('#modalProgress').modal('hide'); }
+            //if ($("#modalProgress").data('bs.modal').isShown) { $('#modalProgress').modal('hide'); }
         });
     }, function (err) {
         $.growl.error({ title: "", message: "An error occured while loading app settings. " + err.message, location: "tc", size: "large", fixed: "true" });
@@ -455,6 +457,7 @@ function loadMapMarkers() {
                 google.maps.event.addListener(markerCluster, 'clusterclick', function (cluster) {
                     map.setCenter(cluster.getCenter());
                 });
+                if ($("#modalProgress").data('bs.modal').isShown) { $('#modalProgress').modal('hide'); }
             }
         });
     }, function (err) {
