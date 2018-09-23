@@ -641,6 +641,10 @@ function loadModal(pagename) {
             beforeSend: function () {
                 loadPHRefCodes();
                 loadActivityData();
+                if (curIdx > -1) {
+                    var curActivity = results.observations[curPos].SurvActivityId_M_N;
+                    refreshActivityData(curActivity);
+                }
                 loadstaffData();
             }
         }).complete(function () {
@@ -1224,25 +1228,25 @@ function objectifyPHFormforSave(formArray) {
                 continue;
             }
             if (formArray[i]['name'].startsWith('TargetObservedCode')) {
-                if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
-                    formArray[i]['value'] = "";
-                }
+                //if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
+                //    formArray[i]['value'] = "";
+                //}
                 if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 1) {
                     formArray[i]['value'] = $("input[name='" + formArray[i]['name'] + "']:checked").val();
                 }
             }
             if (formArray[i]['name'].startsWith('CountList')) {
-                if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
-                    formArray[i]['value'] = "";
-                }
+                //if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
+                //    formArray[i]['value'] = "";
+                //}
                 if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 1) {
                     formArray[i]['value'] = $("input[name='" + formArray[i]['name'] + "']:checked").val();
                 }
             }
             if (formArray[i]['name'].startsWith('HostFlag')) {
-                if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
-                    formArray[i]['value'] = "";
-                }
+                //if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
+                //    formArray[i]['value'] = "";
+                //}
                 if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 1) {
                     formArray[i]['value'] = $("input[name='" + formArray[i]['name'] + "']:checked").val();
                 }
@@ -1653,6 +1657,15 @@ function Iterate(data) {
                 }
                 if (fname === 'TargetObservedCode' && ftype === "T" && $('input[name="' + index + '"]:checked').val() === "N") {
                     PlantTargetObservedCodeFlag = 1;
+                }
+                if (fname === 'TargetObservedCode' && ftype === "T" && $('input[name="' + index + '"]:checked').val() === "N" && value === "N") {
+                    PlantTargetObservedCodeFlag = 1;
+                }
+                if (fname === 'TargetObservedCode' && ftype === "T" && $('input[name="' + index + '"]:checked').length === 0 && value === "N") {
+                    vError = 1;
+                    vErrDescription.push("<a href='#' class='btn btn-sm btn-default btnError' data-j='" + index + "' data-k='" + ftype + "' data-l='" + fnum + "'>Go</a>" + fname + " field cannot be NULL.");
+                    vFailed = true;
+                    return false;
                 }
 
                 if (fname === 'CommentText' && ftype === "T" && value === "" && PlantTargetObservedCodeFlag === 1) {
@@ -2882,20 +2895,20 @@ $(document).on('click', 'img.pp', function () {
 
     return false;
 });
-//$(document).on('ifClicked', 'input[type="radio"].minimal', function (event) {
-//    //alert(event.type + ' callback');
-//    event.preventDefault();
-//    if ($(this).data('validate') != 'N') {
-//        console.log($(this).val());
-//        $('#form1').find("input[name^='" + $(this).attr('name') + "']").val($(this).val());
-//    }
-//});
-//$(document).on('change', 'input:radio', function (e) {
-//    e.preventDefault();
-//    if ($(this).is(":checked") && $(this).data('validate') != 'N') {
-//        $('#form1').find("input[type='radio'][name^='" + $(this).attr('name') + "']").val($(this).val());
-//    }
-//});
+$(document).on('ifClicked', 'input[type="radio"].minimal', function (event) {
+    //alert(event.type + ' callback');
+    event.preventDefault();
+    if ($(this).data('validate') !== 'N') {
+        console.log($(this).val());
+        $('#form1').find("input[name^='" + $(this).attr('name') + "']").val($(this).data("code"));
+    }
+});
+$(document).on('change', 'input:radio', function (e) {
+    e.preventDefault();
+    if ($(this).is(":checked") && $(this).data('validate') !== 'N') {
+        $('#form1').find("input[type='radio'][name^='" + $(this).attr('name') + "']").val($(this).data("code"));
+    }
+});
 $(document).on('ifChecked', 'input[type="radio"].minimal', function (event) {
     //alert(event.type + ' callback');
     if ($(this).attr('name') == 'addlCollectors') {
