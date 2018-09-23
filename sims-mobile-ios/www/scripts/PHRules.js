@@ -35,7 +35,8 @@ var ActivityData;
 var programId;
 var taxaData;
 var t0 = 0, t1 = 0, t3 = 0;
-var lastValue;
+var lastSiteValue;
+var lastSurvActValue;
 
 function syncPHRefCodes() {
     // Loading Activity Defaults //
@@ -178,6 +179,7 @@ function syncActivityData() {
         ActivityData = data;
         siteData = data.activities[0].sites;
         programId = data.activities[0].programId;
+        lastSurvActValue = data.activities[0].activityId;
         db.transaction(function (tx) {
             tx.executeSql("DELETE FROM activitydata", [], function (tx, res) {
                 //alert("Rows deleted.");
@@ -212,6 +214,24 @@ function loadActivityData() {
         option.attr('value', val.activityId).text(val.activityName);
         $("#form1").find('select[name="SurvActivityId_M_N"]').append(option);
     });
+    $("#form1").find('select[name="SiteId_O_N"]').find('option').remove().end().append($('<option value="0">- select -</option>'));
+    $.each(siteData, function (key, val) {
+        var option = $('<option />');
+        option.attr('value', val.id).text(val.name);
+        $("#form1").find('select[name="SiteId_O_N"]').append(option);
+    });
+    $("#form1").find('select[name="SiteId_O_N"]').append($('<option value="99999">New Site</option>'));
+}
+function refreshActivityData(str) {
+    var arr = ActivityData.activities.filter(function (el) {
+        return (el.activityId === Number(str));
+    });
+    if (arr) {
+        siteData = arr[0].sites;
+        programId = arr[0].programId;
+        lastSurvActValue = arr[0].activityId;
+        lastSiteValue = 0;
+    };
     $("#form1").find('select[name="SiteId_O_N"]').find('option').remove().end().append($('<option value="0">- select -</option>'));
     $.each(siteData, function (key, val) {
         var option = $('<option />');
@@ -1190,16 +1210,25 @@ function objectifyPHFormforSave(formArray) {
                 continue;
             }
             if (formArray[i]['name'].startsWith('TargetObservedCode')) {
+                if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
+                    formArray[i]['value'] = "";
+                }
                 if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 1) {
                     formArray[i]['value'] = $("input[name='" + formArray[i]['name'] + "']:checked").val();
                 }
             }
             if (formArray[i]['name'].startsWith('CountList')) {
+                if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
+                    formArray[i]['value'] = "";
+                }
                 if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 1) {
                     formArray[i]['value'] = $("input[name='" + formArray[i]['name'] + "']:checked").val();
                 }
             }
             if (formArray[i]['name'].startsWith('HostFlag')) {
+                if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
+                    formArray[i]['value'] = "";
+                }
                 if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 1) {
                     formArray[i]['value'] = $("input[name='" + formArray[i]['name'] + "']:checked").val();
                 }
@@ -1406,7 +1435,7 @@ function objectifyPHFormforSubmit(data) {//serialize data function
             delete item.PrelimTaxonTextH;
             delete item.HostTaxonTextH;
             if (item.AdditionalCollectorTab.length === 0) { delete item.AdditionalCollectorTab };
-            if (item.AdditionalCollectorTab.length > 0) {
+            if (item.AdditionalCollectorTab && item.AdditionalCollectorTab.length > 0) {
                 var arr = $.unique(item.AdditionalCollectorTab);
                 item.AdditionalCollectorTab = arr;
             };
@@ -2940,63 +2969,126 @@ $(document).on('click', 'a.downloadMaps', function (e) {
     getFileandExtract(url, mapset, 1, numfiles);
 });
 $(document).on('focus', 'select[name="SiteId_O_N"]', function (e) {
-    lastValue = $(this).val();
-}).on('change', 'select[name="SiteId_O_N"]', function (e) {
-    var that = $(this);
-    if (that.val() === "0" || lastValue === "0") return;
-    if (curDiscipline === "B" && numPlants === 0 && bsamples === 0) return;
-    if (curDiscipline === "E" && numEntoHosts === 0 && esamples === 0) return;
-    if (curDiscipline === "P" && numPathHosts === 0 && psamples === 0) return;
-    $.confirm({
-        title: 'Confirm Remove!',
-        content: 'Your observations for the currently selected Site will be erased. Do you want to continue?',
-        buttons: {
-            Ok: function () {
-                var str = that.val();
-                //if (str === 99999) {
-                //    //alert('NewSite selected');
-                //    var xlat = $('#form1').find('input.obslat');
-                //    var xlng = $('#form1').find('input.obslng');
-                //    var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
-                //    if (xlat.val() !== "") { cLatitude = xlat.val(); }
-                //    if (xlng.val() !== "") { cLongitude = xlng.val(); }
-                //    if (xwkt.val() !== "") { cWkt = xwkt.val(); }
-                //    xlat.val("");
-                //    xlng.val("");
-                //    xwkt.val("");
-                //}
-                //else {
-                //    //alert('Existing site selected');
-                //    var xlat = $('#form1').find('input.obslat');
-                //    var xlng = $('#form1').find('input.obslng');
-                //    var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
-                //    if (cLatitude !== "") { xlat.val(cLatitude); }
-                //    if (cLongitude !== "") { xlng.val(cLongitude); }
-                //    if (cWkt !== "") { xwkt.val(cWkt); }
-                //}
-                bsamples = 0;
-                esamples = 0;
-                psamples = 0;
-                numPlants = 0;
-                numEntoHosts = 0;
-                numEntoTargets = 0;
-                numPathHosts = 0;
-                numPathTargets = 0;
-                $('#hostweeds').empty();
-                $('#samples').empty();
-                $('#numEntoHosts').text("");
-                $('#numPathHosts').text("");
-                $('#numPlants').text("");
-                $('#numSamples').text("");
-                $('#numAttachments').text("");
-                loadSiteData(str);
-            },
-            cancel: function () {
-                that.val(lastValue);
-            }
+    lastSiteValue = $(this).val();
+})
+    .on('change', 'select[name="SiteId_O_N"]', function (e) {
+        var that = $(this);
+        var str = that.val();
+        console.log(that.val());
+        console.log(lastSiteValue);
+        //if (that.val() === "0" || lastSiteValue === "0") return;
+        if (that.val() === "0") return;
+        if (curDiscipline === "B" && numPlants === 0 && bsamples === 0) {
+            loadSiteData(str);
+            return;
         }
+        if (curDiscipline === "E" && numEntoHosts === 0 && esamples === 0) {
+            loadSiteData(str);
+            return;
+        }
+        if (curDiscipline === "P" && numPathHosts === 0 && psamples === 0) {
+            loadSiteData(str);
+            return;
+        }
+        $.confirm({
+            title: 'Confirm Remove!',
+            content: 'Your observations for the currently selected Site will be erased. Do you want to continue?',
+            buttons: {
+                Ok: function () {
+                    //if (str === 99999) {
+                    //    //alert('NewSite selected');
+                    //    var xlat = $('#form1').find('input.obslat');
+                    //    var xlng = $('#form1').find('input.obslng');
+                    //    var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
+                    //    if (xlat.val() !== "") { cLatitude = xlat.val(); }
+                    //    if (xlng.val() !== "") { cLongitude = xlng.val(); }
+                    //    if (xwkt.val() !== "") { cWkt = xwkt.val(); }
+                    //    xlat.val("");
+                    //    xlng.val("");
+                    //    xwkt.val("");
+                    //}
+                    //else {
+                    //    //alert('Existing site selected');
+                    //    var xlat = $('#form1').find('input.obslat');
+                    //    var xlng = $('#form1').find('input.obslng');
+                    //    var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
+                    //    if (cLatitude !== "") { xlat.val(cLatitude); }
+                    //    if (cLongitude !== "") { xlng.val(cLongitude); }
+                    //    if (cWkt !== "") { xwkt.val(cWkt); }
+                    //}
+                    bsamples = 0;
+                    esamples = 0;
+                    psamples = 0;
+                    numPlants = 0;
+                    numEntoHosts = 0;
+                    numEntoTargets = 0;
+                    numPathHosts = 0;
+                    numPathTargets = 0;
+                    $('#hostweeds').empty();
+                    $('#samples').empty();
+                    $('#numEntoHosts').text("");
+                    $('#numPathHosts').text("");
+                    $('#numPlants').text("");
+                    $('#numSamples').text("");
+                    $('#numAttachments').text("");
+                    loadSiteData(str);
+                },
+                cancel: function () {
+                    that.val(lastSiteValue);
+                }
+            }
+        });
     });
-});
+$(document).on('focus', 'select[name="SurvActivityId_M_N"]', function (e) {
+    lastSurvActValue = $(this).val();
+})
+    .on('change', 'select[name="SurvActivityId_M_N"]', function (e) {
+        var that = $(this);
+        var str = that.val();
+        if (curDiscipline === "B" && numPlants === 0 && bsamples === 0) {
+            refreshActivityData(str);
+            loadSitePolygons();
+            return;
+        }
+        if (curDiscipline === "E" && numEntoHosts === 0 && esamples === 0) {
+            refreshActivityData(str);
+            loadSitePolygons();
+            return;
+        }
+        if (curDiscipline === "P" && numPathHosts === 0 && psamples === 0) {
+            refreshActivityData(str);
+            loadSitePolygons();
+            return;
+        }
+        $.confirm({
+            title: 'Confirm Remove!',
+            content: 'Your observations for the currently selected Activity will be erased. Do you want to continue?',
+            buttons: {
+                Ok: function () {
+                    bsamples = 0;
+                    esamples = 0;
+                    psamples = 0;
+                    numPlants = 0;
+                    numEntoHosts = 0;
+                    numEntoTargets = 0;
+                    numPathHosts = 0;
+                    numPathTargets = 0;
+                    $('#hostweeds').empty();
+                    $('#samples').empty();
+                    $('#numEntoHosts').text("");
+                    $('#numPathHosts').text("");
+                    $('#numPlants').text("");
+                    $('#numSamples').text("");
+                    $('#numAttachments').text("");
+                    refreshActivityData(str);
+                    loadSitePolygons();
+                },
+                cancel: function () {
+                    that.val(lastSurvActValue);
+                }
+            }
+        });
+    });
 function getFileandExtract(url, mapset, i, n) {
     t1 = performance.now();
     t3 = t3 + Math.round((t1 - t0));
