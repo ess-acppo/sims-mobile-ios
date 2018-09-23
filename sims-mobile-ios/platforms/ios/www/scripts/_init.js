@@ -148,8 +148,8 @@ function initSettings() {
             //This is not the first load
             if (res.rows && res.rows.length > 0) {
                 ActivityData = JSON.parse(res.rows.item(0).settingsval);
-                siteData = ActivityData.activities[0].sites;
-                programId = ActivityData.activities[0].programId;
+                //siteData = ActivityData.activities[0].sites;
+                //programId = ActivityData.activities[0].programId;
                 loadActivityData();
                 //Loading Staff Data
                 db.transaction(function (tx) {
