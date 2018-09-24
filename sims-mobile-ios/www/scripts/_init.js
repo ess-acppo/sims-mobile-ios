@@ -1235,6 +1235,7 @@ $(document).on('click', '#settings', function (e) {
             }
             if (statusElem.innerHTML === 'offline') {
                 $('a.btnSync').addClass('hide');
+            }
         });
     $('#modalSettings').modal();
 });
