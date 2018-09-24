@@ -300,7 +300,7 @@ function syncstaffData() {
     }).fail(function (response) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
-        $.growl.error({ title: "", message: "An error occurred while fetching StaffData. " + err.message, location: "tc", size: "large" });
+        $.growl.error({ title: "", message: "An error occurred while fetching StaffData. " + response.responseText, location: "tc", size: "large" });
     });
 }
 function syncBPHstaffData() {
@@ -347,7 +347,7 @@ function syncBPHstaffData() {
     }).fail(function (response) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
-        $.growl.error({ title: "", message: "An error occurred while fetching BPH StaffData. " + err.message, location: "tc", size: "large" });
+        $.growl.error({ title: "", message: "An error occurred while fetching BPH StaffData. " + response.responseText, location: "tc", size: "large" });
     });
 }
 function syncIPHstaffData() {
@@ -405,7 +405,7 @@ function syncIPHstaffData() {
     }).fail(function (response) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
-        $.growl.error({ title: "", message: "An error occurred while fetching IPH StaffData. " + err.message, location: "tc", size: "large" });
+        $.growl.error({ title: "", message: "An error occurred while fetching IPH StaffData. " + response.responseText, location: "tc", size: "large" });
     });
 }
 function syncTaxaData() {
