@@ -44,6 +44,7 @@ function syncPHRefCodes() {
         "async": false,
         "crossDomain": true,
         "url": "https://online-dev.agriculture.gov.au/ords-int/rest/sims/plant_health/referenceCodes",
+        //"url": "https://online-sit.agriculture.gov.au/ords-int/rest/sims/plant_health/referenceCodes",
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing Reference Codes ...");
@@ -164,6 +165,7 @@ function syncActivityData() {
         "async": false,
         "crossDomain": true,
         "url": "https://online-dev.agriculture.gov.au/ords-int/rest/sims/plant_health/activity",
+        //"url": "https://online-sit.agriculture.gov.au/ords-int/rest/sims/plant_health/activity",
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing Activity Data ...");
@@ -260,6 +262,7 @@ function syncstaffData() {
         "async": false,
         "crossDomain": true,
         "url": "https://online-dev.agriculture.gov.au/ords-int/rest/sims/common/program/NPH/team",
+        //"url": "https://online-sit.agriculture.gov.au/ords-int/rest/sims/common/program/NPH/team",
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing NPH Staff Data ...");
@@ -308,6 +311,7 @@ function syncBPHstaffData() {
         "async": false,
         "crossDomain": true,
         "url": "https://online-dev.agriculture.gov.au/ords-int/rest/sims/common/program/BPH/team",
+        //"url": "https://online-sit.agriculture.gov.au/ords-int/rest/sims/common/program/BPH/team",
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing BPH Staff Data ...");
@@ -355,6 +359,7 @@ function syncIPHstaffData() {
         "async": false,
         "crossDomain": true,
         "url": "https://online-dev.agriculture.gov.au/ords-int/rest/sims/common/program/IPH/team",
+        //"url": "https://online-sit.agriculture.gov.au/ords-int/rest/sims/common/program/IPH/team",
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing IPH Staff Data ...");
@@ -413,6 +418,7 @@ function syncTaxaData() {
         "async": false,
         "crossDomain": true,
         "url": "https://online-dev.agriculture.gov.au/ords-int/rest/sims/plant_health/taxa",
+        //"url": "https://online-sit.agriculture.gov.au/ords-int/rest/sims/plant_health/taxa",
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Syncing Taxa ...");
