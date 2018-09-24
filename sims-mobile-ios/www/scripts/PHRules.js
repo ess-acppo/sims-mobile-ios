@@ -3546,7 +3546,7 @@ function loadSiteData(str) {
                                         $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("select[name^='" + key4 + "']").val(value4);
                                         $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("textarea[name^='" + key4 + "']").val(value4);
                                         if (key4 === "TargetTaxonId") {
-                                            $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='text'][name^='TargetTaxonText']").val(getTaxonText(value4));
+                                            $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='text'][name^='TargetTaxonText']").val(getTaxonTargetText(value4));
                                         }
                                     });
                                 });
@@ -3615,7 +3615,7 @@ function loadSiteData(str) {
                                         $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("select[name^='" + key4 + "']").val(value4);
                                         $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("textarea[name^='" + key4 + "']").val(value4);
                                         if (key4 === "TargetTaxonId") {
-                                            $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='text'][name^='TargetTaxonText']").val(getTaxonText(value4));
+                                            $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='text'][name^='TargetTaxonText']").val(getTaxonTargetText(value4));
                                         }
                                     });
                                 });
@@ -3628,6 +3628,29 @@ function loadSiteData(str) {
     };
 }
 function getTaxonText(id) {
+    var arr;
+    switch (curDiscipline) {
+        case 'B':
+            arr = taxaData.taxaBotany.filter(function (el) {
+                return (el.id === id);
+            });
+            if (arr.length > 0) { return arr[0].name; }
+            break;
+        case 'E':
+            arr = taxaData.taxaBotany.filter(function (el) {
+                return (el.id === id);
+            });
+            if (arr.length > 0) { return arr[0].name; }
+            break;
+        case 'P':
+            arr = taxaData.taxaBotany.filter(function (el) {
+                return (el.id === id);
+            });
+            if (arr.length > 0) { return arr[0].name; }
+            break;
+    }
+}
+function getTaxonTargetText(id) {
     var arr;
     switch (curDiscipline) {
         case 'B':

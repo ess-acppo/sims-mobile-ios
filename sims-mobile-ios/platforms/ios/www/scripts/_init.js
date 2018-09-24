@@ -373,7 +373,7 @@ function initSettings() {
                 });
             }
             loadSitePolygons();
-            //if ($("#modalProgress").data('bs.modal').isShown) { $('#modalProgress').modal('hide'); }
+            if ($("#modalProgress").data('bs.modal') && $("#modalProgress").data('bs.modal').isShown) { $('#modalProgress').modal('hide'); }
         });
     }, function (err) {
         $.growl.error({ title: "", message: "An error occured while loading app settings. " + err.message, location: "tc", size: "large", fixed: "true" });
@@ -1230,6 +1230,11 @@ $(document).on('click', '#settings', function (e) {
             $('#form3').find('input[name="sampleCurrNum"]').val(resSettings.settings.device.currentSampleNumber);
         }).done(function () {
             $('#modalProgress').modal('hide');
+            if (statusElem.innerHTML === 'online') {
+                $('a.btnSync').removeClass('hide');
+            }
+            if (statusElem.innerHTML === 'offline') {
+                $('a.btnSync').addClass('hide');
         });
     $('#modalSettings').modal();
 });
@@ -1463,11 +1468,9 @@ $(document).on('shown.bs.modal', '#modalPHGrid', function () {
     loadData();
     if (statusElem.innerHTML === 'online') {
         $('.sync').removeClass('hide');
-        $('.btnSync').removeClass('hide');
     }
     if (statusElem.innerHTML === 'offline') {
         $('.sync').addClass('hide');
-        $('.btnSync').addClass('hide');
     }
 });
 $(document).on('hidden.bs.modal', '#modalPHGrid', function () {
