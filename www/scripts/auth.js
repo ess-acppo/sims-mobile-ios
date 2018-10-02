@@ -295,7 +295,7 @@ function fetchSettings() {
                         $.growl.error({ title: "", message: "Error loading settings!", location: "tc", size: "large", fixed: "true" });
                     }
                 });
-                console.log('1-' +JSON.stringify(resSettings));
+                //console.log('1-' +JSON.stringify(resSettings));
             }
         });
     }, function (err) {
