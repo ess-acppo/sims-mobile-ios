@@ -1,3 +1,4 @@
+// From Sublime Text //
 var mapPath;
 var emptyTilePath;
 var AppMode;
