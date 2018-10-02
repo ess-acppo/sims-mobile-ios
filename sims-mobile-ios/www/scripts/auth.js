@@ -219,10 +219,11 @@ function derive_key(u, p) {
             $.growl.error({ title: "", message: "An error occured while updating Auth Settings. " + err.message, location: "bc", size: "large" });
         });
     };
+    fetchSettings();
     mypbkdf2.deriveKey(status_callback, result_callback);
 }
 $('#modalAuth').keypress(function (e) {
-    if (e.which == 13) {
+    if (e.which === 13) {
         var unameValue = document.querySelector('.auth-username').value;
         var pwdValue = document.querySelector('.auth-password').value;
 
@@ -239,3 +240,65 @@ $('#modalAuth').keypress(function (e) {
         }
     }
 });
+function fetchSettings() {
+    if (!db) {
+        db = window.sqlitePlugin.openDatabase({ name: "sims.db", location: 'default' });
+        db.transaction(function (tx) {
+            tx.executeSql("CREATE TABLE IF NOT EXISTS observations (id integer primary key, filedt text, data blob)");
+            tx.executeSql("CREATE TABLE IF NOT EXISTS settings (id integer primary key, settingstext text, settingsval text default '{}')");
+            tx.executeSql("CREATE TABLE IF NOT EXISTS phrefcodes (id integer primary key, settingstext text, settingsval text default '{}')");
+            tx.executeSql("CREATE TABLE IF NOT EXISTS activitydata (id integer primary key, settingstext text, settingsval text default '{}')");
+            tx.executeSql("CREATE TABLE IF NOT EXISTS staffdata (id integer primary key, settingstext text, settingsval text default '{}')");
+            tx.executeSql("CREATE TABLE IF NOT EXISTS taxadata (id integer primary key, settingstext text, settingsval text default '{}')");
+        }, function (err) {
+            $.growl.error({ title: "", message: "An error occurred while initializing the DB. " + err.message, location: "tc", size: "large" });
+        });
+    }
+    db.transaction(function (tx) {
+        tx.executeSql("SELECT * FROM settings WHERE id = ?", [1], function (tx, res) {
+            //This is not the first load
+            if (res.rows && res.rows.length > 0) {
+                resSettings = JSON.parse(res.rows.item(0).settingsval);
+                //console.log('0-' + JSON.stringify(resSettings));
+            }
+            else {
+                $.ajax({
+                    method: "GET",
+                    url: "data/settings.json",
+                    contentType: "json",
+                    success: function (dataS) {
+                        resSettings = JSON.parse(dataS);
+                        db.transaction(function (tx) {
+                            tx.executeSql("DELETE FROM settings", [], function (tx, res) {
+                                //alert("Rows deleted.");
+                            });
+                        }, function (err) {
+                            $.growl.error({ title: "", message: "An error occured while deleting settings from DB. " + err.message, location: "tc", size: "large", fixed: "true" });
+                        });
+                        db.transaction(function (tx) {
+                            tx.executeSql("INSERT INTO settings (id, settingstext, settingsval) VALUES (?,?,?)", [1, 'appSettings', JSON.stringify(resSettings)], function (tx, res) {
+                                //alert("Row inserted.");
+                            });
+                        }, function (err) {
+                            $.growl.error({ title: "", message: "An error occured while updating settings to DB. " + err.message, location: "tc", size: "large", fixed: "true" });
+                        });
+                        db.transaction(function (tx) {
+                            tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
+                                //alert("Dataset updated.");
+                                //$.growl({ title: "", message: "Your changes have been saved!", location: "tc", size: "large", fixed: "true" });
+                            });
+                        }, function (err) {
+                            $.growl.error({ title: "", message: "An error occured while updating settings to DB. " + err.message, location: "tc", size: "large", fixed: "true" });
+                        });
+                    },
+                    failure: function () {
+                        $.growl.error({ title: "", message: "Error loading settings!", location: "tc", size: "large", fixed: "true" });
+                    }
+                });
+                console.log('1-' + JSON.stringify(resSettings));
+            }
+        });
+    }, function (err) {
+        $.growl.error({ title: "", message: "An error occured fetching app settings. " + err.message, location: "tc", size: "large", fixed: "true" });
+    });
+}
