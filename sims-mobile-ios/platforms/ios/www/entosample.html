@@ -23,7 +23,7 @@
     </div>
     <div class="row col-md-12 col-sm-12 col-xs-12">
         <div class="form-group col-md-6 col-sm-6 col-xs-12">
-            <label>Preliminary Taxon ID </label>
+            <label><span class="bold-red">*&nbsp;</span>Preliminary Taxon ID </label>
             <input type="number" class="form-control taxonIDES" placeholder="Preliminary ID" name="PrelimTaxonId_O_N" readonly min="1" max="99999999" maxlength="8" data-section="PlantSampleTab">
         </div>
     </div>
@@ -157,11 +157,11 @@
     </div>
     <div class="row col-md-12 col-sm-12 col-xs-12">
         <div class="form-group col-md-3 col-sm-3 col-xs-12">
-            <input type="radio" name="HostFlag_M_S" class="minimal" value="Y" data-code="Y" maxlength="1" data-section="PlantSampleTab">&nbsp;
+            <input type="radio" name="HostFlag_M_S" class="minimal" value="Y" maxlength="1" data-section="PlantSampleTab">&nbsp;
             <label>Host</label>
         </div>
         <div class="form-group col-md-3 col-sm-3 col-xs-12">
-            <input type="radio" name="HostFlag_M_S" class="minimal" value="N" data-code="N" maxlength="1" data-section="PlantSampleTab">&nbsp;
+            <input type="radio" name="HostFlag_M_S" class="minimal" value="N" maxlength="1" data-section="PlantSampleTab">&nbsp;
             <label>Other</label>
         </div>
     </div>
@@ -171,7 +171,7 @@
             <input type="number" class="form-control taxonIDHES" placeholder="Other Name" name="HostTaxonId_O_N" readonly min="1" max="99999999" maxlength="8" data-section="PlantSampleTab">
         </div>
         <div class="form-group col-md-6 col-sm-6 col-xs-12">
-            <label><span class="bold-red">*&nbsp;</span>Host/Other Taxon Text</label>
+            <label>Host/Other Taxon Text</label>
             <input type="text" class="form-control taxonTextHES" placeholder="Other Name" name="HostTaxonText_M_S" maxlength="50" data-section="PlantSampleTab">
             <input type="text" class="form-control taxonHTextHES hide" name="HostTaxonTextH_M_S" data-section="PlantSampleTab">
         </div>
