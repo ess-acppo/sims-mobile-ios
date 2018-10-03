@@ -13,12 +13,9 @@ function initAuth() {
             s.classList.remove('hide');
             text = document.querySelector('.auth-result .text');
             icon = document.querySelector('.auth-result .fa');
-            $('.auth-username').attr('disabled', true);
-            $('.auth-username').addClass('disabled');
-            $('.auth-password').attr('disabled', true);
-            $('.auth-password').addClass('disabled');
-            $('.auth-send').attr('disabled', true);
-            $('.auth-send').addClass('disabled');
+
+
+			
             if (statusElem.innerHTML === 'online') {
                 authenticate2(unameValue, pwdValue);
             }
@@ -74,6 +71,15 @@ function authenticate2(x, y) {
             $('#mb6 .progress').addClass('hide');
             $('#mb6 .fa-clock-o').addClass('hide');
             $('#modalProgress').modal();
+
+            $('.auth-username').attr('disabled', true);
+            $('.auth-username').addClass('disabled');
+            $('.auth-password').attr('disabled', true);
+            $('.auth-password').addClass('disabled');
+            $('.auth-send').attr('disabled', true);
+            $('.auth-send').addClass('disabled');
+
+            fetchSettings();
         },
         "headers": {
             "authorization": "Basic " + btoa(x + ":" + y),
@@ -100,11 +106,14 @@ function authenticate2(x, y) {
         error: function (xhr, textStatus, errorThrown) {
             $('#mb6 .progText').text("");
             $('#modalProgress').modal('hide');
-            $('.auth-username').attr('disabled', true);
-            $('.auth-username').addClass('disabled');
-            $('.auth-password').attr('disabled', true);
-            $('.auth-password').addClass('disabled');
-            $('.auth-send').attr('disabled', true);
+
+            $('.auth-username').attr('disabled', false);
+            $('.auth-username').removeClass('disabled');
+            $('.auth-password').attr('disabled', false);
+            $('.auth-password').removeClass('disabled');
+            $('.auth-send').attr('disabled', false);
+            $('.auth-send').removeClass('disabled');
+
             s.classList.add('hide');
             icon.classList.add('fa-times');
             icon.classList.remove('fa-check');
@@ -126,6 +135,7 @@ function authenticate3(x, y) {
     };
     var result_callback = function (key) {
         //console.log("The derived " + (bytes * 8) + "-bit key is: " + key);
+
         if (!resSettings) {
             $.growl.error({ title: "", message: "You must be authenticated atleast once in online mode.", location: "bc", size: "large" });
             $('#mb6 .progText').text("");
@@ -218,7 +228,8 @@ function derive_key(u, p) {
             });
         }, function (err) {
             $.growl.error({ title: "", message: "An error occured while updating Auth Settings. " + err.message, location: "bc", size: "large" });
-        });
+            });
+        //console.log('2-' +JSON.stringify(resSettings));
     };
     mypbkdf2.deriveKey(status_callback, result_callback);
 }

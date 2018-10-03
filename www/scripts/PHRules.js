@@ -86,7 +86,7 @@ function syncPHRefCodes() {
     }).fail(function (response) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
-        $.growl.error({ title: "", message: "An error occurred while fetching reference codes. " + err.message, location: "tc", size: "large" });
+        $.growl.error({ title: "", message: "An error occurred while fetching reference codes.", location: "tc", size: "large" });
     });
 }
 function loadPHRefCodes() {
@@ -181,8 +181,8 @@ function syncActivityData() {
     };
     $.ajax(settings).done(function (data) {
         ActivityData = data;
-        siteData = data.activities[0].sites;
-        programId = data.activities[0].programId;
+        //siteData = data.activities[0].sites;
+        //programId = data.activities[0].programId;
         lastSurvActValue = data.activities[0].activityId;
         db.transaction(function (tx) {
             tx.executeSql("DELETE FROM activitydata", [], function (tx, res) {
@@ -213,6 +213,7 @@ function syncActivityData() {
     });
 }
 function loadActivityData() {
+    $("#form1").find('select[name="SurvActivityId_M_N"]').find('option').remove().end().append($('<option value="0">- select -</option>'));
     $.each(ActivityData.activities, function (key, val) {
         var option = $('<option />');
         option.attr('value', val.activityId).text(val.activityName);
@@ -230,11 +231,25 @@ function refreshActivityData(str) {
     var arr = ActivityData.activities.filter(function (el) {
         return (el.activityId === Number(str));
     });
-    if (arr) {
+    if (arr && arr.length > 0) {
         siteData = arr[0].sites;
         programId = arr[0].programId;
         lastSurvActValue = arr[0].activityId;
         lastSiteValue = 0;
+        db.transaction(function (tx) {
+            tx.executeSql("SELECT * FROM staffdata WHERE settingstext = ?", [programId + 'staff'], function (tx, res) {
+                //This is not the first load
+                if (res.rows && res.rows.length > 0) {
+                    //alert(JSON.stringify(res.rows.item(0).settingsval));
+                    staffDataS = JSON.parse(res.rows.item(0).settingsval);
+                }
+                else {
+                    $.growl.error({ title: "", message: "No staff Data available for this Activity.", location: "tc", size: "large", fixed: "true" });
+                }
+            });
+        }, function (err) {
+            $.growl.error({ title: "", message: "An error occured while loading staff Data. " + err.message, location: "tc", size: "large", fixed: "true" });
+        });
     };
     $("#form1").find('select[name="SiteId_O_N"]').find('option').remove().end().append($('<option value="0">- select -</option>'));
     $.each(siteData, function (key, val) {
@@ -253,7 +268,7 @@ function syncstaffData() {
         "url": "https://online-uat.agriculture.gov.au/ords-int/rest/sims/common/program/NPH/team",
         "method": "GET",
         "beforeSend": function () {
-            $('#mb6 .progText').text("Syncing NPH Staff Data ...");
+            $('#mb6 .progText').text("Syncing Staff Data ...");
             $('#mb6 .progress').addClass('hide');
             $('#mb6 .fa-clock-o').addClass('hide');
         },
@@ -291,7 +306,7 @@ function syncstaffData() {
     }).fail(function (response) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
-        $.growl.error({ title: "", message: "An error occurred while fetching StaffData. " + err.message, location: "tc", size: "large" });
+        $.growl.error({ title: "", message: "An error occurred while fetching StaffData. " + response.responseText, location: "tc", size: "large" });
     });
 }
 function syncBPHstaffData() {
@@ -303,7 +318,7 @@ function syncBPHstaffData() {
         "url": "https://online-uat.agriculture.gov.au/ords-int/rest/sims/common/program/BPH/team",
         "method": "GET",
         "beforeSend": function () {
-            $('#mb6 .progText').text("Syncing BPH Staff Data ...");
+            $('#mb6 .progText').text("Syncing Staff Data ...");
             $('#mb6 .progress').addClass('hide');
             $('#mb6 .fa-clock-o').addClass('hide');
         },
@@ -340,7 +355,7 @@ function syncBPHstaffData() {
     }).fail(function (response) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
-        $.growl.error({ title: "", message: "An error occurred while fetching BPH StaffData. " + err.message, location: "tc", size: "large" });
+        $.growl.error({ title: "", message: "An error occurred while fetching BPH StaffData. " + response.responseText, location: "tc", size: "large" });
     });
 }
 function syncIPHstaffData() {
@@ -352,7 +367,7 @@ function syncIPHstaffData() {
         "url": "https://online-uat.agriculture.gov.au/ords-int/rest/sims/common/program/IPH/team",
         "method": "GET",
         "beforeSend": function () {
-            $('#mb6 .progText').text("Syncing IPH Staff Data ...");
+            $('#mb6 .progText').text("Syncing Staff Data ...");
             $('#mb6 .progress').addClass('hide');
             $('#mb6 .fa-clock-o').addClass('hide');
         },
@@ -385,21 +400,26 @@ function syncIPHstaffData() {
         }, function (err) {
             $.growl.error({ title: "", message: "An error occured while updating IPH StaffData to DB. " + err.message, location: "tc", size: "large", fixed: "true" });
         });
-        switch (programId) {
-            case "NPH":
-                staffDataS = staffDataNPH;
-                break;
-            case "BPH":
-                staffDataS = staffDataBPH;
-                break;
-            case "IPH":
-                staffDataS = staffDataIPH;
-                break;
-        }
+        staffDataS = staffDataNPH;
+        //switch (programId) {
+        //    case "NPH":
+        //        staffDataS = staffDataNPH;
+        //        break;
+
+        //    case "BPH":
+        //        staffDataS = staffDataBPH;
+        //        break;
+
+        //    case "IPH":
+        //        staffDataS = staffDataIPH;
+        //        break;
+        //}
+
+		
     }).fail(function (response) {
         $('#mb6 .progText').text("");
         $('#modalProgress').modal('hide');
-        $.growl.error({ title: "", message: "An error occurred while fetching IPH StaffData. " + err.message, location: "tc", size: "large" });
+        $.growl.error({ title: "", message: "An error occurred while fetching IPH StaffData. " + response.responseText, location: "tc", size: "large" });
     });
 }
 function syncTaxaData() {
@@ -452,45 +472,47 @@ function syncTaxaData() {
 }
 function loadstaffData() {
     // Loading Team Defaults //
-    $.each(staffDataS.staffs.staff, function (key, val) {
-        var option = $('<option />');
-        option.attr('value', val.id).text(val.displayName);
-        $("#form1").find('select[name="ObservationStaffId_M_N"]').append(option);
-    });
-    staffData = '<option value="NONE">- select -</option>';
+    staffData = '<option value="0">- select -</option>';
     $.each(staffDataS.staffs.staff, function (key, val) {
         var option1 = '<option';
         option1 = option1 + ' value="' + val.id + '">';
         option1 = option1 + val.displayName + "</option>";
         staffData = staffData + option1;
     });
+    $("#form1").find('select[name="ObservationStaffId_M_N"]').find('option').remove().end().append($(staffData));
 }
 function loadSitePolygons() {
-    $.each(siteData, function (key, val) {
-        if (val.id === 99999) { return true; }
-        var wkt = new Wkt.Wkt();
-        wkt.read(val.locationDatum.wkt);
-        wkt.toObject();
+    $.each(ActivityData.activities, function (key1, val1) {
+        $.each(val1.sites, function (key, val) {
+            if (val.id === 99999) { return true; }
+            var wkt = new Wkt.Wkt();
+            wkt.read(val.locationDatum.wkt);
+            wkt.toObject();
 
-        var tC = [];
-        // Add each GPS entry to an array
-        for (var k = 0; k < wkt.toJson().coordinates[0].length; k++) {
-            var latlngc = new google.maps.LatLng(wkt.toJson().coordinates[0][k][1], wkt.toJson().coordinates[0][k][0]);
-            tC.push(latlngc);
-        };
-        // Plot the GPS entries as a line on the Google Map
-        var tP = new google.maps.Polygon({
-            map: map,
-            path: tC,
-            strokeColor: "#FF0000",
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-            fillOpacity: 0.0
-        });
-        //mapc.fitBounds(trackCoords);
-        tP.setMap(map);
-        google.maps.event.addListener(tP, 'click', function (event) {
-            placeMarker(event.latLng);
+            var tC = [];
+            // Add each GPS entry to an array
+            for (var k = 0; k < wkt.toJson().coordinates[0].length; k++) {
+                var latlngc = new google.maps.LatLng(wkt.toJson().coordinates[0][k][1], wkt.toJson().coordinates[0][k][0]);
+                tC.push(latlngc);
+            };
+
+            // Plot the GPS entries as a line on the Google Map
+            var tP = new google.maps.Polygon({
+                map: map,
+                path: tC,
+
+
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+                fillOpacity: 0.0
+            });
+
+            //mapc.fitBounds(trackCoords);
+            tP.setMap(map);
+            google.maps.event.addListener(tP, 'click', function (event) {
+                placeMarker(event.latLng);
+            });
         });
     });
 }
@@ -508,16 +530,20 @@ function loadBotanySample() {
     //that.find('select[name^="HostIdentifiedUserId"]').find('option').remove().end().append($(staffData));
     that.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + bsamples + '_S');
-    });
+    })
+
     that.find('img').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + bsamples + '_S');
-    });
+    })
+
     that.find('select').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + bsamples + '_S');
-    });
+    })
+
     that.find('textarea').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + bsamples + '_S');
-    });
+    })
+
     that.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that.find("input[type='radio'].minimal").iCheck('uncheck');
     $('#samples').append(that);
@@ -542,16 +568,20 @@ function loadEntoSample() {
     that.find('select[name^="EntoPestLevelCode"]').find('option').remove().end().append($(pestLevel));
     that.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + esamples + '_S');
-    });
+    })
+
     that.find('img').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + esamples + '_S');
-    });
+    })
+
     that.find('select').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + esamples + '_S');
-    });
+    })
+
     that.find('textarea').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + esamples + '_S');
-    });
+    })
+
     that.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that.find("input[type='radio'].minimal").iCheck('uncheck');
     $('#samples').append(that);
@@ -637,13 +667,14 @@ function loadModal(pagename) {
         $('#form1').find("input[type='radio'].minimal").iCheck('uncheck');
         $.ajax({
             beforeSend: function () {
-               loadPHRefCodes();
-               loadActivityData();
-               if (curIdx > -1) {
-               var curActivity = results.observations[curPos].SurvActivityId_M_N;
-               refreshActivityData(curActivity);
-               }
-               loadstaffData();
+                loadPHRefCodes();
+                loadActivityData();
+                if (curIdx > -1) {
+                    var curActivity = results.observations[curPos].SurvActivityId_M_N;
+                    refreshActivityData(curActivity);
+                }
+
+                loadstaffData();
             }
         }).complete(function () {
             if (curIdx > -1) {
@@ -1209,7 +1240,7 @@ function objectifyPHFormforSave(formArray) {
     for (var i = 0; i < formArray.length; i++) {
         if (formArray[i]['name'].length > 0) {
             if (formArray[i]['name'].startsWith('AdditionalCollectorTab')) { continue; }
-            if (formArray[i]['name'].startsWith('PlantStatisticType')) { continue; }
+            //if (formArray[i]['name'].startsWith('PlantStatisticType')) { continue; }
             if (formArray[i]['name'].startsWith('Latitude')) { continue; }
             if (formArray[i]['name'].startsWith('Longitude')) { continue; }
             if (formArray[i]['name'].startsWith('AdditionalObserverTab')) { continue; }
@@ -1226,25 +1257,25 @@ function objectifyPHFormforSave(formArray) {
                 continue;
             }
             if (formArray[i]['name'].startsWith('TargetObservedCode')) {
-                if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
-                    formArray[i]['value'] = "";
-                }
+                //if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
+                //    formArray[i]['value'] = "";
+                //}
                 if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 1) {
                     formArray[i]['value'] = $("input[name='" + formArray[i]['name'] + "']:checked").val();
                 }
             }
             if (formArray[i]['name'].startsWith('CountList')) {
-                if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
-                    formArray[i]['value'] = "";
-                }
+                //if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
+                //    formArray[i]['value'] = "";
+                //}
                 if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 1) {
                     formArray[i]['value'] = $("input[name='" + formArray[i]['name'] + "']:checked").val();
                 }
             }
             if (formArray[i]['name'].startsWith('HostFlag')) {
-                if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
-                    formArray[i]['value'] = "";
-                }
+                //if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 0) {
+                //    formArray[i]['value'] = "";
+                //}
                 if ($("input[name='" + formArray[i]['name'] + "']:checked").length === 1) {
                     formArray[i]['value'] = $("input[name='" + formArray[i]['name'] + "']:checked").val();
                 }
@@ -1441,6 +1472,7 @@ function objectifyPHFormforSubmit(data) {//serialize data function
     jsonStr = jsonStr.replace(/_M_N/g, '').replace(/_O_N/g, '').replace(/_M_D/g, '').replace(/_M_S/g, '');
     var jsonData = JSON.parse(jsonStr);
     if (jsonData.SiteId === 0) { delete jsonData.SiteId; }
+    if (jsonData.SiteId === 99999) { delete jsonData.SiteId; }
     if (jsonData.WaypointNumber === 0) { delete jsonData.WaypointNumber; }
     if (jsonData.AltitudeNo === 0) { delete jsonData.AltitudeNo; }
     if (jsonData.AdditionalObserverTab.length === 0) { delete jsonData.AdditionalObserverTab; }
@@ -1503,6 +1535,9 @@ function objectifyPHFormforSubmit(data) {//serialize data function
         delete item.PlantTaxonTextH;
         if (item.HostStatAreaNo === 0) { delete item.HostStatAreaNo };
         if (item.HostStatCount === 0) { delete item.HostStatCount };
+        if (item.PlantStatisticType === "C" && item.HostStatAreaNo > 0) { delete item.HostStatAreaNo; }
+        if (item.PlantStatisticType === "A" && item.HostStatCount > 0) { delete item.HostStatCount; }
+        delete item.PlantStatisticType;
         if (item.PlantObsTargetTab && item.PlantObsTargetTab.length === 0) { delete item.PlantObsTargetTab };
         if (item.attachments && item.attachments.attachment.length === 0) { delete item.attachments };
         if (item.PlantTaxonId > 0) {
@@ -1656,7 +1691,15 @@ function Iterate(data) {
                 if (fname === 'TargetObservedCode' && ftype === "T" && $('input[name="' + index + '"]:checked').val() === "N") {
                     PlantTargetObservedCodeFlag = 1;
                 }
-
+                if (fname === 'TargetObservedCode' && ftype === "T" && $('input[name="' + index + '"]:checked').val() === "N" && value === "N") {
+                    PlantTargetObservedCodeFlag = 1;
+                }
+                if (fname === 'TargetObservedCode' && ftype === "T" && $('input[name="' + index + '"]:checked').length === 0 && value === "N") {
+                    vError = 1;
+                    vErrDescription.push("<a href='#' class='btn btn-sm btn-default btnError' data-j='" + index + "' data-k='" + ftype + "' data-l='" + fnum + "'>Go</a>" + fname + " field cannot be NULL.");
+                    vFailed = true;
+                    return false;
+                }
                 if (fname === 'CommentText' && ftype === "T" && value === "" && PlantTargetObservedCodeFlag === 1) {
                     vError = 1;
                     vErrDescription.push("<a href='#' class='btn btn-sm btn-default btnError' data-j='" + index + "' data-k='" + ftype + "' data-l='" + fnum + "'>Go</a>Comments Text for TargetObserved field cannot be NULL.");
@@ -1957,7 +2000,6 @@ function guid() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 function BindAutoCompleteB(e) {
-    console.log("Bound taxonB Text");
     var options = {
         data: taxaData.taxaBotany,
         getValue: "name",
@@ -1977,7 +2019,7 @@ function BindAutoCompleteB(e) {
 }
 function BindAutoCompleteE(e) {
     var options = {
-        data: taxaData.taxaEntomology,
+        data: taxaData.taxaBotany,
         getValue: "name",
         list: {
             match: {
@@ -1995,7 +2037,7 @@ function BindAutoCompleteE(e) {
 }
 function BindAutoCompleteP(e) {
     var options = {
-        data: taxaData.taxaPathology,
+        data: taxaData.taxaBotany,
         getValue: "name",
         list: {
             match: {
@@ -2140,7 +2182,7 @@ function BindAutoCompleteHPS(e) {
 $(document).on('click', '.qtyplus', function (e) {
     e.preventDefault();
     pStatisticType = $(this).parent().parent().find('select[name^=PlantStatisticType]').val();
-    if (pStatisticType == 'C') {
+    if (pStatisticType === 'C') {
         fieldName = $(this).parent().find('input.count').attr('name');
     } else { fieldName = $(this).parent().find('input.area').attr('name'); }
     var currentVal = parseInt($('input[name=' + fieldName + ']').val());
@@ -2155,7 +2197,7 @@ $(document).on('click', '.qtyplus', function (e) {
 $(document).on('click', ".qtyminus", function (e) {
     e.preventDefault();
     pStatisticType = $(this).parent().parent().find('select[name^=PlantStatisticType]').val();
-    if (pStatisticType == 'C') {
+    if (pStatisticType === 'C') {
         fieldName = $(this).parent().find('input.count').attr('name');
     } else { fieldName = $(this).parent().find('input.area').attr('name'); }
     var currentVal = parseInt($('input[name=' + fieldName + ']').val());
@@ -2180,16 +2222,20 @@ $(document).on('click', "#addPlant", function () {
     //that1.find("input[type='radio'][name='CountList']").attr('name', 'CountList-' + Idx);
     that1.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find('img').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find('select').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find('textarea').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that1.find("input[type='radio'].minimal").iCheck('uncheck');
     that1.find('.badge').text(Idx * 1 + 1);
@@ -2210,28 +2256,35 @@ $(document).on('click', "#addEntoHost", function () {
     that1.find('select[name^="PlantObsMethodCode"]').find('option').remove().end().append($(MoB));
     that1.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find('img').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find('select').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find('textarea').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find('.entotarget input').each(function () {
         var x = $(this).attr('name').split("_");
         $(this).attr('name', x[0] + '_' + x[1] + '_' + x[2] + '_' + Idx + '_T');
-    });
+    })
+
     that1.find('.entotarget select').each(function () {
         var x = $(this).attr('name').split("_");
         $(this).attr('name', x[0] + '_' + x[1] + '_' + x[2] + '_' + Idx + '_T');
-    });
+    })
+
     that1.find('.entotarget textarea').each(function () {
         var x = $(this).attr('name').split("_");
         $(this).attr('name', x[0] + '_' + x[1] + '_' + x[2] + '_' + Idx + '_T');
-    });
+    })
+
     that1.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that1.find("input[type='radio'].minimal").iCheck('uncheck');
     that1.find('.badge-host').text(Idx * 1 + 1);
@@ -2252,13 +2305,16 @@ $(document).on('click', "[data-action=addEntoTarget]", function () {
     });
     that1.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_T');
-    });
+    })
+
     that1.find('select').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_T');
-    });
+    })
+
     that1.find('textarea').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_T');
-    });
+    })
+
     that1.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that1.find("input[type='radio'].minimal").iCheck('uncheck');
     that1.find('.badge-target').text(Idx * 1 + 1);
@@ -2278,28 +2334,35 @@ $(document).on('click', "#addPathHost", function () {
     that1.find('select[name^="PlantObsMethodCode"]').find('option').remove().end().append($(MoB));
     that1.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find('img').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find('select').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find('textarea').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
-    });
+    })
+
     that1.find('.pathtarget input').each(function () {
         var x = $(this).attr('name').split("_");
         $(this).attr('name', x[0] + '_' + x[1] + '_' + x[2] + '_' + Idx + '_T');
-    });
+    })
+
     that1.find('.pathtarget select').each(function () {
         var x = $(this).attr('name').split("_");
         $(this).attr('name', x[0] + '_' + x[1] + '_' + x[2] + '_' + Idx + '_T');
-    });
+    })
+
     that1.find('.pathtarget textarea').each(function () {
         var x = $(this).attr('name').split("_");
         $(this).attr('name', x[0] + '_' + x[1] + '_' + x[2] + '_' + Idx + '_T');
-    });
+    })
+
     that1.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that1.find("input[type='radio'].minimal").iCheck('uncheck');
     that1.find('.badge-host').text(Idx * 1 + 1);
@@ -2320,13 +2383,16 @@ $(document).on('click', "[data-action=addPathTarget]", function () {
     });
     that1.find('input').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_T');
-    });
+    })
+
     that1.find('select').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_T');
-    });
+    })
+
     that1.find('textarea').each(function () {
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_T');
-    });
+    })
+
     that1.find("input[type='checkbox'].minimal").iCheck('uncheck').val('N');
     that1.find("input[type='radio'].minimal").iCheck('uncheck');
     that1.find('.badge-target').text(Idx * 1 + 1);
@@ -2885,26 +2951,26 @@ $(document).on('click', 'img.pp', function () {
 
     return false;
 });
-//$(document).on('ifClicked', 'input[type="radio"].minimal', function (event) {
-//    //alert(event.type + ' callback');
-//    event.preventDefault();
-//    if ($(this).data('validate') != 'N') {
-//        console.log($(this).val());
-//        $('#form1').find("input[name^='" + $(this).attr('name') + "']").val($(this).val());
-//    }
-//});
-//$(document).on('change', 'input:radio', function (e) {
-//    e.preventDefault();
-//    if ($(this).is(":checked") && $(this).data('validate') != 'N') {
-//        $('#form1').find("input[type='radio'][name^='" + $(this).attr('name') + "']").val($(this).val());
-//    }
-//});
+$(document).on('ifClicked', 'input[type="radio"].minimal', function (event) {
+    //alert(event.type + ' callback');
+    event.preventDefault();
+    if ($(this).data('validate') !== 'N') {
+        console.log($(this).val());
+        $('#form1').find("input[name^='" + $(this).attr('name') + "']").val($(this).data("code"));
+    }
+});
+$(document).on('change', 'input:radio', function (e) {
+    e.preventDefault();
+    if ($(this).is(":checked") && $(this).data('validate') !== 'N') {
+        $('#form1').find("input[type='radio'][name^='" + $(this).attr('name') + "']").val($(this).data("code"));
+    }
+});
 $(document).on('ifChecked', 'input[type="radio"].minimal', function (event) {
     //alert(event.type + ' callback');
-    if ($(this).attr('name') == 'addlCollectors') {
+    if ($(this).attr('name') === 'addlCollectors') {
         $('#Roles').modal();
     };
-    if ($(this).attr('name') == 'otherSample') {
+    if ($(this).attr('name') === 'otherSample') {
         $(this).parent('div').parent('div').find('input[type="text"]').removeClass('hide');
     };
     if ($(this).attr('name').startsWith('CountList') && $(this).val() === 'Count') {
@@ -2981,7 +3047,7 @@ $(document).on('click', 'a.downloadMaps', function (e) {
     $('#modalProgress').modal();
     $('#mb6 .progText').text("Download in progress ...");
     $('#mb6 .progress').removeClass('hide');
-    $('#mb6 .fa-clock-o').removeClass('hide');
+    //$('#mb6 .fa-clock-o').removeClass('hide');
     $('#mb6 .progTime').text(new Date().toString());
     getFileandExtract(url, mapset, 1, numfiles);
 });
@@ -2991,8 +3057,6 @@ $(document).on('focus', 'select[name="SiteId_O_N"]', function (e) {
     .on('change', 'select[name="SiteId_O_N"]', function (e) {
         var that = $(this);
         var str = that.val();
-        console.log(that.val());
-        console.log(lastSiteValue);
         //if (that.val() === "0" || lastSiteValue === "0") return;
         if (that.val() === "0") return;
         if (curDiscipline === "B" && numPlants === 0 && bsamples === 0) {
@@ -3062,19 +3126,20 @@ $(document).on('focus', 'select[name="SurvActivityId_M_N"]', function (e) {
     .on('change', 'select[name="SurvActivityId_M_N"]', function (e) {
         var that = $(this);
         var str = that.val();
+        if (that.val() === "0") return;
         if (curDiscipline === "B" && numPlants === 0 && bsamples === 0) {
             refreshActivityData(str);
-            loadSitePolygons();
+
             return;
         }
         if (curDiscipline === "E" && numEntoHosts === 0 && esamples === 0) {
             refreshActivityData(str);
-            loadSitePolygons();
+
             return;
         }
         if (curDiscipline === "P" && numPathHosts === 0 && psamples === 0) {
             refreshActivityData(str);
-            loadSitePolygons();
+
             return;
         }
         $.confirm({
@@ -3098,7 +3163,7 @@ $(document).on('focus', 'select[name="SurvActivityId_M_N"]', function (e) {
                     $('#numSamples').text("");
                     $('#numAttachments').text("");
                     refreshActivityData(str);
-                    loadSitePolygons();
+
                 },
                 cancel: function () {
                     that.val(lastSurvActValue);
@@ -3111,7 +3176,7 @@ function getFileandExtract(url, mapset, i, n) {
     t3 = t3 + Math.round((t1 - t0));
     $('#mb6 .progText').text("File " + i + " out of " + n + ": Download in progress ...");
     $('#mb6 .progress').removeClass('hide');
-    $('#mb6 .fa-clock-o').removeClass('hide');
+    //$('#mb6 .fa-clock-o').removeClass('hide');
     $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
     url2 = url + mapset + pad(i, 2) + ".zip";
     filename = mapset + pad(i, 2) + ".zip";
@@ -3126,6 +3191,8 @@ function getFileandExtract(url, mapset, i, n) {
         },
         function (error) {
             $('#mb6 .progText').text(error.source);
+            $('#mb6 .progress').addClass('hide');
+            $('#mb6 .fa-clock-o').addClass('hide');
         },
         null, {}
     );
@@ -3136,14 +3203,14 @@ function processZip(zipSource, destination, url, mapset, i, n) {
     t3 = t3 + Math.round((t1 - t0));
     $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
     $('#mb6 .progress').removeClass('hide');
-    $('#mb6 .fa-clock-o').removeClass('hide');
+    //$('#mb6 .fa-clock-o').removeClass('hide');
     //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
 
     var progressHandler = function (progressEvent) {
         var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
         $('#mb6 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
         $('#mb6 .progress').removeClass('hide');
-        $('#mb6 .fa-clock-o').removeClass('hide');
+        //$('#mb6 .fa-clock-o').removeClass('hide');
         $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent).text(percent + '%');
     };
     // Proceed to unzip the file
@@ -3311,13 +3378,23 @@ $(document).on('click', "#addPlantObsAttachment", function () {
         $(this).attr('id', $(this).attr('name') + '_' + Idx + '_H');
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_H');
     });
-    $('#PlantObsAttachments').append(that1);
+    switch (curDiscipline) {
+        case 'B':
+            $(this).closest('.hostweed').find('#PlantObsAttachments').append(that1);
+            break;
+        case 'E':
+            $(this).closest('.entobox').find('#PlantObsAttachments').append(that1);
+            break;
+        case 'P':
+            $(this).closest('.pathbox').find('#PlantObsAttachments').append(that1);
+            break;
+    }
     numAttachments++;
     $('#numAttachments').text(numAttachments);
 });
 $(document).on('click', ".removePlantObsAttachment", function () {
     var x = $(this);
-    if (numAttachments > 1) {
+    if (numAttachments > 0) {
         $.confirm({
             title: 'Confirm Remove!',
             content: 'Do you want to remove this attachment?',
@@ -3351,13 +3428,13 @@ $(document).on('click', "#addPlantSampleAttachment", function () {
         $(this).attr('id', $(this).attr('name') + '_' + Idx + '_S');
         $(this).attr('name', $(this).attr('name') + '_' + Idx + '_S');
     });
-    $('#PlantSampleAttachments').append(that1);
+    $(this).closest('.sample').find('#PlantSampleAttachments').append(that1);
     numAttachments++;
     $('#numAttachments').text(numAttachments);
 });
 $(document).on('click', ".removePlantSampleAttachment", function () {
     var x = $(this);
-    if (numAttachments > 1) {
+    if (numAttachments > 0) {
         $.confirm({
             title: 'Confirm Remove!',
             content: 'Do you want to remove this attachment?',
@@ -3397,7 +3474,7 @@ $(document).on('click', "#addPlantAttachment", function () {
 });
 $(document).on('click', ".removePlantAttachment", function () {
     var x = $(this);
-    if (numAttachments > 1) {
+    if (numAttachments > 0) {
         $.confirm({
             title: 'Confirm Remove!',
             content: 'Do you want to remove this attachment?',
@@ -3478,6 +3555,16 @@ function loadSiteData(str) {
                     }
                 }).complete(function (e) {
                     $.each(value1, function (key2, value2) {
+                        $('div.entobox').eq(key1).find("input[type='text'][name^='" + key2 + "']").val(value2);
+                        $('div.entobox').eq(key1).find("input[type='date'][name^='" + key2 + "']").val(value2);
+                        $('div.entobox').eq(key1).find("input[type='datetime-local'][name^='" + key2 + "']").val(value2);
+                        $('div.entobox').eq(key1).find("input[type='number'][name^='" + key2 + "']").val(value2);
+                        $('div.entobox').eq(key1).find("input[type='checkbox'][name^='" + key2 + "']").val(value2);
+                        $('div.entobox').eq(key1).find("input[type='checkbox'][name^='" + key2 + "'][value='Y']").iCheck('check');
+                        $('div.entobox').eq(key1).find("input[type='radio'][name^='" + key2 + "'][value='" + value2 + "']").iCheck('check');
+                        //$('div.entobox').eq(key1).find("input[type='radio'][name^='" + key2 + "']").val(value2);
+                        $('div.entobox').eq(key1).find("select[name^='" + key2 + "']").val(value2);
+                        $('div.entobox').eq(key1).find("textarea[name^='" + key2 + "']").val(value2);
                         if (key2.startsWith("PlantStatisticTypeCode") && value2 === "C") {
                             $('div.entobox').eq(key1).find("select[name^='PlantStatisticType']").val('C');
                             $('div.entobox').eq(key1).find("input[type='number'][name^='HostStatAreaNo']").addClass('hide');
@@ -3496,7 +3583,6 @@ function loadSiteData(str) {
                         if (key2 === "PlantTaxonId") {
                             $('div.entobox').eq(key1).find("input[type='text'][name^='PlantTaxonText']").val(getTaxonText(value2));
                         }
-                        $('div.entobox').eq(key1).find("input[name^='" + key2 + "']").val(value2);
                         if (key2 === "ActivitySitePlantTarget") {
                             $.each(value2, function (key3, value3) {
                                 $.ajax({
@@ -3508,9 +3594,17 @@ function loadSiteData(str) {
                                     }
                                 }).complete(function (e) {
                                     $.each(value3, function (key4, value4) {
-                                        $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[name^='" + key4 + "']").val(value4);
+                                        $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='text'][name^='" + key4 + "']").val(value4);
+                                        $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='date'][name^='" + key4 + "']").val(value4);
+                                        $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='number'][name^='" + key4 + "']").val(value4);
+                                        $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='checkbox'][name^='" + key4 + "']").val(value4);
+                                        $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='checkbox'][name^='" + key4 + "'][value='Y']").iCheck('check');
+                                        $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='radio'][name^='" + key4 + "'][value='" + value4 + "']").iCheck('check');
+                                        //$('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='radio'][name^='" + key4 + "']").val(value4);
+                                        $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("select[name^='" + key4 + "']").val(value4);
+                                        $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("textarea[name^='" + key4 + "']").val(value4);
                                         if (key4 === "TargetTaxonId") {
-                                            $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='text'][name^='TargetTaxonText']").val(getTaxonText(value4));
+                                            $('div.entobox').eq(key1).find('div.entotarget').eq(key3).find("input[type='text'][name^='TargetTaxonText']").val(getTaxonTargetText(value4));
                                         }
                                     });
                                 });
@@ -3529,6 +3623,16 @@ function loadSiteData(str) {
                     }
                 }).complete(function (e) {
                     $.each(value1, function (key2, value2) {
+                        $('div.pathbox').eq(key1).find("input[type='text'][name^='" + key2 + "']").val(value2);
+                        $('div.pathbox').eq(key1).find("input[type='date'][name^='" + key2 + "']").val(value2);
+                        $('div.pathbox').eq(key1).find("input[type='datetime-local'][name^='" + key2 + "']").val(value2);
+                        $('div.pathbox').eq(key1).find("input[type='number'][name^='" + key2 + "']").val(value2);
+                        $('div.pathbox').eq(key1).find("input[type='checkbox'][name^='" + key2 + "']").val(value2);
+                        $('div.pathbox').eq(key1).find("input[type='checkbox'][name^='" + key2 + "'][value='Y']").iCheck('check');
+                        $('div.pathbox').eq(key1).find("input[type='radio'][name^='" + key2 + "'][value='" + value2 + "']").iCheck('check');
+                        //$('div.pathbox').eq(key1).find("input[type='radio'][name^='" + key2 + "']").val(value2);
+                        $('div.pathbox').eq(key1).find("select[name^='" + key2 + "']").val(value2);
+                        $('div.pathbox').eq(key1).find("textarea[name^='" + key2 + "']").val(value2);
                         if (key2.startsWith("PlantStatisticTypeCode") && value2 === "C") {
                             $('div.pathbox').eq(key1).find("select[name^='PlantStatisticType']").val('C');
                             $('div.pathbox').eq(key1).find("input[type='number'][name^='HostStatAreaNo']").addClass('hide');
@@ -3559,9 +3663,17 @@ function loadSiteData(str) {
                                     }
                                 }).complete(function (e) {
                                     $.each(value3, function (key4, value4) {
-                                        $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[name^='" + key4 + "']").val(value4);
+                                        $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='text'][name^='" + key4 + "']").val(value4);
+                                        $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='date'][name^='" + key4 + "']").val(value4);
+                                        $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='number'][name^='" + key4 + "']").val(value4);
+                                        $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='checkbox'][name^='" + key4 + "']").val(value4);
+                                        $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='checkbox'][name^='" + key4 + "'][value='Y']").iCheck('check');
+                                        $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='radio'][name^='" + key4 + "'][value='" + value4 + "']").iCheck('check');
+                                        //$('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='radio'][name^='" + key4 + "']").val(value4);
+                                        $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("select[name^='" + key4 + "']").val(value4);
+                                        $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("textarea[name^='" + key4 + "']").val(value4);
                                         if (key4 === "TargetTaxonId") {
-                                            $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='text'][name^='TargetTaxonText']").val(getTaxonText(value4));
+                                            $('div.pathbox').eq(key1).find('div.pathtarget').eq(key3).find("input[type='text'][name^='TargetTaxonText']").val(getTaxonTargetText(value4));
                                         }
                                     });
                                 });
@@ -3574,6 +3686,29 @@ function loadSiteData(str) {
     };
 }
 function getTaxonText(id) {
+    var arr;
+    switch (curDiscipline) {
+        case 'B':
+            arr = taxaData.taxaBotany.filter(function (el) {
+                return (el.id === id);
+            });
+            if (arr.length > 0) { return arr[0].name; }
+            break;
+        case 'E':
+            arr = taxaData.taxaBotany.filter(function (el) {
+                return (el.id === id);
+            });
+            if (arr.length > 0) { return arr[0].name; }
+            break;
+        case 'P':
+            arr = taxaData.taxaBotany.filter(function (el) {
+                return (el.id === id);
+            });
+            if (arr.length > 0) { return arr[0].name; }
+            break;
+    }
+}
+function getTaxonTargetText(id) {
     var arr;
     switch (curDiscipline) {
         case 'B':
