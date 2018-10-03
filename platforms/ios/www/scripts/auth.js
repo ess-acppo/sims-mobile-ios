@@ -13,6 +13,12 @@ function initAuth() {
             s.classList.remove('hide');
             text = document.querySelector('.auth-result .text');
             icon = document.querySelector('.auth-result .fa');
+            $('.auth-username').attr('disabled', true);
+            $('.auth-username').addClass('disabled');
+            $('.auth-password').attr('disabled', true);
+            $('.auth-password').addClass('disabled');
+            $('.auth-send').attr('disabled', true);
+            $('.auth-send').addClass('disabled');
             if (statusElem.innerHTML === 'online') {
                 authenticate2(unameValue, pwdValue);
             }
@@ -59,22 +65,15 @@ function authenticate2(x, y) {
     $.ajax({
         "async": false,
         "crossDomain": true,
-        "url": "https://online-dev.agriculture.gov.au/ords-int/rest/sims/plant_health/taxa",
+        //"url": "https://online-dev.agriculture.gov.au/ords-int/rest/sims/plant_health/taxa",
         //"url": "https://online-sit.agriculture.gov.au/ords-int/rest/sims/plant_health/taxa",
+        "url": "https://online-uat.agriculture.gov.au/ords-int/rest/sims/plant_health/taxa",
         "method": "GET",
         "beforeSend": function () {
             $('#mb6 .progText').text("Authenticating ...");
             $('#mb6 .progress').addClass('hide');
             $('#mb6 .fa-clock-o').addClass('hide');
             $('#modalProgress').modal();
-
-            $('.auth-username').attr('disabled', true);
-            $('.auth-username').addClass('disabled');
-            $('.auth-password').attr('disabled', true);
-            $('.auth-password').addClass('disabled');
-            $('.auth-send').attr('disabled', true);
-            $('.auth-send').addClass('disabled');
-            fetchSettings();
         },
         "headers": {
             "authorization": "Basic " + btoa(x + ":" + y),
@@ -101,14 +100,11 @@ function authenticate2(x, y) {
         error: function (xhr, textStatus, errorThrown) {
             $('#mb6 .progText').text("");
             $('#modalProgress').modal('hide');
-
-            $('.auth-username').attr('disabled', false);
-            $('.auth-username').removeClass('disabled');
-            $('.auth-password').attr('disabled', false);
-            $('.auth-password').removeClass('disabled');
-            $('.auth-send').attr('disabled', false);
-            $('.auth-send').removeClass('disabled');
-
+            $('.auth-username').attr('disabled', true);
+            $('.auth-username').addClass('disabled');
+            $('.auth-password').attr('disabled', true);
+            $('.auth-password').addClass('disabled');
+            $('.auth-send').attr('disabled', true);
             s.classList.add('hide');
             icon.classList.add('fa-times');
             icon.classList.remove('fa-check');
@@ -130,7 +126,6 @@ function authenticate3(x, y) {
     };
     var result_callback = function (key) {
         //console.log("The derived " + (bytes * 8) + "-bit key is: " + key);
-        //console.log('3-' +JSON.stringify(resSettings));
         if (!resSettings) {
             $.growl.error({ title: "", message: "You must be authenticated atleast once in online mode.", location: "bc", size: "large" });
             $('#mb6 .progText').text("");
@@ -195,7 +190,7 @@ function derive_key(u, p) {
     //var iterations = document.pbkdf2form.iterations.value;
     //var bytes = document.pbkdf2form.bytes.value;
 
-    //Sanity checks
+    // Sanity checks
     //if (!password || !salt || !iterations || !bytes)
     //    return display_message("Please fill in all values");
 
@@ -224,12 +219,11 @@ function derive_key(u, p) {
         }, function (err) {
             $.growl.error({ title: "", message: "An error occured while updating Auth Settings. " + err.message, location: "bc", size: "large" });
         });
-        //console.log('2-' +JSON.stringify(resSettings));
     };
     mypbkdf2.deriveKey(status_callback, result_callback);
 }
 $('#modalAuth').keypress(function (e) {
-    if (e.which === 13) {
+    if (e.which == 13) {
         var unameValue = document.querySelector('.auth-username').value;
         var pwdValue = document.querySelector('.auth-password').value;
 
@@ -301,7 +295,7 @@ function fetchSettings() {
                         $.growl.error({ title: "", message: "Error loading settings!", location: "tc", size: "large", fixed: "true" });
                     }
                 });
-                console.log('1-' + JSON.stringify(resSettings));
+                //console.log('1-' +JSON.stringify(resSettings));
             }
         });
     }, function (err) {
