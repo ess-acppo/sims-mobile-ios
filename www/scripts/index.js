@@ -13,8 +13,7 @@
         document.addEventListener('resume', onResume.bind(this), false);
         FastClick.attach(document.body);
         var appVer = document.getElementById('AppVersion');
-        //appVer.innerHTML = 'Version ' + AppVersion.version;
-        appVer.innerHTML = 'Version 1.2409.2018.1.UAT';
+        appVer.innerHTML = 'Version ' + AppVersion.version;
         document.addEventListener('deviceready', initLoad, false);
         // TODO: Cordova has been loaded. Perform any initialization that requires Cordova here.
         //var parentElement = document.getElementById('deviceready');

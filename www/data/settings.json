@@ -3,89 +3,19 @@
     "mapSets": [
       {
         "mapsetID": 1,
-        "mapSetName": "Queensland Street Maps",
-        "downloadPath": "http://sprinq.com.au/files/AU.zip",
+        "mapSetName": "Hybrid Maps",
         "mapPath": "maps/AU/",
         "emptyTilePath": "maps/empty.jpg",
+        "greenTilePath": "maps/green.jpg",
+        "downloadPath": "http://dev-sims.oztaxa.com/files/maps/BASE/",
+        "numfiles": 1,
         "startZoom": 9,
-        "endZoom": 14,
-        "activeFlag": 0,
-        "downloaded": 0,
-        "lastDownloadDate": "",
-        "numfiles": 0,
-        "format": "jpg",
-        "mapCenter": {
-          "lat": "-35.30873",
-          "lng": "149.124412"
-        },
-        "mapBounds": {
-          "topLat": "-8.55413",
-          "leftLng": "138.79849",
-          "bottomLat": "-29.01318",
-          "rightLng": "154.67349"
-        }
-      },
-      {
-        "mapsetID": 2,
-        "mapSetName": "Papua New Guinea Street Maps",
-        "downloadPath": "http://sprinq.com.au/files/PNG.zip",
-        "mapPath": "maps/PNG/",
-        "emptyTilePath": "maps/empty.jpg",
-        "startZoom": 9,
-        "endZoom": 14,
-        "activeFlag": 0,
-        "downloaded": 0,
-        "lastDownloadDate": "09/09/1900",
-        "numfiles": 22,
-        "format": "png",
-        "mapCenter": {
-          "lat": "-5.95452",
-          "lng": "144.60374"
-        },
-        "mapBounds": {
-          "topLat": "-2.528109",
-          "leftLng": "140.65029",
-          "bottomLat": "-10.9648",
-          "rightLng": "151.197165"
-        }
-      },
-      {
-        "mapsetID": 3,
-        "mapSetName": "East Timor Street Maps",
-        "downloadPath": "http://sprinq.com.au/files/ET.zip",
-        "mapPath": "maps/ET/",
-        "emptyTilePath": "maps/empty.jpg",
-        "startZoom": 9,
-        "endZoom": 14,
-        "activeFlag": 0,
-        "downloaded": 0,
-        "lastDownloadDate": "09/09/1900",
-        "numfiles": 0,
-        "format": "jpg",
-        "mapCenter": {
-          "lat": "-8.79854",
-          "lng": "125.83805"
-        },
-        "mapBounds": {
-          "topLat": "-8.12481",
-          "leftLng": "124.84378",
-          "bottomLat": "-9.57940",
-          "rightLng": "128.22757"
-        }
-      },
-      {
-        "mapsetID": 4,
-        "mapSetName": "ACT Hybrid Maps",
-        "downloadPath": "http://sprinq.com.au/files/ACT.zip",
-        "mapPath": "maps/ACT/",
-        "emptyTilePath": "maps/empty.jpg",
-        "startZoom": 9,
-        "endZoom": 15,
+        "endZoom": 16,
         "activeFlag": 1,
         "downloaded": 0,
+        "lastDownloadBDate": "09/09/1900",
         "lastDownloadDate": "09/09/1900",
-        "numfiles": 31,
-        "format": "jpg",
+        "curActivity": 0,
         "mapCenter": {
           "lat": "-35.267905",
           "lng": "149.130706"
@@ -102,35 +32,30 @@
       "ownerId": "NONE",
       "ownerName": "Raj Jonnalagedda",
       "ownerRole": "Botanist",
-      "samplePrefix": "RJ",
+      "ownerTeam": "NPH",
+      "samplePrefix": "XX",
       "sampleStartNumber": 0,
-      "currentSampleNumber": 0
-    },
-    "logging": {
-      "allowLogging": 1,
-      "allowView": 1,
-      "allowDownload": 1,
-      "downloadPath": ""
+      "currentSampleNumber": 0,
+      "debugMode": 0
     },
     "auth": {
-      "authenticated": 0,
-      "authURL": "",
-      "currentToken": "",
-      "currentTokenExpiryDateTime": "",
-      "lastLoggedInUser": "",
-      "lastLoggedInDateTime": "",
-      "useOTP": 1,
-      "currentOTP": 1234,
-      "currentOTPExpiryDateTime": "",
-      "lastOTPUser": "",
-      "lastOTPDateTime": "",
-      "otpReset": 0,
-      "signedOut": 0,
-        "hashedPassword": ""
+      "lastLoggedIn":  []
     },
     "app": {
-      "dataReset": 0,
-      "appMode": "PH"
+      "appMode": "PH",
+      "serverMode": "UAT",
+      "devServerAddress": "https://online-dev.agriculture.gov.au/",
+      "sitServerAddress": "https://online-sit.agriculture.gov.au/",
+      "uatServerAddress": "https://online-uat.agriculture.gov.au/",
+      "prodServerAddress": "https://online-prod.agriculture.gov.au/",
+      "authAddress": "ords-int/rest/sims/plant_health/taxa",
+      "activityAddress": "ords-int/rest/sims/plant_health/activity",
+      "refCodesAddress": "ords-int/rest/sims/plant_health/referenceCodes",
+      "BPHStaffAddress": "ords-int/rest/sims/common/program/BPH/team",
+      "IPHStaffAddress": "ords-int/rest/sims/common/program/IPH/team",
+      "NPHStaffAddress": "ords-int/rest/sims/common/program/NPH/team",
+      "taxaAddress": "ords-int/rest/sims/plant_health/taxa",
+      "submitPHObsAddress": "psd.comr.svl/PlantHealthService/1.0/createPlantHealthObservation"
     }
   }
 }

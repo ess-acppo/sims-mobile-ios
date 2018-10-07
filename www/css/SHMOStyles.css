@@ -41,10 +41,6 @@ html, body {
         font-size: 1.2rem;
     }
 
-.export {
-    margin-left: 20px;
-}
-
 .fa-first-order {
     margin-top: 5px;
     margin-right: 5px;
@@ -68,15 +64,15 @@ html, body {
     border-radius: 0px;
 }*/
 
-#modalGrid .modal-body, #modalPHGrid .modal-body {
+#modalAHGrid .modal-body, #modalPHGrid .modal-body {
     height: 900px;
     /*padding: 25px;*/
     overflow-x: auto;
-    overflow-y: scroll;
+    overflow-y: auto;
     /*margin-right: 20px;*/
 }
 
-#modalForm .modal-body, #modalMap .modal-body, #modalMenu .modal-body, #modalAHMenu .modal-body, #modalPHMenu .modal-body, #modalVerify .modal-body {
+#modalForm .modal-body, #modalMap .modal-body, #modalAHMenu .modal-body, #modalAHMenu .modal-body, #modalPHMenu .modal-body, #modalVerify .modal-body {
     height: 900px;
     /*padding: 25px;*/
     overflow-x: hidden;
@@ -92,10 +88,16 @@ html, body {
     /*margin-right: 20px;*/
 }
 
-
 #modalAuth .modal-dialog {
     margin: 4% auto;
     width: 50%;
+}
+
+#modalAuth .modal-body {
+    background: url("../images/dawr.png") no-repeat bottom left;
+    background-position-x: 0px;
+    background-position-y: 140px;
+    background-attachment: fixed;
 }
 
 #modalForm .modal-dialog {
@@ -107,16 +109,16 @@ html, body {
     z-index: 205;
 }
 
-#modalGrid .modal-dialog, #modalPHGrid .modal-dialog, #modalPHMenu .modal-dialog, #modalSettings .modal-dialog {
+#modalAHGrid .modal-dialog, #modalPHGrid .modal-dialog, #modalPHMenu .modal-dialog, #modalSettings .modal-dialog {
     margin: 1% auto;
     z-index: 102;
 }
 
-#modalGrid .modal-content {
+#modalAHGrid .modal-content {
     z-index: 103;
 }
 
-#modalGrid .modal-body {
+#modalAHGrid .modal-body {
     overflow-x: scroll;
 }
 
@@ -128,19 +130,22 @@ html, body {
     z-index: 305;
 }
 
-#modalProgress .modal-dialog {
-    width: 50%;
-    z-index: 350;
-    top: 20%;
-    text-align: center;
+#modalProgress {
+    background-color: rgba(0,0,0,0.5);
 }
 
-#modalProgress .modal-content {
-    z-index: 350;
-    height: 100px;
-    border: 0px;
-    box-shadow: 0 5px 15px rgba(0,0,0,.2);
-}
+    #modalProgress .modal-dialog {
+        width: 50%;
+        z-index: 350;
+        top: 20%;
+    }
+
+    #modalProgress .modal-content {
+        z-index: 350;
+        height: 120px;
+        border: 0px;
+        box-shadow: 0 5px 15px rgba(0,0,0,.2);
+    }
 
 #mb3 {
     padding: 0;
@@ -152,26 +157,32 @@ html, body {
     margin-left: 5px;
 }
 
+.modal-body {
+    padding-top: 10px;
+    /*margin-right: -20px;*/
+}
+
 .modal-body form {
-    margin-right: -20px;
+    /*margin-right: -20px;*/
 }
 
 .hostweed, .entobox, .pathbox {
     margin: 5px;
-    border: 2px solid #eee;
+    border: 1px solid #ddd;
     border-radius: 2px;
     overflow-y: hidden;
 }
 
-.sample {
+.sample, .PlantAttachment, .PlantObsAttachment, .PlantSampleAttachment {
     margin: 5px;
-    border: 2px solid #eee;
+    border: 1px solid #ddd;
     border-radius: 2px;
     overflow-y: hidden;
 }
 
 .collapsed {
     height: 90px;
+    background-color: #f5f5f5;
 }
 
 .modal-dialog {
@@ -766,6 +777,11 @@ table.dataTable {
     margin-bottom: 0px !important;
 }
 
+    table.dataTable tbody tr {
+        cursor: pointer;
+    }
+
+
 .sidebar-menu > li > a > .fa, .sidebar-menu > li > a > .glyphicon, .sidebar-menu > li > a > .fa {
     color: #fff;
     font-size: 14px;
@@ -863,6 +879,11 @@ table.dataTable {
 }
 
 /* All cols together*/
+.row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
 .row .col-xs-2 {
     padding-right: 0px;
 }
@@ -907,10 +928,14 @@ hr {
     .btn-circle.btn-lg {
         width: 50px;
         height: 50px;
-        padding: 10px 10px 6px 8px;
-        font-size: 14px;
+        padding: 10px 10px 10px 10px;
+        font-size: 1.6rem;
         line-height: 1.33;
         border-radius: 25px;
+        background-color: #fff;
+        opacity: 0.4;
+        color: #000;
+        margin-right: 15px;
     }
 
         .btn-circle.btn-lg:active, .btn-circle.btn-lg:focus, .btn-circle.btn-lg:hover {
@@ -1179,6 +1204,10 @@ div.dataTables_filter {
     margin-right: 5px;
 }
 
+.mxrm-5 {
+    margin-right: -5px;
+}
+
 .p-3 {
     padding: 20px;
 }
@@ -1221,8 +1250,21 @@ text-right {
     }
 
     .nav-tabs > li > a {
-        font-size: 1.1rem;
+        /*font-size: 1.1rem;*/
+        line-height: 0;
+        font-size: 0;
+        color: transparent;
     }
+
+        .nav-tabs > li > a > .fa {
+            font-size: 1.5rem;
+            color: #31708f;
+        }
+
+        .nav-tabs > li > a > .badge {
+            font-size: 1.5rem;
+            color: #31708f;
+        }
 
     .esfatitle {
         font-size: 1.2rem;
@@ -1237,11 +1279,17 @@ text-right {
         width: 96%;
         margin: 4% auto;
     }
+
+    .btn-circle.btn-lg {
+        font-size: 1.5rem;
+        margin-right: 10px;
+    }
 }
 
-label.mapNotes {
+label.mapNotes, label.mapBNotes {
     font-weight: 400;
     font-size: 1.3rem;
+    text-decoration: none;
 }
 
 .btnError {
