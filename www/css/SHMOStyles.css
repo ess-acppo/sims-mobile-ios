@@ -882,6 +882,8 @@ table.dataTable {
 .row {
     margin-right: 0px;
     margin-left: 0px;
+    padding-right: 0px;
+    padding-left: 0px;
 }
 
 .row .col-xs-2 {
@@ -1093,6 +1095,12 @@ div.dataTables_filter {
     padding-bottom: 10px;
 }
 
+#modalPHMenu .obsForm, #modalAHMenu .obsForm {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-left: -15px;
+}
+
 /*.ui-autocomplete {
     position: absolute;
     z-index: 1051 !important;
@@ -1191,6 +1199,7 @@ div.dataTables_filter {
     right: 5px;
     top: 5px;
     cursor: pointer;
+    width: 38px;
 }
 
 .text-arrows-2 {
@@ -1198,6 +1207,7 @@ div.dataTables_filter {
     right: 50px;
     top: 5px;
     cursor: pointer;
+    width: 38px;
 }
 
 .mxr-5 {
@@ -1283,6 +1293,10 @@ text-right {
     .btn-circle.btn-lg {
         font-size: 1.5rem;
         margin-right: 10px;
+    }
+
+    #modalProgress .modal-dialog {
+        width: 90%;
     }
 }
 

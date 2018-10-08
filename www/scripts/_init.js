@@ -56,6 +56,7 @@ var allLats = [];
 var allLngs = [];
 var curLats = [];
 var curLngs = [];
+var alltPs = [];
 var cLatitude;
 var cLongitude;
 var cWkt;
@@ -602,32 +603,26 @@ function clearMarkers() {
     markers = [];
 }
 function checkMapBoundsByLoc(location) {
-    var nM = new google.maps.Marker({
-        position: location,
-        map: map
+    var outofbounds = true;
+    $.each(alltPs, function (key, value) {
+        if (value.Contains(location)) {
+            outofbounds = false;
+        }
     });
-    var cLat = nM.getPosition().lat();
-    var cLng = nM.getPosition().lng();
-    //var arr = resSettings.settings.mapSets.filter(function (el) {
-    //    return (el.activeFlag === 1);
-    //});
-    if (cLat < resSettings.settings.mapSets[0].mapBounds.bottomLat || cLat > resSettings.settings.mapSets[0].mapBounds.topLat || cLng < resSettings.settings.mapSets[0].mapBounds.leftLng || cLng > resSettings.settings.mapSets[0].mapBounds.rightLng) {
+    if (outofbounds) {
         $.growl.warning({ title: "", message: "Location is outside map bounds!", location: "bc", size: "small" });
-        nM.setMap(null);
-        //return false;
     }
-    nM.setMap(null);
     return true;
 }
 function checkMapBoundsByPos(position) {
-    var cLat = position.coords.latitude;
-    var cLng = position.coords.longitude;
-    //var arr = resSettings.settings.mapSets.filter(function (el) {
-    //    return (el.activeFlag === 1);
-    //});
-    if (cLat < resSettings.settings.mapSets[0].mapBounds.bottomLat || cLat > resSettings.settings.mapSets[0].mapBounds.topLat || cLng < resSettings.settings.mapSets[0].mapBounds.leftLng || cLng > resSettings.settings.mapSets[0].mapBounds.rightLng) {
-        $.growl.warning({ title: "", message: "Location is outside map bounds!", location: "bc", size: "small" });
-        //return false;
+    var outofbounds = true;
+    $.each(alltPs, function (key, value) {
+        if (value.Contains(location)) {
+            outofbounds = false;
+        }
+    });
+    if (outofbounds) {
+            $.growl.warning({ title: "", message: "Location is outside map bounds!", location: "bc", size: "small" });
     }
     return true;
 }
@@ -745,7 +740,7 @@ function getAltitude() {
             //$('#form1').find("input[type='text'][name='longitude']").val(position.coords.longitude);
             //alert(position.coords.altitude);
             if (position.coords.altitude) {
-                $('#form1').find("input[type='number'][name^='AltitudeNo']").val(Math.round(position.coords.altitude.toFixed(5)));
+                $('#form1').find("input[type='number'][name^='AltitudeNo']").val(Math.round(position.coords.altitude));
             }
         }, function () {
             $.growl.error({ title: "", message: "GetAltitude Failed on this platform.", location: "tc", size: "large" });
@@ -753,7 +748,8 @@ function getAltitude() {
     } else {
         // Browser doesn't support Geolocation
         $.growl.error({ title: "", message: "GeoLocation Failed.", location: "tc", size: "large" });
-    };
+
+    }
 }
 function downloadCSV() {
     $('#mt1').text('All Observations');
@@ -1123,9 +1119,11 @@ $(document).on('click', '#settings', function (e) {
             $(document).find('script[id="pageScript"]').remove();
             $('#mb5').load('settings.html');
         }
-    }).success(function (e) {
-        loadActivityData();
     }).complete(function (e) {
+        setTimeout(function (e) {
+            loadActivityData();
+            getStaffData(resSettings.settings.device.ownerTeam);
+        }, 300);
         $('#mb5').find('#appMode').val(AppMode);
         //var arr = resSettings.settings.mapSets.filter(function (el) {
         //    return (el.activeFlag === 1);
@@ -1141,10 +1139,10 @@ $(document).on('click', '#settings', function (e) {
         if (resSettings.settings.device.debugMode === 1) {
             $('#form3').find('input[id="debugMode"]').iCheck('check');
         }
-        $.when(getStaffData(resSettings.settings.device.ownerTeam)).then(function () {
-            $('#form3').find('select[id="deviceOwner"]').find('option').remove().end().append($(staffDataFull));
-            if (resSettings.settings.device.ownerId) { $('#form3').find('select[id="deviceOwner"]').val(resSettings.settings.device.ownerId); }
-        });
+
+        $('#form3').find('select[id="deviceOwner"]').find('option').remove().end().append($(staffDataFull));
+        if (resSettings.settings.device.ownerId) { $('#form3').find('select[id="deviceOwner"]').val(resSettings.settings.device.ownerId); }
+
         $('#form3').find('input[name="samplePrefix"]').val(resSettings.settings.device.samplePrefix);
         $('#form3').find('input[name="sampleCurrNum"]').val(resSettings.settings.device.currentSampleNumber);
         $('#form3').find('select[id="serverMode"]').val(resSettings.settings.app.serverMode);
@@ -1176,9 +1174,9 @@ $(document).on('click', '#SaveSettingsExit', function (e) {
     //if (ActiveMapset) { resSettings.settings.mapSets[ActiveMapset].activeFlag = 1; }
     resSettings.settings.mapSets[0].curActivity = $('#form3').find('select[id="curActivities"]').val();
     if (Number($('#form3').find('select[id="curActivities"]').val()) > 0)
-        $.when(getCurrentActivityBounds($('#form3').find('select[id="curActivities"]').val(), 10)).then(function () {
-            resSettings.settings.mapSets[0].mapCenter.lat = cX;
-            resSettings.settings.mapSets[0].mapCenter.lng = cY;
+        $.when(getMapBounds()).then(function () {
+
+
             resSettings.settings.mapSets[0].mapBounds.topLat = minX;
             resSettings.settings.mapSets[0].mapBounds.leftLng = minY;
             resSettings.settings.mapSets[0].mapBounds.bottomLat = maxX;
@@ -1898,6 +1896,7 @@ function loadSitePolygons() {
             google.maps.event.addListener(tP, 'click', function (event) {
                 placeMarker(event.latLng);
             });
+            alltPs.push(tP);
         });
     });
 }
@@ -2252,7 +2251,17 @@ function getCurrentActivityTiles(str, zoom) {
         }
     }
 }
-function getCurrentActivityBounds(str, zoom) {
+function getMapBounds() {
+    if (allLats.length > 0 && allLngs.length > 0) {
+        allLats.sort();
+        allLngs.sort();
+        minX = allLats[0];
+        minY = allLngs[0];
+        maxX = allLats[allLats.length - 1];
+        maxY = allLngs[allLngs.length - 1];
+    }
+}
+function getCurrentActivityBounds(str) {
     if (Number(str) === 99999) { return true; }
     curLats = []; curLngs = [];
     var arr = ActivityData.activities.filter(function (el) {
@@ -2269,7 +2278,7 @@ function getCurrentActivityBounds(str, zoom) {
             }
         });
         if (curLats.length > 0 && curLngs.length > 0) {
-            var scale = 1 << zoom;
+
             cX = curLats[0];
             cY = curLngs[0];
             curLats.sort();
@@ -2346,7 +2355,7 @@ function exportObservationsToCSV() {
                     //readFile(fileEntry);
                 };
                 fileWriter.onerror = function (e) {
-                    $.growl.error({ title: "", message: "Failed file read: " + e.toString(), location: "tc", size: "large" });
+                    //$.growl.error({ title: "", message: "Failed file read: " + e.toString(), location: "tc", size: "large" });
                 };
                 fileWriter.seek(0);
                 var blob = new Blob([csv], { type: 'text/plain' });
@@ -2377,6 +2386,7 @@ $(document).on('click', '.btnDownloadLogs', function (event) {
     }, function (error) {
         $.growl.error({ title: "", message: 'Log file not found!', location: "tc", size: "large" });
     });
+
 });
 $(document).on('click', '.btnClearLogs', function (event) {
     window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (fs) {
