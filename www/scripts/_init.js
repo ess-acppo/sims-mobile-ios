@@ -42,6 +42,8 @@ var curDiscipline;
 var resizeId;
 var firstLoad = 0;
 var numAttachments = 0;
+var numObsAttachments = 0;
+var numSampleAttachments = 0;
 var downerId;
 var downerTeam;
 var TILE_SIZE = 256;
@@ -148,7 +150,7 @@ google.maps.Polygon.prototype.Contains = function (point) {
         return (blue >= red);
 
     }
-}
+};
 function pad(str, max) {
     str = str.toString();
     return str.length < max ? pad("0" + str, max) : str;
@@ -344,7 +346,7 @@ function checkPermissions() {
         function success(status) {
             if (!status.hasPermission) error();
         }, function error() {
-            console.warn('Camera permission not granted!');
+            console.warn('Location permission not granted!');
         });
     function error() {
         console.warn('Error granting permission!');
@@ -468,13 +470,13 @@ function initSettings() {
                 zoomlevel.innerHTML = 'zoom: ' + zoom;
                 curZoom = zoom;
                 var div = ownerDocument.createElement('div');
-                var image = $('<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>');
+                var image = $('<img name="" src="' + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>');
                 image.error(function () {
                     if (curZoom >= 10) {
                         div.innerHTML = '<img name="" src="' + greenTilePath + '"/>';
                     } else { div.innerHTML = '<img name="" src="' + emptyTilePath + '"/>'; }
                 });
-                div.innerHTML = '<img name="" src="' + + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>';
+                div.innerHTML = '<img name="" src="' + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>';
                 div.style.width = this.tileSize.width + 'px'; div.style.height = this.tileSize.height + 'px';
                 return div;
             };
@@ -602,6 +604,35 @@ function clearMarkers() {
     if (markerCluster) { markerCluster.clearMarkers(); }
     markers = [];
 }
+$(document).on('click', '.getCoords', function (e) {
+    var xlat = $('#form1').find('input.obslat');
+    var xlng = $('#form1').find('input.obslng');
+    var xdat = $('#form1').find('select.obsdat');
+    var xwkt = $('#form1').find('input[name^="ObservationWhereWktClob"]');
+    var siteID = Number($('#form1').find('select[name="SiteId_O_N"] option:selected').val());
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            if (siteID > 0 && siteID < 99999 && checkMapBoundsBySite(position, siteID)) {
+                xlat.val(position.coords.latitude.toFixed(5));
+                xlng.val(position.coords.longitude.toFixed(5));
+                xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
+            }
+            if ((siteID === 0 || siteID === 99999) && checkMapBoundsByPos(position)) {
+                xlat.val(position.coords.latitude.toFixed(5));
+                xlng.val(position.coords.longitude.toFixed(5));
+                xwkt.val("POINT (" + position.coords.longitude.toFixed(5) + " " + position.coords.latitude.toFixed(5) + ")");
+                xdat.val("WGS84");
+            }
+        }, function () {
+            $.growl.error({ title: "", message: "GPS GetCurrentPosition Failed!", location: "tc", size: "large" });
+        });
+    } else {
+        // Browser doesn't support Geolocation
+        $.growl.error({ title: "", message: "Geolocation Failed!", location: "tc", size: "large" });
+    }
+    e.preventDefault();
+});
 function checkMapBoundsByLoc(location) {
     var outofbounds = true;
     $.each(alltPs, function (key, value) {
@@ -615,14 +646,15 @@ function checkMapBoundsByLoc(location) {
     return true;
 }
 function checkMapBoundsByPos(position) {
+    var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     var outofbounds = true;
     $.each(alltPs, function (key, value) {
-        if (value.Contains(location)) {
+        if (value.Contains(pos)) {
             outofbounds = false;
         }
     });
     if (outofbounds) {
-            $.growl.warning({ title: "", message: "Location is outside map bounds!", location: "bc", size: "small" });
+        $.growl.warning({ title: "", message: "Location is outside map bounds!", location: "bc", size: "small" });
     }
     return true;
 }
@@ -748,7 +780,6 @@ function getAltitude() {
     } else {
         // Browser doesn't support Geolocation
         $.growl.error({ title: "", message: "GeoLocation Failed.", location: "tc", size: "large" });
-
     }
 }
 function downloadCSV() {
@@ -1139,13 +1170,11 @@ $(document).on('click', '#settings', function (e) {
         if (resSettings.settings.device.debugMode === 1) {
             $('#form3').find('input[id="debugMode"]').iCheck('check');
         }
-
         $('#form3').find('select[id="deviceOwner"]').find('option').remove().end().append($(staffDataFull));
         if (resSettings.settings.device.ownerId) { $('#form3').find('select[id="deviceOwner"]').val(resSettings.settings.device.ownerId); }
-
         $('#form3').find('input[name="samplePrefix"]').val(resSettings.settings.device.samplePrefix);
         $('#form3').find('input[name="sampleCurrNum"]').val(resSettings.settings.device.currentSampleNumber);
-        $('#form3').find('select[id="serverMode"]').val(resSettings.settings.app.serverMode);
+        //$('#form3').find('select[id="serverMode"]').val(resSettings.settings.app.serverMode);
     }).done(function () {
         $('#modalProgress').modal('hide');
         if (statusElem.innerHTML === 'online') {
@@ -1175,8 +1204,6 @@ $(document).on('click', '#SaveSettingsExit', function (e) {
     resSettings.settings.mapSets[0].curActivity = $('#form3').find('select[id="curActivities"]').val();
     if (Number($('#form3').find('select[id="curActivities"]').val()) > 0)
         $.when(getMapBounds()).then(function () {
-
-
             resSettings.settings.mapSets[0].mapBounds.topLat = minX;
             resSettings.settings.mapSets[0].mapBounds.leftLng = minY;
             resSettings.settings.mapSets[0].mapBounds.bottomLat = maxX;
@@ -1195,19 +1222,22 @@ $(document).on('click', '#SaveSettingsExit', function (e) {
     resSettings.settings.device.samplePrefix = $('#form3').find('input[name="samplePrefix"]').val();
     resSettings.settings.device.sampleStartNumber = $('#form3').find('input[name="sampleStartNum"]').val();
     resSettings.settings.device.currentSampleNumber = $('#form3').find('input[name="sampleCurrNum"]').val();
-    resSettings.settings.app.serverMode = $('#form3').find('select[id="serverMode"]').val();
+    //resSettings.settings.app.serverMode = $('#form3').find('select[id="serverMode"]').val();
     /* Save to DB */
     db.transaction(function (tx) {
         tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
-            if (resSettings.settings.app.serverMode !== $('#AppEnv').text()) {
-                clearCache();
+            //if (resSettings.settings.app.serverMode !== $('#AppEnv').text()) {
+            //    clearCache();
+            //    $('#modalSettings').modal('hide');
+            //    $.growl.warning({ title: "", message: "Please restart the app for the settings to take effect. ", location: "tc", size: "large" });
+            //} else {
+            //    $.when(fetchSettings()).then(initSettings()).done(function () {
+            //        $('#modalSettings').modal('hide');
+            //    });
+            //}
+            $.when(fetchSettings()).then(initSettings()).done(function () {
                 $('#modalSettings').modal('hide');
-                $.growl.warning({ title: "", message: "Please restart the app for the settings to take effect. ", location: "tc", size: "large" });
-            } else {
-                $.when(fetchSettings()).then(initSettings()).done(function () {
-                    $('#modalSettings').modal('hide');
-                });
-            }
+            });
         });
     }, function (err) {
         $.growl.error({ title: "", message: "An error occured while updating settings. " + err.message, location: "tc", size: "large" });
@@ -1268,7 +1298,8 @@ $(document).on('click', '#srchPHTable tbody tr', function () {
             $('#mb6 .progress').addClass('hide');
             $('#mb6 .fa-clock-o').addClass('hide');
         }
-    }).complete(function (data) {
+    })
+        .complete(function (data) {
             switch (curDiscipline) {
                 case "0":
                     loadModal('mo_sngObservation');
@@ -1342,10 +1373,10 @@ $(document).on('click', 'a.btnResetData', function (e) {
                         var mm = today.getMonth() + 1; //January is 0!
                         var yyyy = today.getFullYear();
                         if (dd < 10) {
-                            dd = '0' + dd;
+                            dd = '0' + dd
                         }
                         if (mm < 10) {
-                            mm = '0' + mm;
+                            mm = '0' + mm
                         }
                         today = dd.toString() + '/' + mm.toString() + '/' + yyyy.toString();
                         db.transaction(function (tx) {
@@ -1925,7 +1956,7 @@ function fetchSettings() {
             if (res.rows && res.rows.length > 0) {
                 resSettings = JSON.parse(res.rows.item(0).settingsval);
                 //console.log('0-' + JSON.stringify(resSettings));
-                fetchServerDetails();
+                //fetchServerDetails($("#serverMode").val());
             }
             else {
                 $.ajax({
@@ -1955,7 +1986,7 @@ function fetchSettings() {
                         }, function (err) {
                             $.growl.error({ title: "", message: "An error occured while updating settings to DB. " + err.message, location: "tc", size: "large", fixed: "true" });
                         });
-                        fetchServerDetails();
+                        //fetchServerDetails($("#serverMode").val());
                     },
                     failure: function () {
                         $.growl.error({ title: "", message: "Error loading settings!", location: "tc", size: "large", fixed: "true" });
@@ -1968,11 +1999,11 @@ function fetchSettings() {
         $.growl.error({ title: "", message: "An error occured fetching app settings. " + err.message, location: "tc", size: "large", fixed: "true" });
     });
 }
-function fetchServerDetails() {
+function fetchServerDetails(serverMode) {
     AppMode = resSettings.settings.app.appMode;
     settings.innerHTML = AppMode;
-    ServerMode = resSettings.settings.app.serverMode;
-    appEnv.innerHTML = ServerMode;
+    //ServerMode = resSettings.settings.app.serverMode;
+    appEnv.innerHTML = serverMode;
     downerId = resSettings.settings.device.ownerId;
     downerTeam = resSettings.settings.device.ownerTeam;
     debugMode = resSettings.settings.device.debugMode;
@@ -1980,28 +2011,53 @@ function fetchServerDetails() {
     sitServerAddress = resSettings.settings.app.sitServerAddress;
     uatServerAddress = resSettings.settings.app.uatServerAddress;
     prodServerAddress = resSettings.settings.app.prodServerAddress;
-    switch (ServerMode) {
+    switch (serverMode) {
         case "DEV":
             ServerAddress = devServerAddress;
+            authAddress = ServerAddress + resSettings.settings.app.authAddress;
+            ActivityAddress = ServerAddress + resSettings.settings.app.activityAddress;
+            refCodesAddress = ServerAddress + resSettings.settings.app.refCodesAddress;
+            BPHStaffAddress = ServerAddress + resSettings.settings.app.BPHStaffAddress;
+            IPHStaffAddress = ServerAddress + resSettings.settings.app.IPHStaffAddress;
+            NPHStaffAddress = ServerAddress + resSettings.settings.app.NPHStaffAddress;
+            taxaAddress = ServerAddress + resSettings.settings.app.taxaAddress;
+            submitPHObsAddress = ServerAddress + resSettings.settings.app.submitPHObsAddress;
             break;
         case "SIT":
             ServerAddress = sitServerAddress;
+            authAddress = ServerAddress + resSettings.settings.app.authAddress;
+            ActivityAddress = ServerAddress + resSettings.settings.app.activityAddress;
+            refCodesAddress = ServerAddress + resSettings.settings.app.refCodesAddress;
+            BPHStaffAddress = ServerAddress + resSettings.settings.app.BPHStaffAddress;
+            IPHStaffAddress = ServerAddress + resSettings.settings.app.IPHStaffAddress;
+            NPHStaffAddress = ServerAddress + resSettings.settings.app.NPHStaffAddress;
+            taxaAddress = ServerAddress + resSettings.settings.app.taxaAddress;
+            submitPHObsAddress = ServerAddress + resSettings.settings.app.submitPHObsAddress;
             break;
         case "UAT":
             ServerAddress = uatServerAddress;
+            authAddress = ServerAddress + resSettings.settings.app.authAddress;
+            ActivityAddress = ServerAddress + resSettings.settings.app.activityAddress;
+            refCodesAddress = ServerAddress + resSettings.settings.app.refCodesAddress;
+            BPHStaffAddress = ServerAddress + resSettings.settings.app.BPHStaffAddress;
+            IPHStaffAddress = ServerAddress + resSettings.settings.app.IPHStaffAddress;
+            NPHStaffAddress = ServerAddress + resSettings.settings.app.NPHStaffAddress;
+            taxaAddress = ServerAddress + resSettings.settings.app.taxaAddress;
+            submitPHObsAddress = ServerAddress + resSettings.settings.app.submitPHObsAddress;
             break;
         case "PROD":
             ServerAddress = prodServerAddress;
+            authAddress = (ServerAddress + resSettings.settings.app.authAddress).replace('int', 'ext');
+            ActivityAddress = (ServerAddress + resSettings.settings.app.activityAddress).replace('int', 'ext');
+            refCodesAddress = (ServerAddress + resSettings.settings.app.refCodesAddress).replace('int', 'ext');
+            BPHStaffAddress = (ServerAddress + resSettings.settings.app.BPHStaffAddress).replace('int', 'ext');
+            IPHStaffAddress = (ServerAddress + resSettings.settings.app.IPHStaffAddress).replace('int', 'ext');
+            NPHStaffAddress = (ServerAddress + resSettings.settings.app.NPHStaffAddress).replace('int', 'ext');
+            taxaAddress = (ServerAddress + resSettings.settings.app.taxaAddress).replace('int', 'ext');
+            submitPHObsAddress = ServerAddress + resSettings.settings.app.submitPHObsAddress;
             break;
     }
-    authAddress = ServerAddress + resSettings.settings.app.authAddress;
-    ActivityAddress = ServerAddress + resSettings.settings.app.activityAddress;
-    refCodesAddress = ServerAddress + resSettings.settings.app.refCodesAddress;
-    BPHStaffAddress = ServerAddress + resSettings.settings.app.BPHStaffAddress;
-    IPHStaffAddress = ServerAddress + resSettings.settings.app.IPHStaffAddress;
-    NPHStaffAddress = ServerAddress + resSettings.settings.app.NPHStaffAddress;
-    taxaAddress = ServerAddress + resSettings.settings.app.taxaAddress;
-    submitPHObsAddress = ServerAddress + resSettings.settings.app.submitPHObsAddress;
+    return taxaAddress;
 }
 function clearCache() {
     db.transaction(function (tx) {
@@ -2102,7 +2158,7 @@ function getMapBounds() {
         maxY = allLngs[allLngs.length - 1];
     }
 }
-function getCurrentActivityBounds(str) {
+function getCurrentActivityBounds(str, zoom) {
     if (Number(str) === 99999) { return true; }
     curLats = []; curLngs = [];
     var arr = ActivityData.activities.filter(function (el) {
@@ -2119,7 +2175,7 @@ function getCurrentActivityBounds(str) {
             }
         });
         if (curLats.length > 0 && curLngs.length > 0) {
-
+            var scale = 1 << zoom;
             cX = curLats[0];
             cY = curLngs[0];
             curLats.sort();
@@ -2133,7 +2189,7 @@ function getCurrentActivityBounds(str) {
 }
 /* SIMS Framework */
 
-/* Android Only */
+/* IOS Only */
 function initLoad() {
     db = window.sqlitePlugin.openDatabase({ name: "sims.db", location: 'default' });
     db.transaction(function (tx) {
@@ -2443,7 +2499,7 @@ $(document).on('click', 'a.downloadMaps', function (e) {
         });
 });
 function fetchAndSaveTile(i, j, zoom, xlimit, ystart, ylimit) {
-    window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (fs) {
+    window.resolveLocalFileSystemURL(cordova.file.documentsDirectory, function (fs) {
         var numtiles = Math.pow(2, zoom);
         var xhr = new XMLHttpRequest();
         var url = "http://mt1.google.com/vt/lyrs=y&x=" + i + "&y=" + j + "&z=" + zoom;
@@ -2484,7 +2540,7 @@ function fetchAndSaveTile(i, j, zoom, xlimit, ystart, ylimit) {
                                         }
                                     };
                                     fileWriter.onerror = function (e) {
-                                        $.growl.error({ title: "", message: "Failed file read: " + e.toString(), location: "tc", size: "large" });
+                                        //$.growl.error({ title: "", message: "Failed file read: " + e.toString(), location: "tc", size: "large" });
                                     };
                                     fileWriter.write(blob);
                                     //$.growl.notice({ title: "", message: 'File saved to Local folder.', location: "tc", size: "large" });
@@ -2603,4 +2659,4 @@ function processZipIOS(zipSource, destination, url, mapset, i, n) {
 //    $('#mb6 .progTime').text(new Date().toString());
 //    getFileandExtractIOS(url, mapset, 1, numfiles);
 //});
-/*Windows Only*/
+/*IOS Only*/

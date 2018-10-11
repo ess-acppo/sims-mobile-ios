@@ -4,7 +4,7 @@
       {
         "mapsetID": 1,
         "mapSetName": "Hybrid Maps",
-        "mapPath": "maps/AU/",
+        "mapPath": "maps/",
         "emptyTilePath": "maps/empty.jpg",
         "greenTilePath": "maps/green.jpg",
         "downloadPath": "http://dev-sims.oztaxa.com/files/maps/BASE/",
