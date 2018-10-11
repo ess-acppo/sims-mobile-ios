@@ -346,7 +346,7 @@ function checkPermissions() {
         function success(status) {
             if (!status.hasPermission) error();
         }, function error() {
-            console.warn('Location permission not granted!');
+            console.warn('Camera permission not granted!');
         });
     function error() {
         console.warn('Error granting permission!');
