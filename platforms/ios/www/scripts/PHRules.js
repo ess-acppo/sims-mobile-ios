@@ -1701,6 +1701,9 @@ function Iterate2(data) {
                     if (fname === 'TargetTaxonTextH') return true;
                     if (fname === 'PrelimTaxonTextH') return true;
                     if (fname === 'HostTaxonTextH') return true;
+                    if (fname === 'PlantStatisticType' && CountListFlag === 'List' && plantDisciplineCode === 'B') {
+                        return true;
+                    }                    
                     //console.log(index + ' field cannot be NULL');
                     vError = 1;
                     vErrDescription.push($('[name="' + index + '"]').data("name") + " field cannot be empty.");
