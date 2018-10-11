@@ -2492,8 +2492,7 @@ $(document).on('click', 'a.downloadMaps', function (e) {
             db.transaction(function (tx) {
                 tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
                     $('#form3').find('label.mapNotes').text("Last downloaded on:" + new Date().toString());
-                    $('#modalProgress').modal('hide');
-                    $.growl.notice({ title: "", message: "Download complete", location: "bc", size: "small" });
+                    //$('#modalProgress').modal('hide');
                 });
             }, function (err) {
                 $.growl({ title: "", message: "An error occured while updating mapsets. " + err.message, location: "tc", size: "large" });
