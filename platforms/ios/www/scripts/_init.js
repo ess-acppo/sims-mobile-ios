@@ -2498,7 +2498,7 @@ $(document).on('click', 'a.downloadMaps', function (e) {
         });
 });
 function fetchAndSaveTile(i, j, zoom, xlimit, ystart, ylimit) {
-    window.resolveLocalFileSystemURL(cordova.file.documentsDirectory, function (fs) {
+    window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (fs) {
         var numtiles = Math.pow(2, zoom);
         var xhr = new XMLHttpRequest();
         var url = "http://mt1.google.com/vt/lyrs=y&x=" + i + "&y=" + j + "&z=" + zoom;
