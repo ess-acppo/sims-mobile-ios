@@ -1217,13 +1217,6 @@ $(document).on('click', '#SaveSettingsExit', function (e) {
     }
     /* Set AppMode */
     resSettings.settings.app.appMode = v_appMode;
-    /* Clear active Flag on Mapsets */
-    //$.each(resSettings.settings.mapSets, function (i, v) {
-    //    resSettings.settings.mapSets[i].activeFlag = 0;
-    //});
-    /* Set active Mapset */
-    //ActiveMapset = $("input[name='optMaps']:checked").data('id');
-    //if (ActiveMapset) { resSettings.settings.mapSets[ActiveMapset].activeFlag = 1; }
     if (Number($('#form3').find('select[id="curActivities"]').val()) > 0)
         $.when(getMapBounds()).then(function () {
             resSettings.settings.mapSets[0].mapBounds.topLat = minX;
@@ -1656,7 +1649,7 @@ function syncActivityData() {
         ActivityData = data;
         //siteData = data.activities[0].sites;
         //programId = data.activities[0].programId;
-        lastSurvActValue = data.activities[0].activityId;
+        if (data.activities && data.activities.length > 0) { lastSurvActValue = data.activities[0].activityId; }
         db.transaction(function (tx) {
             tx.executeSql("DELETE FROM activitydata", [], function (tx, res) {
                 //alert("Rows deleted.");
@@ -1916,7 +1909,7 @@ function loadSitePolygons() {
             var tP = new google.maps.Polygon({
                 map: map,
                 path: tC,
-                strokeColor: "#FF0000",
+                strokeColor: "#6AC1FF",
                 strokeOpacity: 1.0,
                 strokeWeight: 2,
                 fillOpacity: 0.0
@@ -2250,7 +2243,7 @@ function exportObservationsToCSV() {
     csv = csv.replace(/_M_N/g, '').replace(/_O_N/g, '').replace(/_M_D/g, '').replace(/_M_S/g, '');
     csv = csv.replace("[{", "").replace("}]", "").replace("},", "\r\n").replace(",{", "\r\n").replace("{", "").replace("}", "");
 
-    window.resolveLocalFileSystemURL('file:///storage/emulated/0/Download', function (fs) {
+    window.resolveLocalFileSystemURL(cordova.file.documentsDirectory, function (fs) {
         //alert('file system open: ' + fs);
         var today = new Date();
         var dd = today.getDate();
@@ -2276,7 +2269,17 @@ function exportObservationsToCSV() {
                 fileWriter.seek(0);
                 var blob = new Blob([csv], { type: 'text/plain' });
                 fileWriter.write(blob);
-                $.growl.notice({ title: "", message: 'File saved to Download folder.', location: "tc", size: "large" });
+                $.growl.notice({ title: "", message: 'File saved to Documents folder.', location: "tc", size: "large" });
+                    cordova.plugins.fileOpener2.open(fileEntry.nativeURL, 'text/csv',
+                        {
+                            error: function (e) {
+                                console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
+                            },
+                            success: function () {
+                                console.log('file opened successfully');
+                            }
+                        }
+                    );                 
             });
         });
     });
@@ -2289,7 +2292,17 @@ $(document).on('click', '.btnDownloadLogs', function (event) {
         window.resolveLocalFileSystemURL(directoryName, function (directoryEntry) {
             directoryEntry.getDirectory("Logs", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
                 fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
-                    $.growl.notice({ title: "", message: 'File saved to Downloads folder.', location: "bc", size: "small" });
+                    $.growl.notice({ title: "", message: 'File saved to Documents>Logs folder.', location: "bc", size: "small" });
+                    cordova.plugins.fileOpener2.open(cpfileEntry.nativeURL, 'text/plain',
+                        {
+                            error: function (e) {
+                                console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
+                            },
+                            success: function () {
+                                console.log('file opened successfully');
+                            }
+                        }
+                    );                    
                 }, function (error) {
                     $.growl.error({ title: "", message: 'Copy failed.', location: "bc", size: "small" });
                 });
