@@ -80,7 +80,7 @@ html, body {
     /*margin-right: 20px;*/
 }
 
-#modalPHMenu .modal-body {
+#modalPHMenu .modal-body, #modalAHMenu .modal-body {
     height: 900px;
     /*padding: 25px;*/
     overflow-x: hidden;
@@ -109,7 +109,7 @@ html, body {
     z-index: 205;
 }
 
-#modalAHGrid .modal-dialog, #modalPHGrid .modal-dialog, #modalPHMenu .modal-dialog, #modalSettings .modal-dialog {
+#modalAHGrid .modal-dialog, #modalPHGrid .modal-dialog, #modalPHMenu .modal-dialog, #modalAHMenu .modal-dialog, #modalSettings .modal-dialog {
     margin: 1% auto;
     z-index: 102;
 }
@@ -157,6 +157,10 @@ html, body {
     margin-left: 5px;
 }
 
+#mb6 .progText {
+    font-size: 1.8rem;
+}
+
 .modal-body {
     padding-top: 10px;
     /*margin-right: -20px;*/
@@ -173,7 +177,7 @@ html, body {
     overflow-y: hidden;
 }
 
-.sample, .PlantAttachment, .PlantObsAttachment, .PlantSampleAttachment {
+.sample, .maggotSample, .PlantAttachment, .AnimalAttachment, .PlantObsAttachment, .PlantSampleAttachment, .fieldtest {
     margin: 5px;
     border: 1px solid #ddd;
     border-radius: 2px;
@@ -1085,7 +1089,8 @@ div.dataTables_filter {
     border-radius: 3px;
     border: 2px solid #eee;
     margin: 0.05rem;
-    padding-right: 14px;
+    padding-right: 7px;
+    padding-left: 7px;
     padding-top: 8px;
     margin-bottom: 8px;
 }
@@ -1262,6 +1267,12 @@ text-right {
         margin-left: 47%;
         color: #ddd;
     }
+
+    .growl.growl-large {
+        width: 400px;
+        padding: 25px;
+        margin: 15px;
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -1283,7 +1294,7 @@ text-right {
 
         .nav-tabs > li > a > .badge {
             font-size: 1.5rem;
-            color: #31708f;
+            color: #fff;
         }
 
     .esfatitle {
@@ -1298,6 +1309,12 @@ text-right {
     #modalAuth .modal-dialog {
         width: 96%;
         margin: 4% auto;
+    }
+
+    .growl.growl-large {
+        width: 96%;
+        padding: 5px;
+        margin: 5px;
     }
 
     .btn-circle.btn-lg {
@@ -1319,10 +1336,9 @@ text-right {
         color: #ddd;
     }
 
-    .growl.growl-large {
-        width: 96%;
-        padding: 5px;
-        margin: 5px;
+    #mb {
+        padding: 0px;
+        padding-top: 10px;
     }
 }
 
@@ -1332,20 +1348,75 @@ label.mapNotes, label.mapBNotes {
     text-decoration: none;
 }
 
-.btnError {
+.btnError, .btnErrorAH {
     margin-left: 8px;
-    margin-bottom: 8px;
-    float: right;
-}
-
-.growl.growl-large {
-    width: 400px;
-    padding: 15px;
-    margin: 15px;
+    margin-bottom: 6px;
+    margin-right: 5px;
 }
 
 .growl .growl-message {
     font-size: 14px;
     line-height: 18px;
     text-align: left;
+}
+
+.tabs-wrapper {
+    position: relative;
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 5px;
+    height: 50px;
+}
+
+#tabList {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    min-width: 3000px;
+    margin-left: 12px;
+    margin-top: 0px;
+}
+
+    #tabList li {
+        display: table-cell;
+        position: relative;
+        text-align: center;
+        cursor: grab;
+        cursor: -webkit-grab;
+        color: #efefef;
+        vertical-align: middle;
+    }
+
+.scroller {
+    text-align: center;
+    cursor: pointer;
+    padding: 7px;
+    padding-top: 11px;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: #fff;
+}
+
+.scroller-right {
+    float: right;
+    background-color: #ddd;
+    padding: 8px;
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+.scroller-left {
+    float: left;
+    background-color: #ddd;
+    padding: 8px;
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+[class*=col-].input-group {
+    float: left;
+}
+
+#bsInfo {
+    cursor: pointer;
 }

@@ -6,6 +6,7 @@ var authCode;
 var authURL;
 var curUser;
 var ServMode;
+var AppMode2;
 /* Auth variables */
 
 function initAuth() {
@@ -13,8 +14,9 @@ function initAuth() {
         .addEventListener('click', function () {
             var unameValue = document.querySelector('.auth-username').value;
             var pwdValue = document.querySelector('.auth-password').value;
-            authURL = fetchServerDetails($("#serverMode").val());
+            authURL = fetchServerDetails($("#serverMode").val(), $("#appMode2").val());
             ServMode = $("#serverMode").val();
+            AppMode2 = $("#appMode2").val();
             s = document.querySelector('.auth-send .fa-spin');
             s.classList.remove('hide');
             text = document.querySelector('.auth-result .text');
@@ -38,7 +40,7 @@ function authenticate2(x, y, authURL) {
             text.innerHTML = 'Login success!';
             derive_key(x, y);
             authCode = "Basic " + btoa(x + ":" + y);
-            $.when(updateSettings(ServMode)).then(clearCache()).done(initSettings());
+            $.when(updateSettings(ServMode,AppMode2)).then(clearCache(AppMode2)).then(fetchSettings()).done(initSettings());
             $('.auth-username').attr('disabled', false);
             $('.auth-username').removeClass('disabled');
             $('.auth-password').attr('disabled', false);
@@ -163,7 +165,7 @@ function derive_key(u, p) {
             });
         }, function (err) {
             $.growl.error({ title: "", message: "An error occured while updating Auth Settings. " + err.message, location: "bc", size: "large" });
-            });
+        });
     };
     mypbkdf2.deriveKey(status_callback, result_callback);
 }
@@ -171,8 +173,9 @@ $('#modalAuth').keypress(function (e) {
     if (e.which === 13) {
         var unameValue = document.querySelector('.auth-username').value;
         var pwdValue = document.querySelector('.auth-password').value;
-        authURL = fetchServerDetails($("#serverMode").val());
+        authURL = fetchServerDetails($("#serverMode").val(), $("#appMode2").val());
         ServMode = $("#serverMode").val();
+        AppMode2 = $("#appMode2").val();
         s = document.querySelector('.auth-send .fa-spin');
         s.classList.remove('hide');
         text = document.querySelector('.auth-result .text');
