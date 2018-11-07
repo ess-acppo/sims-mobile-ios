@@ -1,4 +1,4 @@
-/* Framework Variables */
+/* Framework Variables 8Nov2018*/
 var mapPath;
 var emptyTilePath;
 var greenTilePath;
