@@ -245,6 +245,7 @@ $(document).on('change', 'select[id="commonName"]', function () {
             $('#modalProgress').modal();
             t0 = performance.now();
         }
+        // test comment
     }).complete(function (e) {
         var str = $("#commonName option:selected").val();
         if (str !== 'NONE') {
