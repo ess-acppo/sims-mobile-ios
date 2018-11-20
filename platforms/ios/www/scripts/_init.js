@@ -1,4 +1,4 @@
-/* Framework Variables 8Nov2018*/
+/* Framework Variables */
 var mapPath;
 var emptyTilePath;
 var greenTilePath;
@@ -84,18 +84,9 @@ var trackCoords;
 var myLatLng;
 var paths = [];
 var trackPath;
+var myPos;
+var downloadDone = 0;
 /* Framework Variables */
-
-/* AH Initialized variables */
-//var species = '<div class="row col-md-12 sims dynarow"><div class="form-group col-xs-2"><input type="text" class="form-control speciesText"/></div><div class="form-group col-xs-2"><label>Taxon Name<span class="bold-red">*</span></label></div><div class="form-group col-xs-2"><input type="text" class="form-control taxonText" placeholder="Taxon Name" name="taxonName"></div><div class="form-group col-xs-3" ><label>Number in Group<span class="bold-red">*</span></label></div><div class="form-group col-xs-1"><input type="text" class="form-control" placeholder="#" name="Number"></div><div class="form-group col-xs-1"><button type="button" class="btn btn-danger btn-circle btn-xs pull-right removeSpecies"><i class="fa fa-times-circle fa-2x"></i></button></div></div>';
-//var fieldtest = '<div class="row col-md-12 sims dynarow fieldtest"><div class="form-group col-xs-12"><label class="ftName">Field Test 1</label><i class="fa fa-times-circle fa-2x text-default removeFieldTest pull-right"></i></div><div class="form-group col-xs-6"><label>Fieldtest Name<span class="bold-red">*</span></label><input type="text" class="form-control hide" placeholder="Field Test ID" name="ftId"/><select class="form-control" name="fieldTest"></select></div><div class="form-group col-xs-6"><label>&nbsp;</label><br/><input type="checkbox" name="ftInvalid" class="minimal"><label>Invalid</label></div><div class="row col-xs-12 diseases indentLeft"></div><div class="form-group col-xs-11"><label>Field Test Comment</label><input type="text" class="form-control" name="ftComment"/></div></div>';
-//var preFieldtest = '<div class="row col-md-12 sims dynarow fieldtest"><div class="form-group col-xs-12"><label class="ftName">Field Test 1</label><i class="fa fa-times-circle fa-2x text-default removePreFieldTest pull-right"></i></div><div class="form-group col-xs-6"><label>Fieldtest Name<span class="bold-red">*</span></label><input type="text" class="form-control hide" placeholder="Field Test ID" name="ftId"/><select class="form-control" name="pFieldTest"></select></div><div class="form-group col-xs-6"><label>&nbsp;</label><br/><input type="checkbox" name="ftInvalid" class="minimal"><label>Invalid</label></div><div class="row col-xs-12 diseases indentLeft"></div><div class="form-group col-xs-11"><label>Field Test Comment</label><input type="text" class="form-control" name="ftComment"/></div></div>';
-///var maggotSample = '<div class="row col-md-12 sims dynarow maggotSample"><div class="form-group col-xs-12"><label class="sampleName">Maggot Sample 1</label><i class="fa fa-times-circle fa-2x text-default removeMaggotSample pull-right"></i></div><div class="form-group col-xs-12"><label>Sample Field Id<span class="bold-red">*</span></label><input type="text" class="form-control nextid" placeholder="Sample Field Id" name="msfieldID" value="1"></div><div class="form-group col-xs-12"><label>Sample Type<span class="bold-red">*</span></label><select class="form-control" name="msType"><option selected>Maggots</option></select></div><div class="form-group col-xs-12"><label>Pathogen/Test Type</label><br /><input type="checkbox" class="form-control minimal" name="swfExcl" value="swfExcl" checked><label>SWF Exclusion</label></div><div class="form-group col-xs-12"><label>Additional Comment</label><textarea class="form-control" rows="3" name="msNotes" placeholder="Notes ..."></textarea></div></div>';
-//var sample = '<div class="row col-md-12 sims dynarow sample"><div class="form-group col-xs-12"><label class="sampleName">Sample 1</label><i class="fa fa-times-circle fa-2x text-default removeSample pull-right"></i></div><div class="form-group col-xs-6"><label>Sample Field ID</label><input type="text" class="form-control nextid" readonly placeholder="Sample Field ID" value="1" name="sampleId"></div><div class="form-group col-xs-6"><label>Sample Type</label><select class="form-control" name="sampleType"></select></div><div class="form-group col-xs-12"><label>Pathogen/Test Type</label><div class="row col-md-12 sims testTypes indentLeft"></div></div><div class="form-group col-xs-12 border-bottom"><label>Additional Comments</label><textarea class="form-control" rows="6" name="sAddlComments"></textarea></div></div>';
-//var preSample = '<div class="row col-md-12 sims dynarow sample"><div class="form-group col-xs-12"><label class="sampleName">Sample 1</label><i class="fa fa-times-circle fa-2x text-default removePreSample pull-right"></i></div><div class="form-group col-xs-6"><label>Sample Field ID</label><input type="text" class="form-control nextid" readonly placeholder="Sample Field ID" value="" name="sampleId"></div><div class="form-group col-xs-6"><label>Sample Type</label><select class="form-control" name="sampleType"></select></div><div class="form-group col-xs-12"><label>Pathogen/Test Type</label><div class="row col-md-12 sims testTypes indentLeft"></div></div><div class="form-group col-xs-12 border-bottom"><label>Additional Comments</label><textarea class="form-control" rows="6" name="sAddlComments"></textarea></div></div>';
-//var samples = 0;
-//var fieldTests = 0;
-/* AH Initialized variables */
 
 /* Core Framework Code */
 if (!String.prototype.startsWith) {
@@ -365,8 +356,6 @@ function checkPermissions() {
 function initSettings() {
     switch (AppMode) {
         case "PH":
-            //$('#mb6 .progText').text("Loading App Defaults ...");
-            //$.growl.notice({ title: "", message: "Loading ...", location: "bc", size: "small" });
             //Loading PH reference codes
             db.transaction(function (tx) {
                 tx.executeSql("SELECT * FROM phrefcodes WHERE id = ?", [1], function (tx, res) {
@@ -385,7 +374,6 @@ function initSettings() {
                 $.growl.error({ title: "", message: "An error occured while loading PH ReferenceCodes. ", location: "tc", size: "large", fixed: "true" });
             });
             //Loading taxa data
-            //$.growl.notice({ title: "", message: "Loading PH Taxa ...", location: "bc", size: "small" });
             db.transaction(function (tx) {
                 tx.executeSql("SELECT * FROM taxadata WHERE id = ?", [1], function (tx, res) {
                     //This is not the first load
@@ -418,7 +406,6 @@ function initSettings() {
                 $.growl.error({ title: "", message: "An error occured while loading Taxa Data. ", location: "tc", size: "large", fixed: "true" });
             });
             //Loading Activity Data
-            //$.growl.notice({ title: "", message: "Loading Activity Data ...", location: "bc", size: "small" });
             db.transaction(function (tx) {
                 tx.executeSql("SELECT * FROM activitydata WHERE id = ?", [1], function (tx, res) {
                     //This is not the first load
@@ -438,7 +425,6 @@ function initSettings() {
                 $.growl.error({ title: "", message: "An error occured while loading PH Activity Data. " + err.message, location: "tc", size: "large", fixed: "true" });
             });
             //Loading Staff Data
-            //$.growl.notice({ title: "", message: "Loading PH Staff Data ...", location: "bc", size: "small" });
             db.transaction(function (tx) {
                 tx.executeSql("SELECT * FROM staffdata WHERE settingstext = ?", ['BPHstaff'], function (tx, res) {
                     //This is not the first load
@@ -528,7 +514,6 @@ function initSettings() {
                 $.growl.error({ title: "", message: "An error occured while loading AH Activity Data. " + err.message, location: "tc", size: "large", fixed: "true" });
             });
             //Loading Staff Data
-            //$.growl.notice({ title: "", message: "Loading PH Staff Data ...", location: "bc", size: "small" });
             db.transaction(function (tx) {
                 tx.executeSql("SELECT * FROM staffdataAH WHERE settingstext = ?", ['NAFstaff'], function (tx, res) {
                     //This is not the first load
@@ -546,7 +531,7 @@ function initSettings() {
             break;
     }
     //Loading maps and Markers
-    //$.growl.notice({ title: "", message: "Loading Maps ...", location: "bc", size: "small" });
+    showMyLoc();
     db.transaction(function (tx) {
         tx.executeSql("SELECT * FROM observations WHERE id = ?", [1], function (tx, res) {
             //This is not the first load
@@ -556,28 +541,28 @@ function initSettings() {
             mapPath = resSettings.settings.mapSets[0].mapPath;
             emptyTilePath = resSettings.settings.mapSets[0].emptyTilePath;
             greenTilePath = resSettings.settings.mapSets[0].greenTilePath;
-            myCenter = new google.maps.LatLng(Number(resSettings.settings.mapSets[0].mapCenter.lat), Number(resSettings.settings.mapSets[0].mapCenter.lng));
+            //myCenter = new google.maps.LatLng(Number(resSettings.settings.mapSets[0].mapCenter.lat), Number(resSettings.settings.mapSets[0].mapCenter.lng));
             var mymap = new MyMapType();
             function MyMapType() { }
             MyMapType.prototype.tileSize = new google.maps.Size(256, 256);
-            MyMapType.prototype.maxZoom = resSettings.settings.mapSets[0].endZoom;
-            MyMapType.prototype.minZoom = resSettings.settings.mapSets[0].startZoom;
+            MyMapType.prototype.maxZoom = Number(resSettings.settings.mapSets[0].endZoom);
+            MyMapType.prototype.minZoom = Number(resSettings.settings.mapSets[0].startZoom);
             MyMapType.prototype.name = "Offline Map";
             MyMapType.prototype.getTile = function (coord, zoom, ownerDocument) {
                 zoomlevel.innerHTML = 'zoom: ' + zoom;
                 curZoom = zoom;
                 var div = ownerDocument.createElement('div');
-                var image = $('<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>');
+                var image = $('<img name="" src="' + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>');
                 image.error(function () {
                     if (curZoom >= 10) {
                         div.innerHTML = '<img name="" src="' + greenTilePath + '"/>';
                     } else { div.innerHTML = '<img name="" src="' + emptyTilePath + '"/>'; }
                 });
-                div.innerHTML = '<img name="" src="' + cordova.file.dataDirectory + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>';
+                div.innerHTML = '<img name="" src="' + mapPath + zoom + "/" + coord.x + "/" + coord.y + '.jpg"/>';
                 div.style.width = this.tileSize.width + 'px'; div.style.height = this.tileSize.height + 'px';
                 return div;
             };
-            var mapOptions = { zoom: resSettings.settings.mapSets[0].startZoom, center: myCenter, streetViewControl: false, panControl: false, zoomControl: false, mapTypeControl: false, scaleControl: false, overviewMapControl: false, mapTypeControlOptions: { mapTypeIds: ["xx"] } };
+            var mapOptions = { zoom: Number(resSettings.settings.mapSets[0].startZoom), center: myPos, streetViewControl: false, panControl: false, zoomControl: false, mapTypeControl: false, scaleControl: false, overviewMapControl: false, mapTypeControlOptions: { mapTypeIds: ["xx"] } };
             map = new google.maps.Map(document.getElementById("map"), mapOptions); map.mapTypes.set('xx', mymap); map.setMapTypeId('xx');
             if (res.rows && res.rows.length > 0) {
                 clearMarkers();
@@ -655,9 +640,13 @@ function initSettings() {
             }
             loadstaffData();
             loadSitePolygons();
-            if (cX && cY) {
-                var yLatLng = new google.maps.LatLng(cX, cY);
-                map.setCenter(yLatLng);
+            if (resSettings.settings.mapSets[0].curActivity > 0) {
+                getCurrentActivityBounds(resSettings.settings.mapSets[0].curActivity);
+                if (cX && cY) {
+                    var yLatLng = new google.maps.LatLng(cX, cY);
+                    map.setZoom(8);
+                    map.setCenter(yLatLng);
+                }
             }
             if ($("#modalProgress").data('bs.modal') && $("#modalProgress").data('bs.modal').isShown) { $('#modalProgress').modal('hide'); }
         });
@@ -696,7 +685,7 @@ function loadMapMarkers() {
                                     }
                                     infoWindow = new google.maps.InfoWindow({
                                         content: '<div id="content"><h4>Observation ' + this.title + '</h4><div id="bodyContent">' +
-                                        '<i class="fa fa-pencil fa-2x text-info" onclick="launchModal(' + curIdx + ',' + curD + ')"></i><label class="text-info">Edit</label></div></div>'
+                                        '<button class="btn btn-sm btn-info" onclick="launchModal(' + curIdx + ',' + curD + ')">Edit</button></div></div>'
                                     });
                                     infoWindow.setPosition(this.position);
                                     infoWindow.open(map);
@@ -705,7 +694,7 @@ function loadMapMarkers() {
                             }
                         }
                     }
-                    var mcOptions = { gridSize: 50, maxZoom: 9, imagePath: 'mapfiles/markers2/m' };
+                    var mcOptions = { gridSize: 50, maxZoom: 6, imagePath: 'mapfiles/markers2/m' };
                     markerCluster = new MarkerClusterer(map, markers, mcOptions);
                     google.maps.event.addListener(markerCluster, 'clusterclick', function (cluster) {
                         map.setCenter(cluster.getCenter());
@@ -713,6 +702,17 @@ function loadMapMarkers() {
                 }
                 //if ($("#modalProgress").data('bs.modal').isShown) { $('#modalProgress').modal('hide'); }
             }
+            var icon = {
+                url: 'images/myloc.png'
+            };
+            var locMarker = new google.maps.Marker({
+                position: myPos,
+                map: map,
+                draggable: false,
+                icon: icon,
+                animation: google.maps.Animation.DROP
+            });
+            locMarker.setMap(map);
         });
     }, function (err) {
         $.growl.error({ title: "", message: "An error occured while retrieving observations. " + err.message, location: "tc", size: "large" });
@@ -731,11 +731,24 @@ function loadMapMarkersAH() {
                             wkt.toObject();
                             var latLng = new google.maps.LatLng(wkt.toJson().coordinates[1], wkt.toJson().coordinates[0]);
                             if (results.observations[i].AnimalDisciplineCode_M_S) {
-                                var ti = results.observations[i].id_M_N.toString().trim() + "/" + results.observations[i].AnimalDisciplineCode_M_S.toString().trim();
+                                if (results.observations[i].AnimalDisciplineCode_M_S.toString().trim() === 'SF') {
+                                    var ti = results.observations[i].id_M_N.toString().trim() + "/" + results.observations[i].AnimalDisciplineCode_M_S.toString().trim() + "/" + results.observations[i].animalNumber_M_N.toString().trim();
+                                    var icon = {
+                                        url: 'images/sf.png'
+                                    };
+                                }
+                                if (results.observations[i].AnimalDisciplineCode_M_S.toString().trim() === 'G') {
+                                    var ti = results.observations[i].id_M_N.toString().trim() + "/" + results.observations[i].AnimalDisciplineCode_M_S.toString().trim();
+                                    var icon = {
+                                        url: 'images/g.png'
+                                    };
+                                }
                                 var marker = new google.maps.Marker({
                                     position: latLng,
                                     map: map,
-                                    title: ti
+                                    title: ti,
+                                    draggable: false,
+                                    icon: icon
                                 });
                                 markers.push(marker);
                                 google.maps.event.addListener(marker, 'click', function () {
@@ -749,7 +762,7 @@ function loadMapMarkersAH() {
                                     }
                                     infoWindow = new google.maps.InfoWindow({
                                         content: '<div id="content"><h4>Observation ' + this.title + '</h4><div id="bodyContent">' +
-                                        '<i class="fa fa-pencil fa-2x text-info" onclick="launchModal(' + curIdx + ',' + curD + ')"></i><label class="text-info">Edit</label></div></div>'
+                                        '<button class="btn btn-sm btn-info" onclick="launchModal(' + curIdx + ',' + curD + ')">Edit</button>&nbsp;<button class="btn btn-sm btn-default" onclick="moveMarker(' + curIdx + ')">Move</button></div></div>'
                                     });
                                     infoWindow.setPosition(this.position);
                                     infoWindow.open(map);
@@ -758,7 +771,7 @@ function loadMapMarkersAH() {
                             }
                         }
                     }
-                    var mcOptions = { gridSize: 50, maxZoom: 9, imagePath: 'mapfiles/markers2/m' };
+                    var mcOptions = { gridSize: 50, maxZoom: 6, imagePath: 'mapfiles/markers2/m' };
                     markerCluster = new MarkerClusterer(map, markers, mcOptions);
                     google.maps.event.addListener(markerCluster, 'clusterclick', function (cluster) {
                         map.setCenter(cluster.getCenter());
@@ -766,6 +779,17 @@ function loadMapMarkersAH() {
                 }
                 //if ($("#modalProgress").data('bs.modal').isShown) { $('#modalProgress').modal('hide'); }
             }
+            var icon = {
+                url: 'images/myloc.png'
+            };
+            var locMarker = new google.maps.Marker({
+                position: myPos,
+                map: map,
+                draggable: false,
+                icon: icon,
+                animation: google.maps.Animation.DROP
+            });
+            locMarker.setMap(map);
         });
     }, function (err) {
         $.growl.error({ title: "", message: "An error occured while retrieving observations. " + err.message, location: "tc", size: "large" });
@@ -862,8 +886,6 @@ function checkMapBoundsBySite(position, siteId) {
         });
         //mapc.fitBounds(trackCoords);
         trackPath.setMap(map);
-        //map.setZoom(15);
-        //map.setCenter(myLatLng);
 
         var cLat = position.coords.latitude;
         var cLng = position.coords.longitude;
@@ -885,6 +907,7 @@ function checkMapBoundsBySite(position, siteId) {
     }
 }
 function placeMarker(location) {
+    if (curIdx === -3) return;
     newMarker = new google.maps.Marker({
         position: location,
         map: map
@@ -908,7 +931,7 @@ function placeMarker(location) {
             case 'PH':
                 $('#modalPHMenu').modal();
                 break;
-        };
+        }
     }
 }
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -923,24 +946,28 @@ function myLoc() {
         navigator.geolocation.getCurrentPosition(function (position) {
             if (AppMode === "PH" && checkMapBoundsByPos(position)) {
                 var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                map.setZoom(9);
+                map.setZoom(resSettings.settings.mapSets[0].startZoom);
                 map.setCenter(pos);
-                $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
-                    checkboxClass: 'icheckbox_square-blue',
-                    radioClass: 'iradio_square-blue'
-                });
                 placeMarker(pos);
             }
             if (AppMode === "AH") {
                 var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                map.setZoom(9);
+                map.setZoom(resSettings.settings.mapSets[0].startZoom);
                 map.setCenter(pos);
-                $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
-                    checkboxClass: 'icheckbox_square-blue',
-                    radioClass: 'iradio_square-blue'
-                });
                 placeMarker(pos);
             }
+        }, function () {
+            $.growl.error({ title: "", message: "GPS GetCurrentPosition Failed!", location: "tc", size: "large" });
+        });
+    } else {
+        // Browser doesn't support Geolocation
+        $.growl.error({ title: "", message: "Geolocation Failed!", location: "tc", size: "large" });
+    }
+}
+function showMyLoc() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            myPos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         }, function () {
             $.growl.error({ title: "", message: "GPS GetCurrentPosition Failed!", location: "tc", size: "large" });
         });
@@ -982,6 +1009,47 @@ function downloadCSV() {
             break;
     }
 }
+function moveMarker(e) {
+    if (infoWindow) {
+        infoWindow.close();
+    }
+    var arr = results.observations.filter(function (el, index) {
+        if (el.id_M_N === e) { curPos = index; }
+        return (el.id_M_N === e);
+    });
+    var icon = {
+        url: 'images/crosshair.png',
+        origin: new google.maps.Point(0, 40),
+        anchor: new google.maps.Point(40, 40)
+    };
+    var clatLng = new google.maps.LatLng(results.observations[curPos].Latitude_M_N_0_1, results.observations[curPos].Longitude_M_N_0_1);
+    var chmarker = new google.maps.Marker({
+        position: clatLng,
+        map: map,
+        draggable: true,
+        icon: icon
+    });
+    google.maps.event.addListener(chmarker, 'dragend', function () {
+        results.observations[curPos].Latitude_M_N_0_1 = this.getPosition().lat().toFixed(5);
+        results.observations[curPos].Longitude_M_N_0_1 = this.getPosition().lng().toFixed(5);
+        results.observations[curPos].ObservationWhereWktClob_M_S_0_1 = "POINT (" + this.getPosition().lng().toFixed(5) + " " + this.getPosition().lat().toFixed(5) + ")";
+        this.setMap(null);
+        db.transaction(function (tx) {
+            tx.executeSql("UPDATE observations SET data = ? WHERE id = ?", [JSON.stringify(results), 1], function (tx, res) {
+                clearMarkers();
+                loadMapMarkersAH();
+                curIdx = -1;
+            });
+        }, function (err) {
+            $.growl.error({ title: "", message: "An error occured while updating row to DB. " + err.message, location: "tc", size: "large" });
+        });
+    });
+    google.maps.event.addListener(chmarker, 'click', function () {
+        this.setMap(null);
+        curIdx = -1;
+    });
+    curIdx = -3;
+}
 function launchModal(e, f) {
     curIdx = e;
     curDiscipline = f;
@@ -1021,10 +1089,15 @@ function loadData() {
                 "columns": [
                     { "data": "id_M_N" },
                     {
-                        "data": "AnimalDisciplineCode_M_S",
+                        "data": null,
                         "render": function (data, type, row, meta) {
-                            if (data === 'SF') return "Single Feral";
-                            if (data === 'G') return "Group";
+                            var returnStr = "&nbsp;";
+                            if (data["AnimalAttachmentD_M_S_0_A"] && data["AnimalAttachmentD_M_S_0_A"] !== "") {
+                                returnStr = "<i class='fa fa-paperclip text-info'/>&nbsp;";
+                            }
+                            if (data["AnimalDisciplineCode_M_S"] === 'SF') returnStr = returnStr + "Single Feral";
+                            if (data["AnimalDisciplineCode_M_S"] === 'G') returnStr = returnStr + "Group";
+                            return returnStr;
                         }
                     },
                     {
@@ -1054,20 +1127,31 @@ function loadData() {
                         }
                     },
                     { "data": "ObservationWhereWktClob_M_S_0_1" },
-                    { "data": "ObservWhereGpsDatumId_M_S_0_1" },
                     {
-                        "data": "status_M_N",
+                        "data": null,
+                        "render": function (data, type, row) {
+                            if (data["additionalObservations_O_S_0_2"])
+                            { return data["additionalObservations_O_S_0_2"].substring(0, 39); }
+                            else { return "-"; }
+                        }
+                    },
+                    {
+                        "data": null,
                         "render": function (data, type, row, meta) {
-                            if (data === 0) return "Saved";
-                            if (data === 1) return "Submitted";
+                            var returnStr;
+                            if (data["status_M_N"] === 0) returnStr = "<i class='fa fa-save text-info'/>";
+                            if (data["status_M_N"] === 1) returnStr = "<i class='fa fa-check text-success'/>";
+                            return returnStr;
                         }
                     }
                 ],
                 "paging": true,
-                "lengthChange": false,
+                "lengthChange": true,
                 "searching": true,
                 "ordering": true,
-                "info": false
+                "info": false,
+                "pageLength": 200,
+                "lengthMenu": [[12, 24, 48, 96, 200, -1], [12, 24, 48, 96, 200, "All"]]
             });
             break;
         case "PH":
@@ -1110,16 +1194,18 @@ function loadData() {
                     {
                         "data": "status_M_N",
                         "render": function (data, type, row, meta) {
-                            if (data === 0) return "Saved";
-                            if (data === 1) return "Submitted";
+                            if (data === 0) return "<i class='fa fa-save text-info'/>";
+                            if (data === 1) return "<i class='fa fa-check text-success'/>";
                         }
                     }
                 ],
                 "paging": true,
-                "lengthChange": false,
+                "lengthChange": true,
                 "searching": true,
                 "ordering": true,
-                "info": false
+                "info": false,
+                "pageLength": 200,
+                "lengthMenu": [[12, 24, 48, 96, 200, -1], [12, 24, 48, 96, 200, "All"]]
             });
             break;
         default:
@@ -1185,12 +1271,6 @@ $(document).on('click', '#Save', function (e) {
             }, function (err) {
                 $.growl.error({ title: "", message: "An error occured while updating row to DB. " + err.message, location: "tc", size: "large" });
             });
-            //$('#modalForm').modal('hide');
-            //clearMarkers();
-            //loadMapMarkers();
-            //if (infoWindow) {
-            //    infoWindow.close();
-            //}
             break;
         case "AH":
             obj = objectifyAHFormforSave(form1);
@@ -1231,12 +1311,6 @@ $(document).on('click', '#Save', function (e) {
             }, function (err) {
                 $.growl.error({ title: "", message: "An error occured while updating row to DB. " + err.message, location: "tc", size: "large" });
             });
-            //$('#modalForm').modal('hide');
-            //clearMarkers();
-            //loadMapMarkers();
-            //if (infoWindow) {
-            //    infoWindow.close();
-            //}
             break;
     }
 
@@ -1394,11 +1468,6 @@ $(document).on('click', '#Submit2', function (e) {
                     $.growl.error({ title: "", message: "An error occured while saving row to DB. " + err.message, location: "tc", size: "large" });
                 });
                 $('#modalForm').modal('hide');
-                //clearMarkers();
-                //loadMapMarkers();
-                //if (infoWindow) {
-                //    infoWindow.close();
-                //}
             }
             else {
                 rowsFailedErr.push(result.vErrDescription);
@@ -1407,7 +1476,7 @@ $(document).on('click', '#Submit2', function (e) {
             break;
         case "AH":
             obj = objectifyAHFormforSave(form1);
-            console.log(JSON.stringify(obj));
+            //console.log(JSON.stringify(obj));
             preVal = preValidateAH();
             if (preVal.vError !== 0) {
                 rowsFailedErr.push(preVal.vErrDescription);
@@ -1467,8 +1536,6 @@ $(document).on('click', '#settings', function (e) {
         beforeSend: function (xhr) {
             $('#modalProgress').modal();
             $('#mb6 .progText').text("Loading ...");
-            $('#mb6 .progress').addClass('hide');
-            $('#mb6 .fa-clock-o').addClass('hide');
             $('#mb5').empty();
             $('#mt5').empty();
             $(document).find('script[id="pageScript"]').remove();
@@ -1529,6 +1596,8 @@ $(document).on('click', '#settings', function (e) {
         $('#form3').find('input[name="samplePrefix"]').val(resSettings.settings.device.samplePrefix);
         $('#form3').find('input[name="sampleCurrNum"]').val(resSettings.settings.device.currentSampleNumber);
         $('#form3').find('input[name="AnimalCurrNum"]').val(resSettings.settings.device.currentAnimalNumber);
+        $('#form3').find('select[name="startZoom"]').val(Number(resSettings.settings.mapSets[0].startZoom));
+        $('#form3').find('select[name="endZoom"]').val(Number(resSettings.settings.mapSets[0].endZoom));
     }).done(function () {
         $('#modalProgress').modal('hide');
         if (statusElem.innerHTML === 'online') {
@@ -1540,29 +1609,9 @@ $(document).on('click', '#settings', function (e) {
     });
     $('#modalSettings').modal();
 });
-$(document).on('click', '#SaveSettingsExit', function (e) {
-    var v_appMode = $('#form3').find('#appMode').val();
-    if (!v_appMode) {
-        $.growl.warning({ title: "", message: "Provide a valid mode: PH!", location: "tc", size: "large" });
-        return false;
-    }
-    /* Set AppMode */
-    resSettings.settings.app.appMode = v_appMode;
-    /* Clear active Flag on Mapsets */
-    $.each(resSettings.settings.mapSets, function (i, v) {
-        resSettings.settings.mapSets[i].activeFlag = 0;
-    });
-    /* Set active Mapset */
-    //ActiveMapset = $("input[name='optMaps']:checked").data('id');
-    //if (ActiveMapset) { resSettings.settings.mapSets[ActiveMapset].activeFlag = 1; }
+$(document).on('click', '#SaveSettings', function (e) {
     resSettings.settings.mapSets[0].curActivity = $('#form3').find('select[id="curActivities"]').val();
-    if (Number($('#form3').find('select[id="curActivities"]').val()) > 0)
-        $.when(getMapBounds()).then(function () {
-            resSettings.settings.mapSets[0].mapBounds.topLat = minX;
-            resSettings.settings.mapSets[0].mapBounds.leftLng = minY;
-            resSettings.settings.mapSets[0].mapBounds.bottomLat = maxX;
-            resSettings.settings.mapSets[0].mapBounds.rightLng = maxY;
-        });
+    if (Number($('#form3').find('select[id="curActivities"]').val()) > 0) { getCurrentActivityBounds($('#form3').find('select[id="curActivities"]').val()); }
     /* Set Device Owner */
     resSettings.settings.device.ownerId = $('#form3').find('select[id="deviceOwner"]').val();
     resSettings.settings.device.ownerTeam = $('#form3').find('select[id="doTeam"]').val();
@@ -1582,6 +1631,50 @@ $(document).on('click', '#SaveSettingsExit', function (e) {
     resSettings.settings.mapSets[0].lastDownloadDate = $('#form3').find('label.mapNotes').text();
     resSettings.settings.mapSets[0].lastDownloadBDate = $('#form3').find('label.mapBNotes').text();
     resSettings.settings.mapSets[0].curActivity = $('#form3').find('select[id="curActivities"]').val();
+    resSettings.settings.mapSets[0].startZoom = Number($('#form3').find('select[name="startZoom"]').val());
+    resSettings.settings.mapSets[0].endZoom = Number($('#form3').find('select[name="endZoom"]').val());
+    if (Number(resSettings.settings.mapSets[0].startZoom) > Number(resSettings.settings.mapSets[0].endZoom)) {
+        $.growl.error({ title: "", message: "Start Zoom must be less than End Zoom.", location: "tc", size: "large" });
+        return false;
+    }
+    /* Save to DB */
+    db.transaction(function (tx) {
+        tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
+            $.when(fetchSettings()).done(initSettings());
+            $.growl({ title: "", message: "Your changes have been saved!", location: "bc", size: "small" });
+        });
+    }, function (err) {
+        $.growl.error({ title: "", message: "An error occured while updating settings. " + err.message, location: "tc", size: "large" });
+    });
+});
+$(document).on('click', '#SaveSettingsExit', function (e) {
+    resSettings.settings.mapSets[0].curActivity = $('#form3').find('select[id="curActivities"]').val();
+    if (Number($('#form3').find('select[id="curActivities"]').val()) > 0) { getCurrentActivityBounds($('#form3').find('select[id="curActivities"]').val()); }
+    /* Set Device Owner */
+    resSettings.settings.device.ownerId = $('#form3').find('select[id="deviceOwner"]').val();
+    resSettings.settings.device.ownerTeam = $('#form3').find('select[id="doTeam"]').val();
+    resSettings.settings.device.ownerName = $('#form3').find('select[id="deviceOwner"]').text();
+    if ($('#form3').find('input[id="debugMode"]').val() === 'Y') {
+        resSettings.settings.device.debugMode = 1;
+        debugMode = 1;
+    }
+    if ($('#form3').find('input[id="debugMode"]').val() === 'N') {
+        resSettings.settings.device.debugMode = 0;
+        debugMode = 0;
+    }
+    resSettings.settings.device.samplePrefix = $('#form3').find('input[name="samplePrefix"]').val();
+    resSettings.settings.device.sampleStartNumber = $('#form3').find('input[name="sampleStartNum"]').val();
+    resSettings.settings.device.currentSampleNumber = $('#form3').find('input[name="sampleCurrNum"]').val();
+    resSettings.settings.device.currentAnimalNumber = $('#form3').find('input[name="AnimalCurrNum"]').val();
+    resSettings.settings.mapSets[0].lastDownloadDate = $('#form3').find('label.mapNotes').text();
+    resSettings.settings.mapSets[0].lastDownloadBDate = $('#form3').find('label.mapBNotes').text();
+    resSettings.settings.mapSets[0].curActivity = $('#form3').find('select[id="curActivities"]').val();
+    resSettings.settings.mapSets[0].startZoom = $('#form3').find('select[name="startZoom"]').val();
+    resSettings.settings.mapSets[0].endZoom = $('#form3').find('select[name="endZoom"]').val();
+    if (Number(resSettings.settings.mapSets[0].startZoom) > Number(resSettings.settings.mapSets[0].endZoom)) {
+        $.growl.error({ title: "", message: "Start Zoom must be less than End Zoom.", location: "tc", size: "large" });
+        return false;
+    }
     /* Save to DB */
     db.transaction(function (tx) {
         tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
@@ -1608,15 +1701,7 @@ $(document).on('click', '#Delete', function (e) {
                 results.observations.splice(curPos, 1);
                 db.transaction(function (tx) {
                     tx.executeSql("UPDATE observations SET data = ? WHERE id = ?", [JSON.stringify(results), 1], function (tx, res) {
-                        //alert("Dataset updated.");
                         $('#modalForm').modal('hide');
-                        //clearMarkers();
-                        //if (AppMode === "PH") {
-                        //    loadMapMarkers();
-                        //}
-                        //if (AppMode === "AH") {
-                        //    loadMapMarkersAH();
-                        //}
                         if (infoWindow) {
                             infoWindow.close();
                         }
@@ -1652,8 +1737,6 @@ $(document).on('click', '#srchPHTable tbody tr', function () {
         beforeSend: function (xhr) {
             $('#modalProgress').modal();
             $('#mb6 .progText').text("Loading ...");
-            $('#mb6 .progress').addClass('hide');
-            $('#mb6 .fa-clock-o').addClass('hide');
         }
     })
         .complete(function (data) {
@@ -1703,8 +1786,6 @@ $(document).on('click', '#srchAHTable tbody tr', function () {
         beforeSend: function (xhr) {
             $('#modalProgress').modal();
             $('#mb6 .progText').text("Loading ...");
-            $('#mb6 .progress').addClass('hide');
-            $('#mb6 .fa-clock-o').addClass('hide');
         }
 
     }).complete(function (data) {
@@ -1731,9 +1812,9 @@ $(document).on('click', '#SyncAH', function (event) {
     $.when(setTimeout(DisableFormAH(), 1000));
 });
 $(document).on('shown.bs.modal', '#modalPHGrid', function () {
-    loadPHRefCodes();
-    loadActivityData();
-    loadstaffData();
+    //loadPHRefCodes();
+    //loadActivityData();
+    //loadstaffData();
     loadData();
     if (statusElem.innerHTML === 'online') {
         $('#SyncPH').removeClass('hide');
@@ -1743,8 +1824,6 @@ $(document).on('shown.bs.modal', '#modalPHGrid', function () {
     }
 });
 $(document).on('shown.bs.modal', '#modalAHGrid', function () {
-    loadActivityDataAH();
-    //loadAHDefaults();
     loadData();
     if (statusElem.innerHTML === 'online') {
         $('#SyncAH').removeClass('hide');
@@ -1760,9 +1839,6 @@ $(document).on('hidden.bs.modal', '#modalAHGrid', function () {
     table.destroy();
 });
 $(document).on('hidden.bs.modal', '#modalForm', function () {
-    //table.destroy();
-    //loadAHDefaults();
-    //loadData();
     clearMarkers();
     if (AppMode === "PH") {
         loadMapMarkers();
@@ -2063,30 +2139,12 @@ $(document).on('click', 'a.btnBackupData', function (e) {
 $(document).on('click', 'a.btnRestoreData', function (e) {
     restoreDatabase();
 });
-function getMapTiles(zoom) {
-    if (allLats.length > 0 && allLngs.length > 0) {
-        var scale = 1 << zoom;
-        allLats.sort();
-        allLngs.sort();
-        minX = allLats[0];
-        minY = allLngs[0];
-        maxX = allLats[allLats.length - 1];
-        maxY = allLngs[allLngs.length - 1];
-        var minLatLng = new google.maps.LatLng(minX, minY);
-        var maxLatLng = new google.maps.LatLng(maxX, maxY);
-        var wC1 = project(minLatLng);
-        var wC2 = project(maxLatLng);
-        var pC1x = Math.floor(wC1.x * scale / TILE_SIZE);
-        var pC1y = Math.floor(wC1.y * scale / TILE_SIZE);
-        var pC2x = Math.floor(wC2.x * scale / TILE_SIZE);
-        var pC2y = Math.floor(wC2.y * scale / TILE_SIZE);
-        $('#modalProgress').modal();
-        $('#mb6 .progText').text("Download in progress ...");
-        $('#mb6 .progress').removeClass('hide');
-        tiles = 0;
-        fetchAndSaveTile(pC1x, pC1y, zoom, pC2x, pC1y, pC2y);
-    }
-}
+$(document).on('click', '#closeProgress', function (e) {
+    $('#modalProgress').modal('hide');
+});
+$(document).on('click', '#closeDownload', function (e) {
+    $('#modalDownload').modal('hide');
+});
 /* SprinQ Framework Code */
 
 /* SIMS Framework */
@@ -2451,7 +2509,10 @@ function getCommonName(id) {
     if (arr && arr.length > 0) { return arr[0].speciesName; } else { return ""; }
 }
 function getSite(ActivityId, id) {
-    var arr = ActivityData.activities.filter(function (el) {
+    var AData;
+    if (AppMode === 'PH') AData = ActivityData;
+    if (AppMode === 'AH') AData = ActivityDataAH;
+    var arr = AData.activities.filter(function (el) {
         return (el.activityId === ActivityId);
     });
     if (arr && arr.length > 0) {
@@ -2732,64 +2793,21 @@ function clearCache(appMode) {
             break;
     }
 }
-function getCurrentActivityTiles(str, zoom) {
-    var AData;
-    if (AppMode === 'PH') { AData = ActivityData; }
-    if (AppMode === 'AH') { AData = ActivityDataAH; }
-    if (Number(str) === 99999) { return true; }
-    curLats = []; curLngs = [];
-    if (AData.activities) {
-        var arr = AData.activities.filter(function (el) {
-            return (el.activityId === Number(str));
-        });
-        if (arr && arr.length > 0) {
-            $.each(arr[0].sites, function (key, val) {
-                var wkt = new Wkt.Wkt();
-                wkt.read(val.locationDatum.wkt);
-                wkt.toObject();
-                for (var k = 0; k < wkt.toJson().coordinates[0].length; k++) {
-                    curLats.push(wkt.toJson().coordinates[0][k][1]);
-                    curLngs.push(wkt.toJson().coordinates[0][k][0]);
-                }
-            });
-            if (curLats.length > 0 && curLngs.length > 0) {
-                var scale = 1 << zoom;
-                cX = curLats[0];
-                cY = curLngs[0];
-                curLats.sort();
-                curLngs.sort();
-                minX = curLats[0];
-                minY = curLngs[0];
-                maxX = curLats[curLats.length - 1];
-                maxY = curLngs[curLngs.length - 1];
-                var minLatLng = new google.maps.LatLng(minX, minY);
-                var maxLatLng = new google.maps.LatLng(maxX, maxY);
-                var wC1 = project(minLatLng);
-                var wC2 = project(maxLatLng);
-                var pC1x = Math.floor(wC1.x * scale / TILE_SIZE) - 1;
-                var pC1y = Math.floor(wC1.y * scale / TILE_SIZE) - 1;
-                var pC2x = Math.floor(wC2.x * scale / TILE_SIZE) + 1;
-                var pC2y = Math.floor(wC2.y * scale / TILE_SIZE) + 1;
-                tiles = 0;
-                fetchAndSaveTile(pC1x, pC1y, zoom, pC2x, pC1y, pC2y);
-            }
-        }
-    }
-}
-function getMapBounds() {
-    if (allLats.length > 0 && allLngs.length > 0) {
-        allLats.sort();
-        allLngs.sort();
-        minX = allLats[0];
-        minY = allLngs[0];
-        maxX = allLats[allLats.length - 1];
-        maxY = allLngs[allLngs.length - 1];
-    }
+function getCurrentActivityTiles(str, A, B, startZoom, endZoom) {
+    var scale = 1 << startZoom;
+    var pC1x = Math.floor(A.x * scale / TILE_SIZE);
+    var pC1y = Math.floor(A.y * scale / TILE_SIZE);
+    var pC2x = Math.floor(B.x * scale / TILE_SIZE);
+    var pC2y = Math.floor(B.y * scale / TILE_SIZE);
+    fetchAndSaveTile(pC1x, pC1y, startZoom, endZoom, pC2x, pC1y, pC2y, str, A, B);
 }
 function getCurrentActivityBounds(str) {
+    var AData;
+    if (AppMode === 'PH') AData = ActivityData;
+    if (AppMode === 'AH') AData = ActivityDataAH;
     if (Number(str) === 99999) { return true; }
     curLats = []; curLngs = [];
-    var arr = ActivityData.activities.filter(function (el) {
+    var arr = AData.activities.filter(function (el) {
         return (el.activityId === Number(str));
     });
     if (arr && arr.length > 0) {
@@ -2805,14 +2823,17 @@ function getCurrentActivityBounds(str) {
         if (curLats.length > 0 && curLngs.length > 0) {
             cX = curLats[0];
             cY = curLngs[0];
-            curLats.sort();
-            curLngs.sort();
+            curLats.sort(sortNumber);
+            curLngs.sort(sortNumber);
             minX = curLats[0];
             minY = curLngs[0];
             maxX = curLats[curLats.length - 1];
             maxY = curLngs[curLngs.length - 1];
         }
     }
+}
+function sortNumber(a, b) {
+    return a - b;
 }
 /* SIMS Framework */
 
@@ -2984,7 +3005,7 @@ function exportTableToCSV($table, filename) {
             .split(tmpRowDelim).join(rowDelim)
             .split(tmpColDelim).join(colDelim) + '"';
 
-    window.resolveLocalFileSystemURL('file:///storage/emulated/0/Download', function (fs) {
+    window.resolveLocalFileSystemURL(cordova.file.documentsDirectory, function (fs) {
         //alert('file system open: ' + fs);
         var today = new Date();
         var dd = today.getDate();
@@ -3010,7 +3031,7 @@ function exportTableToCSV($table, filename) {
                 fileWriter.seek(0);
                 var blob = new Blob([csv], { type: 'text/plain' });
                 fileWriter.write(blob);
-                $.growl.notice({ title: "", message: 'File saved to Download folder.', location: "tc", size: "large" });
+                $.growl.notice({ title: "", message: 'File saved to Documents folder.', location: "tc", size: "large" });
             });
         });
     });
@@ -3106,73 +3127,111 @@ function logRecord(record) {
 }
 $(document).on('click', 'a.downloadBaseMaps', function (e) {
     var url = resSettings.settings.mapSets[0].downloadPath;
-    var numfiles = resSettings.settings.mapSets[0].numfiles;
+    //var numfiles = resSettings.settings.mapSets[0].numfiles;
+    var numfiles = $(this).data("files");
     var mapset = "BASE";
-    var filename;
-    var filenum = 0;
-    t0 = performance.now();
-    $('#modalDownload').modal();
     $('#mb8 .progText').text("Download in progress ...");
-    $('#mb8 .progress').removeClass('hide');
-    $('#mb8 .progTime').text(new Date().toString());
-    getFileandExtractIOS(url, mapset, 1, numfiles);
+    $('#mb8 .fa-spin').removeClass('hide');
+    $('#mb8 .fa-check-circle-o').addClass('hide');
+    $('#mb8 .closeDownload').addClass('hide');
+    $('#modalDownload').modal();
+    getFileandExtractIOS(url, mapset, 2, numfiles);
 });
 $(document).on('click', 'a.downloadMaps', function (e) {
     var str = $('#curActivities').val();
     if (str === "0") { return true; }
-    $('#modalDownload').modal();
-    $('#mb8 .progText').text("Download in progress ...");
-    $('#mb8 .progress').removeClass('hide');
-    $.when(getCurrentActivityTiles(str, 10)).then(getCurrentActivityTiles(str, 11)).then(getCurrentActivityTiles(str, 12))
-        .then(getCurrentActivityTiles(str, 13)).then(getCurrentActivityTiles(str, 14))
-        .then(getCurrentActivityTiles(str, 15)).then(getCurrentActivityTiles(str, 16)).then(function () {
-            resSettings.settings.mapSets[0].lastDownloadDate = new Date().toString();
-            db.transaction(function (tx) {
-                tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
-                    $('#form3').find('label.mapNotes').text(new Date().toString());
-                    //$('#modalProgress').modal('hide');
-                });
-            }, function (err) {
-                $.growl({ title: "", message: "An error occured while updating mapsets. " + err.message, location: "tc", size: "large" });
-            });
+    var AData;
+    if (AppMode === 'PH') { AData = ActivityData; }
+    if (AppMode === 'AH') { AData = ActivityDataAH; }
+    if (Number(str) === 99999) { return true; }
+    curLats = []; curLngs = [];
+    if (AData.activities) {
+        var arr = AData.activities.filter(function (el) {
+            return (el.activityId === Number(str));
         });
+        if (arr && arr.length > 0) {
+            $.each(arr[0].sites, function (key, val) {
+                var wkt = new Wkt.Wkt();
+                wkt.read(val.locationDatum.wkt);
+                wkt.toObject();
+                for (var k = 0; k < wkt.toJson().coordinates[0].length; k++) {
+                    curLats.push(wkt.toJson().coordinates[0][k][1]);
+                    curLngs.push(wkt.toJson().coordinates[0][k][0]);
+                }
+            });
+            if (curLats.length > 0 && curLngs.length > 0) {
+                cX = curLats[0];
+                cY = curLngs[0];
+                curLats.sort(sortNumber);
+                curLngs.sort(sortNumber);
+                minX = curLats[0] + 0.004;
+                minY = curLngs[0] - 0.004;
+                maxX = curLats[curLats.length - 1] - 0.004;
+                maxY = curLngs[curLngs.length - 1] + 0.004;
+                var minLatLng = new google.maps.LatLng(minX, minY);
+                var maxLatLng = new google.maps.LatLng(maxX, maxY);
+                var wC1 = project(minLatLng);
+                var wC2 = project(maxLatLng);
+
+                $('#mb8 .progText').text("Download in progress ...");
+                $('#mb8 .fa-spin').removeClass('hide');
+                $('#mb8 .fa-check-circle-o').addClass('hide');
+                $('#mb8 .closeDownload').addClass('hide');
+                $('#modalDownload').modal();
+                $.when(getCurrentActivityTiles(str, wC1, wC2, 11, 18))
+                    .done(function () {
+                        resSettings.settings.mapSets[0].lastDownloadDate = new Date().toString();
+                        db.transaction(function (tx) {
+                            tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
+                                $('#form3').find('label.mapNotes').text(new Date().toString());
+                            });
+                        }, function (err) {
+                            $.growl({ title: "", message: "An error occured while updating mapsets. " + err.message, location: "tc", size: "large" });
+                        });
+                    });
+            }
+        }
+    }
 });
-function fetchAndSaveTile(i, j, zoom, xlimit, ystart, ylimit) {
+function fetchAndSaveTile(i, j, startZoom, endZoom, xlimit, ystart, ylimit, str, A, B) {
     window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (fs) {
-        var numtiles = Math.pow(2, zoom);
+        var numtiles = Math.pow(2, startZoom);
         var xhr = new XMLHttpRequest();
-        var url = "http://mt1.google.com/vt/lyrs=y&x=" + i + "&y=" + j + "&z=" + zoom;
+        var url = "http://mt1.google.com/vt/lyrs=y&x=" + i + "&y=" + j + "&z=" + startZoom;
         xhr.open('GET', url, true);
         xhr.responseType = 'blob';
         xhr.onloadstart = function () {
-            tiles++;
-            $('#mb8 .progText').text("File " + tiles + ": Download in progress ...");
-            $('#mb8 .progress-bar').css('width', Math.round(tiles % 100) + '%').attr('aria-valuenow', Math.round(tiles % 100)).text(Math.round(tiles % 100) + '%');
-            $('#mb8 .progress').removeClass('hide');
+            $('#mb8 .progText').text("Zoom " + startZoom + ": Download in progress ...");
         };
         xhr.onloadend = function () {
             if (this.status === 200) {
                 var blob = new Blob([this.response], { type: "image/jpeg" });
                 fs.getDirectory("maps", { create: true, exclusive: false }, function (dir0Entry) {
-                    dir0Entry.getDirectory(zoom.toString(), { create: true, exclusive: false }, function (dir2Entry) {
+                    dir0Entry.getDirectory(startZoom.toString(), { create: true, exclusive: false }, function (dir2Entry) {
                         dir2Entry.getDirectory(i.toString(), { create: true, exclusive: false }, function (dir4Entry) {
                             dir4Entry.getFile(j + ".jpg", { create: true, exclusive: false }, function (fileEntry) {
                                 fileEntry.createWriter(function (fileWriter) {
                                     fileWriter.onwriteend = function () {
-                                        if (i > xlimit) {
-                                            $('#modalDownload').modal('hide');
-                                            $('#mb8 .progText').text("");
-                                            return false;
-                                        }
-                                        if (i <= xlimit) {
-                                            if (j <= ylimit) {
-                                                j++;
-                                                fetchAndSaveTile(i, j, zoom, xlimit, ystart, ylimit);
+                                        if (startZoom <= endZoom) {
+                                            if (i <= xlimit) {
+                                                if (j <= ylimit) {
+                                                    j++;
+                                                    fetchAndSaveTile(i, j, startZoom, endZoom, xlimit, ystart, ylimit, str, A, B);
+                                                } else {
+                                                    i++;
+                                                    j = ystart;
+                                                    fetchAndSaveTile(i, j, startZoom, endZoom, xlimit, ystart, ylimit, str, A, B);
+                                                }
                                             } else {
-                                                i++;
-                                                j = ystart;
-                                                fetchAndSaveTile(i, j, zoom, xlimit, ystart, ylimit);
+                                                startZoom++;
+                                                getCurrentActivityTiles(str, A, B, startZoom, endZoom);
                                             }
+                                        } else {
+                                            $('#mb8 .progText').text("Download Complete");
+                                            $('#mb8 .fa-spin').addClass('hide');
+                                            $('#mb8 .fa-check-circle-o').removeClass('hide');
+                                            $('#mb8 .closeDownload').removeClass('hide');
+                                            return false;
                                         }
                                     };
                                     fileWriter.onerror = function (e) {
@@ -3191,14 +3250,9 @@ function fetchAndSaveTile(i, j, zoom, xlimit, ystart, ylimit) {
     });
 }
 function getFileandExtractIOS(url, mapset, i, n) {
-    t1 = performance.now();
-    t3 = t3 + Math.round(t1 - t0);
-    $('#mb8 .progText').text("File " + i + " out of " + n + ": Download in progress ...");
-    $('#mb8 .progress-bar').css('width', '70%').attr('aria-valuenow', 100).text('70%');
-    $('#mb8 .progress').removeClass('hide');
-    //$('#mb6 .fa-clock-o').removeClass('hide');
+    $('#mb8 .progText').text("Downloading Base maps ...");
     url2 = url + mapset + pad(i, 2) + ".zip";
-    filename = mapset + pad(i, 2) + ".zip";
+    var filename = mapset + pad(i, 2) + ".zip";
     var fileURL = cordova.file.dataDirectory + "maps/" + filename;
     var fileTransfer = new FileTransfer();
     fileTransfer.download(
@@ -3218,19 +3272,11 @@ function getFileandExtractIOS(url, mapset, i, n) {
 }
 function processZipIOS(zipSource, destination, url, mapset, i, n) {
     // Handle the progress event
-    t1 = performance.now();
-    t3 = t3 + Math.round(t1 - t0);
-    $('#mb8 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
-    $('#mb8 .progress').removeClass('hide');
-    //$('#mb6 .fa-clock-o').removeClass('hide');
-    //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
+    //$('#mb8 .progText').text("Extracting files. This might take a while ...");
 
     var progressHandler = function (progressEvent) {
         var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-        $('#mb8 .progText').text("Extracting Zip file " + i + " out of " + n + ". This might take a while ...");
-        $('#mb8 .progress').removeClass('hide');
-        //$('#mb6 .fa-clock-o').removeClass('hide');
-        $('#mb8 .progress-bar').css('width', percent + '%').attr('aria-valuenow', percent).text(percent + '%');
+        //$('#mb8 .progText').text("Extracting files. This might take a while ...");
     };
     // Proceed to unzip the file
     window.zip.unzip(zipSource, destination, (status) => {
@@ -3250,29 +3296,24 @@ function processZipIOS(zipSource, destination, url, mapset, i, n) {
                     });
                 });
             }), 20000);
-            $('#mb8 .progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
             i++;
             if (i > n) {
-                //resSettings.settings.mapSets[ActiveMapSet].downloaded = 1;
                 resSettings.settings.mapSets[0].lastDownloadDate = new Date().toString();
                 db.transaction(function (tx) {
                     tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
                         //alert("Row inserted.");
-                        //return e + pad(nextID.toString(), 4);
                     });
                 }, function (err) {
                     $.growl.error({ title: "", message: "An error occured while updating mapsets. " + err.message, location: "tc", size: "large" });
-                });
-                $('#modalDownload').modal('hide');
+                    });
                 $('#form3').find('label.mapBNotes').text(new Date().toString());
-                //initSettings();
-                //$('#mb6 .progTime').text("");
-                $.growl.notice({ title: "", message: "Download complete", location: "bc", size: "small" });
+                $('#mb8 .progText').text("Download Complete");
+                $('#mb8 .fa-spin').addClass('hide');
+                $('#mb8 .fa-check-circle-o').removeClass('hide');
+                $('#mb8 .closeDownload').removeClass('hide');
                 return false;
             }
             else {
-                //$('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).text('100%');
-                //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');  
                 setTimeout(getFileandExtractIOS(url, mapset, i, n), 10000);
             }
         }
