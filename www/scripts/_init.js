@@ -3164,10 +3164,10 @@ $(document).on('click', 'a.downloadMaps', function (e) {
                 cY = curLngs[0];
                 curLats.sort(sortNumber);
                 curLngs.sort(sortNumber);
-                minX = curLats[0] + 0.004;
-                minY = curLngs[0] - 0.004;
-                maxX = curLats[curLats.length - 1] - 0.004;
-                maxY = curLngs[curLngs.length - 1] + 0.004;
+                minX = curLats[0] + 0.005;
+                minY = curLngs[0] - 0.005;
+                maxX = curLats[curLats.length - 1] - 0.005;
+                maxY = curLngs[curLngs.length - 1] + 0.005;
                 var minLatLng = new google.maps.LatLng(minX, minY);
                 var maxLatLng = new google.maps.LatLng(maxX, maxY);
                 var wC1 = project(minLatLng);
