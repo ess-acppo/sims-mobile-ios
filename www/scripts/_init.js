@@ -3037,7 +3037,7 @@ function exportTableToCSV($table, filename) {
     });
 }
 function backupDatabase() {
-    var fileName = cordova.file.applicationStorageDirectory + 'databases/sims.db';
+    var fileName = cordova.file.applicationStorageDirectory + 'Library/LocalDatabase/sims.db';
     var directoryName = cordova.file.documentsDirectory;
 
     window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
@@ -3076,16 +3076,19 @@ function restoreDatabase() {
                     //console.log('[!] Storage: ' + directoryName);
                     window.resolveLocalFileSystemURL(cordova.file.applicationStorageDirectory, function (directoryEntry) {
                         //console.log('[!] Directory: ' + directoryEntry.toURL());
-                        directoryEntry.getDirectory("databases", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
+                        directoryEntry.getDirectory("Library", { create: false, exclusive: false }, function (bkupdirectoryEntry1) {
                             //console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
-                            fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
-                                //console.log('[!] Copy success');
-                                $.when(fetchSettings()).then(initSettings()).done(function () {
-                                    $.growl({ title: "", message: "Observations restored to the application.", location: "tc", size: "large" });
+                            bkupdirectoryEntry1.getDirectory("LocalDatabase", { create: false, exclusive: false }, function (bkupdirectoryEntry) {
+                                //console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
+                                fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
+                                    //console.log('[!] Copy success');
+                                    $.when(fetchSettings()).then(initSettings()).done(function () {
+                                        $.growl({ title: "", message: "Observations restored to the application.", location: "tc", size: "large" });
+                                    });
+                                }, function (error) {
+                                    //console.log('[!] Copy failed: ' + error.code);
                                 });
-                            }, function (error) {
-                                //console.log('[!] Copy failed: ' + error.code);
-                            });
+                            }                            
                         }, function (error) {
                             //console.log('[!] Restore Directory not found: ' + directoryName + 'Backup' + ' errorcode: ' + + error.code);
                         })
