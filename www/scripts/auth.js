@@ -211,3 +211,4 @@ function EnableAuthForm() {
     $('.auth-send').removeClass('disabled');
     s.classList.add('hide');
 }
+//updated
