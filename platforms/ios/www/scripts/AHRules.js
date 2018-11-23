@@ -3137,3 +3137,4 @@ $(document).on('click', '.scroller-left', function () {
 //            return;
 //        }
 //    });
+/*updated*/
