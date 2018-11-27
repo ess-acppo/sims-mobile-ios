@@ -3168,6 +3168,11 @@ $(document).on('click', 'a.downloadMaps', function (e) {
                 minY = curLngs[0] - 0.005;
                 maxX = curLats[curLats.length - 1] - 0.005;
                 maxY = curLngs[curLngs.length - 1] + 0.005;
+                if (minX < maxX) {
+                    var xchange = minX;
+                    minX = maxX;
+                    maxX = xchange;
+                }                
                 var minLatLng = new google.maps.LatLng(minX, minY);
                 var maxLatLng = new google.maps.LatLng(maxX, maxY);
                 var wC1 = project(minLatLng);
