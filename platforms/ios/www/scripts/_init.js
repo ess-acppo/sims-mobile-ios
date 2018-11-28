@@ -3070,39 +3070,30 @@ function restoreDatabase() {
          buttons: {
              Ok: function () {
                  var fileName = cordova.file.documentsDirectory + 'Backup/sims.db';
- 
                  window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
-                     //console.log('[!] Database exists: ' + fileName);
-                    //console.log('[!] Storage: ' + directoryName);
                     window.resolveLocalFileSystemURL(cordova.file.applicationStorageDirectory, function (directoryEntry) {
-                        //console.log('[!] Directory: ' + directoryEntry.toURL());
                         directoryEntry.getDirectory("Library", { create: false, exclusive: false }, function (bkupdirectoryEntry1) {
                             bkupdirectoryEntry1.getDirectory("LocalDatabase", { create: false, exclusive: false }, function (bkupdirectoryEntry) {
-                                //console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
                                 fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
-                                    //console.log('[!] Copy success');
-                                    $.when(fetchSettings()).then(initSettings()).done(function () {
-                                        $.growl({ title: "", message: "Observations restored to the application.", location: "tc", size: "large"});
-                                    });
-                                }, function (error) {
-                                //console.log('[!] Copy failed: ' + error.code);
-                            });
+                                        $.when(fetchSettings()).then(initSettings()).done(function () {
+                                            $.growl({ title: "", message: "Observations restored to the application.", location: "tc", size: "large"});
+                                        });
+                                    }, function (error) {
+                                });                                
+                            }, function (error) {
+                        });
                         }, function (error) {
-                            //console.log('[!] Restore Directory not found: ' + directoryName + 'Backup' + ' errorcode: ' + + error.code);
-                        })
+                    });                                        
                     }, function (error) {
-                         //console.log('[!] Directory not found: ' + directoryName + ' errorcode: ' + + error.code);
-                     });
-                }, function (error) {
-                     //console.log('[!] Database not found: ' + fileName + ' errorcode: ' + + error.code);
-                });
+                    });
+                 }, function (error) {
+                });                                 
             },
              cancel: function () {
                  //close
             }
         }
     });
-    }
 }
 function logRecord(record) {
     window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (fs) {
