@@ -2883,7 +2883,7 @@ function exportObservationsToCSV() {
     csv = csv.replace(/_M_N/g, '').replace(/_O_N/g, '').replace(/_M_D/g, '').replace(/_M_S/g, '');
     csv = csv.replace("[{", "").replace("}]", "").replace("},", "\r\n").replace(",{", "\r\n").replace("{", "").replace("}", "");
 
-    window.resolveLocalFileSystemURL(cordova.file.documentsDirectory, function (fs) {
+    window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (fs) {
         //alert('file system open: ' + fs);
         var today = new Date();
         var dd = today.getDate();
@@ -2926,7 +2926,7 @@ function exportObservationsToCSV() {
 }
 $(document).on('click', '.btnDownloadLogs', function (event) {
     var fileName = cordova.file.dataDirectory + 'Logs/log.txt';
-    var directoryName = cordova.file.documentsDirectory;
+    var directoryName = cordova.file.dataDirectory;
 
     window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
         window.resolveLocalFileSystemURL(directoryName, function (directoryEntry) {
@@ -2955,7 +2955,6 @@ $(document).on('click', '.btnDownloadLogs', function (event) {
     }, function (error) {
         $.growl.error({ title: "", message: 'Log file not found!', location: "tc", size: "large" });
     });
-
 });
 $(document).on('click', '.btnClearLogs', function (event) {
     window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (fs) {
@@ -3005,7 +3004,7 @@ function exportTableToCSV($table, filename) {
             .split(tmpRowDelim).join(rowDelim)
             .split(tmpColDelim).join(colDelim) + '"';
 
-    window.resolveLocalFileSystemURL(cordova.file.documentsDirectory, function (fs) {
+    window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (fs) {
         //alert('file system open: ' + fs);
         var today = new Date();
         var dd = today.getDate();
