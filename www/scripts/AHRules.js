@@ -1070,8 +1070,8 @@ $(document).on('blur', 'input[type=text][name="age"]', function (e) {
     $('input[type=text][name="dob"]').val(dobD.toString() + "/" + dobM.toString() + "/" + dobY.toString());
 });
 $(document).on('click', '#bsInfo', function () {
-    window.resolveLocalFileSystemURL(cordova.file.dataDirectory + 'assets/visguide.pdf', function (fileEntry) {
-        window.resolveLocalFileSystemURL(cordova.file.documentsDirectory, function (dirEntry) {
+    window.resolveLocalFileSystemURL(cordova.file.applicationDirectory + 'www/assets/visguide.pdf', function (fileEntry) {
+        window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
             fileEntry.copyTo(dirEntry, 'file.pdf', function (newFileEntry) {
                 cordova.plugins.fileOpener2.open(newFileEntry.nativeURL, 'application/pdf',
                     {
