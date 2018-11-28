@@ -3038,21 +3038,31 @@ function exportTableToCSV($table, filename) {
 }
 function backupDatabase() {
     var fileName = cordova.file.applicationStorageDirectory + 'Library/LocalDatabase/sims.db';
+    var fileName2 = cordova.file.dataDirectory + 'backup/backup.db';    
     var directoryName = cordova.file.dataDirectory;
-    window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
-        window.resolveLocalFileSystemURL(directoryName, function (directoryEntry) {
-            directoryEntry.getDirectory("backup", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
-                fileEntry.copyTo(bkupdirectoryEntry, "backup.db", function (cpfileEntry) {
-                    $.when(fetchSettings()).then(initSettings()).done(function () {
-                        $.growl.notice({ title: "", message: "Observations backedup to local Backup folder.", location: "tc", size: "large" });
-                    });                    
+    window.resolveLocalFileSystemURL(fileName2, function (fileEntry1) { 
+        window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
+            window.resolveLocalFileSystemURL(directoryName, function (directoryEntry) {
+                directoryEntry.getDirectory("backup", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
+                    fileEntry1.remove(function () {
+                        fileEntry.copyTo(bkupdirectoryEntry, "backup.db", function (cpfileEntry) {
+                            $.when(fetchSettings()).then(initSettings()).done(function () {
+                                $.growl.notice({ title: "", message: "Observations backedup to local Backup folder.", location: "tc", size: "large" });
+                            });                    
+                        });                                        
+                    }, function (error) {
+                        // Error deleting the file
+                        $.growl.error({ title: "", message: "Error removing db file.", location: "tc", size: "large" });
+                    }, function () {
+                        // The file doesn't exist
+                        $.growl.notice({ title: "", message: "DB file does not exist.", location: "tc", size: "large" });
+                    });                     
                 }, function (error) {
                 });
             }, function (error) {
             });
         }, function (error) {
-        });
-    }, function (error) {
+        });        
     });
 }
 function restoreDatabase() {
