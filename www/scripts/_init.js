@@ -3069,18 +3069,18 @@ function restoreDatabase() {
                             directoryEntry.getDirectory("Library", { create: false, exclusive: false }, function (bkupdirectoryEntry1) {
                                 bkupdirectoryEntry1.getDirectory("LocalDatabase", { create: false, exclusive: false }, function (bkupdirectoryEntry) {
                                     fileEntry1.remove(function () {
+                                        fileEntry.copyTo(bkupdirectoryEntry, "sims.db", function (cpfileEntry) {
+                                            $.when(fetchSettings()).then(initSettings()).done(function () {
+                                                $.growl({ title: "", message: "Observations restored to the application.", location: "tc", size: "large"});
+                                            });
+                                        });                                            
                                     }, function (error) {
                                         // Error deleting the file
                                         $.growl.error({ title: "", message: "Error removing db file.", location: "tc", size: "large" });
                                     }, function () {
                                         // The file doesn't exist
                                         $.growl.notice({ title: "", message: "DB file does not exist.", location: "tc", size: "large" });
-                                    });                                    
-                                    fileEntry.copyTo(bkupdirectoryEntry, "sims.db", function (cpfileEntry) {
-                                        $.when(fetchSettings()).then(initSettings()).done(function () {
-                                            $.growl({ title: "", message: "Observations restored to the application.", location: "tc", size: "large"});
-                                        });
-                                    });                                
+                                    });                                                                
                                 });
                             });                                        
                         });
