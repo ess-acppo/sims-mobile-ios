@@ -1209,14 +1209,14 @@ function loadModalAH(pagename) {
                     if (key.startsWith("SampleType_M_S") && value !== "") {
                         $('#form1').find("select[name='" + key + "'] :not(option[value='" + value + "'])").remove();
                     }
-                    if (key.startsWith("externalObserverFlag_O_S") && value === "Y") {
-                        $('#form1').find("input[name='externalObserver_O_S']").removeClass('hide');
-                        $('#form1').find("input[type='checkbox'][name^='externalObserverFlag_O_S']").iCheck('check');
-                    }
-                    if (key.startsWith("externalObserverFlag_O_S") && value === "N") {
-                        $('#form1').find("input[name='externalObserver_O_S']").addClass('hide');
-                        $('#form1').find("input[type='checkbox'][name^='externalObserverFlag_O_S']").iCheck('uncheck');
-                    }
+                    //if (key.startsWith("externalObserverFlag_O_S") && value === "Y") {
+                    //    $('#form1').find("input[name='externalObserver_O_S']").removeClass('hide');
+                    //    $('#form1').find("input[type='checkbox'][name^='externalObserverFlag_O_S']").iCheck('check');
+                    //}
+                    //if (key.startsWith("externalObserverFlag_O_S") && value === "N") {
+                    //    $('#form1').find("input[name='externalObserver_O_S']").addClass('hide');
+                    //    $('#form1').find("input[type='checkbox'][name^='externalObserverFlag_O_S']").iCheck('uncheck');
+                    //}
                     if (key === "gender_M_S" && value !== "") {
                         $('#form1').find("input[type='radio'][name='" + key + "'][value='" + value + "']").iCheck('check');
                     }
@@ -1418,9 +1418,9 @@ function loadModalAH(pagename) {
 }
 $(document).on('ifChecked', 'input[type="checkbox"].minimal', function (event) {
     //alert(event.type + ' callback');
-    if ($(this).attr('name').startsWith('externalObserverFlag_O_S')) {
-        $('input[name^="externalObserver_O_S"').removeClass('hide');
-    }
+    //if ($(this).attr('name').startsWith('externalObserverFlag_O_S')) {
+    //    $('input[name^="externalObserver_O_S"').removeClass('hide');
+    //}
     if ($(this).attr('name').startsWith('InvalidFlag_M_S')) {
         $(this).closest('.row').find('.diseases').empty();
         $(this).closest('.row').find('select').val("NONE");
@@ -1432,9 +1432,9 @@ $(document).on('ifChecked', 'input[type="checkbox"].minimal', function (event) {
 });
 $(document).on('ifUnchecked', 'input[type="checkbox"].minimal', function (event) {
     //alert(event.type + ' callback');
-    if ($(this).attr('name').startsWith('externalObserverFlag_O_S')) {
-        $('input[name^="externalObserver_O_S"').addClass('hide');
-    }
+    //if ($(this).attr('name').startsWith('externalObserverFlag_O_S')) {
+    //    $('input[name^="externalObserver_O_S"').addClass('hide');
+    //}
     if ($(this).attr('name') === "debugMode") {
         debugMode = 0;
     }
@@ -1776,11 +1776,11 @@ function packageAHFormforSubmit(data) {
             if (fname === 'woundsPercent') { return true; }
             /* group animal stuff */
 
-            if (fname === 'externalObserverFlag' && value === 'Y') {
-                extObsrvrFlag = 1;
-                return true;
-            }
-            if (fname === 'externalObserver' && value !== '' && extObsrvrFlag === 1) {
+            //if (fname === 'externalObserverFlag' && value === 'Y') {
+            //    extObsrvrFlag = 1;
+            //    return true;
+            //}
+            if (fname === 'externalObserver' && value !== '') {
                 observation['externalObserver'] = value;
                 return true;
             }
