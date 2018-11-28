@@ -3042,7 +3042,7 @@ function backupDatabase() {
     window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
         window.resolveLocalFileSystemURL(directoryName, function (directoryEntry) {
             directoryEntry.getDirectory("backup", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
-                fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
+                fileEntry.copyTo(bkupdirectoryEntry, "backup.db", function (cpfileEntry) {
                     $.when(fetchSettings()).then(initSettings()).done(function () {
                         $.growl.notice({ title: "", message: "Observations backedup to local Backup folder.", location: "tc", size: "large" });
                     });                    
@@ -3061,20 +3061,31 @@ function restoreDatabase() {
          content: 'Do you want to restore from backup? You may lose the observations that were recorded after the last backup!',
          buttons: {
              Ok: function () {
-                 var fileName = cordova.file.dataDirectory + 'backup/sims.db';
-                 window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
-                    window.resolveLocalFileSystemURL(cordova.file.applicationStorageDirectory, function (directoryEntry) {
-                        directoryEntry.getDirectory("Library", { create: false, exclusive: false }, function (bkupdirectoryEntry1) {
-                            bkupdirectoryEntry1.getDirectory("LocalDatabase", { create: false, exclusive: false }, function (bkupdirectoryEntry) {
-                                fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
-                                    $.when(fetchSettings()).then(initSettings()).done(function () {
-                                        $.growl({ title: "", message: "Observations restored to the application.", location: "tc", size: "large"});
-                                    });
-                                });                                
-                            });
-                        });                                        
-                    });
-                 });                                 
+                 var fileName = cordova.file.dataDirectory + 'backup/backup.db';
+                 var fileName2 = cordova.file.applicationDirectory + 'Library/LocalDatabase/sims.db';
+                 window.resolveLocalFileSystemURL(fileName2, function (fileEntry1) {
+                     window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
+                        window.resolveLocalFileSystemURL(cordova.file.applicationStorageDirectory, function (directoryEntry) {
+                            directoryEntry.getDirectory("Library", { create: false, exclusive: false }, function (bkupdirectoryEntry1) {
+                                bkupdirectoryEntry1.getDirectory("LocalDatabase", { create: false, exclusive: false }, function (bkupdirectoryEntry) {
+                                    fileEntry1.remove(function () {
+                                    }, function (error) {
+                                        // Error deleting the file
+                                        $.growl.error({ title: "", message: "Error removing db file.", location: "tc", size: "large" });
+                                    }, function () {
+                                        // The file doesn't exist
+                                        $.growl.notice({ title: "", message: "DB file does not exist.", location: "tc", size: "large" });
+                                    });                                    
+                                    fileEntry.copyTo(bkupdirectoryEntry, "sims.db", function (cpfileEntry) {
+                                        $.when(fetchSettings()).then(initSettings()).done(function () {
+                                            $.growl({ title: "", message: "Observations restored to the application.", location: "tc", size: "large"});
+                                        });
+                                    });                                
+                                });
+                            });                                        
+                        });
+                     });                          
+                 });                           
             },
              cancel: function () {
             }
