@@ -138,4 +138,5 @@
   <plugin name="cordova-plugin-app-version" spec="~0.1.9" />
   <plugin name="cordova-plugin-android-permissions" spec="~1.0.0" />
   <preference name="deployment-target" value="11.4" />
+  <preference name="BackupWebStorage" value="local"/>
 </widget>
