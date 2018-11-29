@@ -2929,29 +2929,16 @@ $(document).on('click', '.btnDownloadLogs', function (event) {
     var directoryName = cordova.file.dataDirectory;
 
     window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
-        window.resolveLocalFileSystemURL(directoryName, function (directoryEntry) {
-            directoryEntry.getDirectory("Logs", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
-                fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
-                    $.growl.notice({ title: "", message: 'File saved to Documents>Logs folder.', location: "bc", size: "small" });
-                    cordova.plugins.fileOpener2.open(cpfileEntry.nativeURL, 'text/plain',
-                        {
-                            error: function (e) {
-                                console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
-                            },
-                            success: function () {
-                                console.log('file opened successfully');
-                            }
-                        }
-                    );                    
-                }, function (error) {
-                    $.growl.error({ title: "", message: 'Copy failed.', location: "bc", size: "small" });
-                });
-            }, function (error) {
-                $.growl.error({ title: "", message: 'File save failed!', location: "tc", size: "large" });
-            });
-        }, function (error) {
-            $.growl.error({ title: "", message: 'Directory not found!', location: "tc", size: "large" });
-        });
+        cordova.plugins.fileOpener2.open(fileEntry.nativeURL, 'text/plain',
+            {
+                error: function (e) {
+                    console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
+                },
+                success: function () {
+                    console.log('file opened successfully');
+                }
+            }
+        );        
     }, function (error) {
         $.growl.error({ title: "", message: 'Log file not found!', location: "tc", size: "large" });
     });
@@ -3120,7 +3107,7 @@ function logRecord(record) {
         });
     });
 }
-$(document).on('click', 'a.downloadBaseMaps', function (e) {
+$(document).on('click', 'button.downloadBaseMaps', function (e) {
     var url = resSettings.settings.mapSets[0].downloadPath;
     //var numfiles = resSettings.settings.mapSets[0].numfiles;
     var numfiles = $(this).data("files");
@@ -3132,7 +3119,7 @@ $(document).on('click', 'a.downloadBaseMaps', function (e) {
     $('#modalDownload').modal();
     getFileandExtractIOS(url, mapset, 2, numfiles);
 });
-$(document).on('click', 'a.downloadMaps', function (e) {
+$(document).on('click', 'button.downloadMaps', function (e) {
     var str = $('#curActivities').val();
     if (str === "0") { return true; }
     var AData;
