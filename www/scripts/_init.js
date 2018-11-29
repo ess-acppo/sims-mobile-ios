@@ -3025,30 +3025,50 @@ function exportTableToCSV($table, filename) {
 }
 function backupDatabase() {
     var fileName = cordova.file.applicationStorageDirectory + 'Library/LocalDatabase/sims.db';
-    var directoryName = cordova.file.dataDirectory;
-
-    window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
-        console.log('[!] Database exists: ' + fileName);
-        console.log('[!] Storage: ' + directoryName);
-        window.resolveLocalFileSystemURL(directoryName, function (directoryEntry) {
-            console.log('[!] Directory: ' + directoryEntry.toURL());
-            directoryEntry.getDirectory("backup", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
-                console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
-                fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
-                    console.log('[!] Copy success');
-                    $.growl.notice({ title: "", message: "Observations backedup to local Backup folder.", location: "tc", size: "large" });
+    var fileName2 = cordova.file.documentsDirectory + 'backup/sims.db';
+    var directoryName = cordova.file.documentsDirectory;
+    window.resolveLocalFileSystemURL(fileName2, function (fileEntry1) {
+        window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
+                console.log('[!] Database exists: ' + fileName);
+                console.log('[!] Storage: ' + directoryName);
+                window.resolveLocalFileSystemURL(directoryName, function (directoryEntry) {
+                    console.log('[!] Directory: ' + directoryEntry.toURL());
+                    directoryEntry.getDirectory("backup", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
+                        console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
+                            fileEntry1.remove(function () {
+                                fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
+                                    console.log('[!] Copy success');
+                                    $.growl.notice({ title: "", message: "Observations backedup to local Backup folder.", location: "tc", size: "large" });
+                                }, function (error) {
+                                    console.log('[!] Copy failed: ' + error.code);
+                                });                                
+                                // The file has been removed succesfully
+                                //$.growl.notice({ title: "", message: "Zip file is removed successfully.", location: "tc", size: "large" });
+                            }, function (error) {
+                                // Error deleting the file
+                                //$.growl.error({ title: "", message: "Error removing zip file.", location: "tc", size: "large" });
+                            }, function () {
+                                fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
+                                    console.log('[!] Copy success');
+                                    $.growl.notice({ title: "", message: "Observations backedup to local Backup folder.", location: "tc", size: "large" });
+                                }, function (error) {
+                                    console.log('[!] Copy failed: ' + error.code);
+                                });                                
+                                // The file doesn't exist
+                                //$.growl.notice({ title: "", message: "Zip file does not exist.", location: "tc", size: "large" });
+                            });                
+                    }, function (error) {
+                        console.log('[!] Backup Directory not found: ' + directoryName + 'Backup' + ' errorcode: ' + + error.code);
+                    })
                 }, function (error) {
-                    console.log('[!] Copy failed: ' + error.code);
+                    console.log('[!] Directory not found: ' + directoryName + ' errorcode: ' + + error.code);
                 });
             }, function (error) {
-                console.log('[!] Backup Directory not found: ' + directoryName + 'Backup' + ' errorcode: ' + + error.code);
-            })
-        }, function (error) {
-            console.log('[!] Directory not found: ' + directoryName + ' errorcode: ' + + error.code);
-        });
+                console.log('[!] Database not found: ' + fileName + ' errorcode: ' + + error.code);
+            });
     }, function (error) {
-        console.log('[!] Database not found: ' + fileName + ' errorcode: ' + + error.code);
-    });
+        console.log('[!] File not found: ' + fileName + ' errorcode: ' + + error.code);
+    });   
 }
 function restoreDatabase() {
     $.confirm({
