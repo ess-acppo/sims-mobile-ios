@@ -2253,9 +2253,9 @@ function IterateAH(data) {
                 vFailed = true;
                 return false;
             }
-            if (fname === 'externalObserverFlag' && value === 'Y') {
-                externalObsFlag = 1; return true;
-            }
+            //if (fname === 'externalObserverFlag' && value === 'Y') {
+            //    externalObsFlag = 1; return true;
+            //}
             if (fname === 'ObservationWhereWktClob' && value !== '') {
                 var wkt = new Wkt.Wkt();
                 wkt.read(value);
@@ -2588,9 +2588,9 @@ function Iterate2AH(data) {
                 vFailed = true;
                 return false;
             }
-            if (fname === 'externalObserverFlag' && value === 'Y') {
-                externalObsFlag = 1; return true;
-            }
+            //if (fname === 'externalObserverFlag' && value === 'Y') {
+            //    externalObsFlag = 1; return true;
+            //}
             if (fname === 'ObservationWhereWktClob' && value !== '') {
                 var wkt = new Wkt.Wkt();
                 wkt.read(value);
