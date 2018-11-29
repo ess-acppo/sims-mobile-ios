@@ -3078,7 +3078,8 @@ function restoreDatabase() {
         content: 'Do you want to restore from backup? You may lose the observations that were recorded after the last backup!',
         buttons: {
             Ok: function () {
-                var fileName = cordova.file.dataDirectory + 'backup/sims.db';
+                var fileName = cordova.file.documentsDirectory + 'backup/sims.db';
+                var fileName2 = cordova.file.applicationStorageDirectory + 'Library/LocalDatabase/sims.db';
 
                 window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
                     console.log('[!] Database exists: ' + fileName);
@@ -3087,14 +3088,26 @@ function restoreDatabase() {
                         console.log('[!] Directory: ' + directoryEntry.toURL());
                         directoryEntry.getDirectory("LocalDatabase", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
                             console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
-                            fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
-                                console.log('[!] Copy success');
-                                $.when(fetchSettings()).then(initSettings()).done(function () {
-                                    $.growl({ title: "", message: "Observations restored to the application.", location: "tc", size: "large" });
-                                });
+                            window.resolveLocalFileSystemURL(fileName2, function (fileEntry1) {
+                                fileEntry1.remove(function () {                              
+                                // The file has been removed succesfully
+                                //$.growl.notice({ title: "", message: "Zip file is removed successfully.", location: "tc", size: "large" });
+                                    fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
+                                        console.log('[!] Copy success');
+                                        $.growl.notice({ title: "", message: "Observations restored to local Backup folder.", location: "tc", size: "large" });
+                                    }, function (error) {
+                                        console.log('[!] Copy failed: ' + error.code);
+                                    });                         
+                                }, function (error) {
+                                // Error deleting the file
+                                //$.growl.error({ title: "", message: "Error removing zip file.", location: "tc", size: "large" });
+                                }, function () {                              
+                                // The file doesn't exist
+                                //$.growl.notice({ title: "", message: "Zip file does not exist.", location: "tc", size: "large" });
+                                });                         
                             }, function (error) {
-                                console.log('[!] Copy failed: ' + error.code);
-                            });
+                                console.log('[!] File not found: ' + fileName + ' errorcode: ' + + error.code);
+                            }); 
                         }, function (error) {
                             console.log('[!] Restore Directory not found: ' + directoryName + 'Backup' + ' errorcode: ' + + error.code);
                         })
