@@ -3088,6 +3088,7 @@ function restoreDatabase() {
                             window.sqlitePlugin.deleteDatabase({name: 'sims.db', location: 'default'}, function (error) {
                                 fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
                                     console.log('[!] Copy success');
+                                    db = window.sqlitePlugin.openDatabase({ name: "sims.db", location: 'default' });
                                     $.growl.notice({ title: "", message: "Observations restored to the app. PLEASE RESTART THE APP for the settings to take effect!", location: "tc", size: "large" });
                                 }, function (error) {
                                     console.log('[!] Copy failed: ' + error.code);
