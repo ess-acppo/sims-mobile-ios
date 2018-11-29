@@ -2133,10 +2133,10 @@ $(document).on('click', '#newObservationAH', function () {
     $('#modalAHGrid').modal('hide');
     $('#modalAHMenu').modal();
 });
-$(document).on('click', 'button.btnBackupData', function (e) {
+$(document).on('click', '.btnBackupData', function (e) {
     backupDatabase();
 });
-$(document).on('click', 'button.btnRestoreData', function (e) {
+$(document).on('click', '.btnRestoreData', function (e) {
     restoreDatabase();
 });
 $(document).on('click', '#closeProgress', function (e) {
@@ -3329,4 +3329,3 @@ function processZipIOS(zipSource, destination, url, mapset, i, n) {
 //    getFileandExtractIOS(url, mapset, 1, numfiles);
 //});
 /*IOS Only*/
-/*updated*/
