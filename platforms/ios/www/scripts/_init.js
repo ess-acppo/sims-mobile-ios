@@ -1847,7 +1847,7 @@ $(document).on('hidden.bs.modal', '#modalForm', function () {
         loadMapMarkersAH();
     }
 });
-$(document).on('click', 'a.btnResetData', function (e) {
+$(document).on('click', '.btnResetData', function (e) {
     $.confirm({
         title: 'Confirm Data Reset!',
         content: 'Do you want to delete all the observation records?',
@@ -3089,7 +3089,7 @@ function restoreDatabase() {
                                 fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
                                     console.log('[!] Copy success');
                                     db = window.sqlitePlugin.openDatabase({ name: "sims.db", location: 'default' });
-                                    $.growl.notice({ title: "", message: "Observations restored to the app. PLEASE RESTART THE APP for the settings to take effect!", location: "tc", size: "large" });
+                                    $.growl.notice({ title: "", message: "Observations restored to the app.", location: "tc", size: "large" });
                                 }, function (error) {
                                     console.log('[!] Copy failed: ' + error.code);
                                 });  
