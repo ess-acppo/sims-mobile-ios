@@ -3085,7 +3085,7 @@ function restoreDatabase() {
                         console.log('[!] Directory: ' + directoryEntry.toURL());
                         directoryEntry.getDirectory("LocalDatabase", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
                             console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
-                            window.sqlitePlugin.deleteDatabase({name: 'sims.db', location: 'default'}, , function (error) {
+                            window.sqlitePlugin.deleteDatabase({name: 'sims.db', location: 'default'}, function (error) {
                                 fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
                                     console.log('[!] Copy success');
                                     $.growl.notice({ title: "", message: "Observations restored to the app. PLEASE RESTART THE APP for the settings to take effect!", location: "tc", size: "large" });
