@@ -3035,28 +3035,22 @@ function backupDatabase() {
             directoryEntry.getDirectory("backup", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
                 console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
                     window.resolveLocalFileSystemURL(fileName2, function (fileEntry1) {
-                        fileEntry1.remove(function () {
-                            fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
-                                console.log('[!] Copy success');
-                                $.growl.notice({ title: "", message: "Observations backedup to local Backup folder.", location: "tc", size: "large" });
-                            }, function (error) {
-                                console.log('[!] Copy failed: ' + error.code);
-                            });                                
+                        fileEntry1.remove(function () {                              
                         // The file has been removed succesfully
                         //$.growl.notice({ title: "", message: "Zip file is removed successfully.", location: "tc", size: "large" });
                         }, function (error) {
                         // Error deleting the file
                         //$.growl.error({ title: "", message: "Error removing zip file.", location: "tc", size: "large" });
-                    }, function () {
+                        }, function () {                              
+                        // The file doesn't exist
+                        //$.growl.notice({ title: "", message: "Zip file does not exist.", location: "tc", size: "large" });
+                        }); 
                         fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
                             console.log('[!] Copy success');
                             $.growl.notice({ title: "", message: "Observations backedup to local Backup folder.", location: "tc", size: "large" });
                         }, function (error) {
                             console.log('[!] Copy failed: ' + error.code);
-                        });                                
-                        // The file doesn't exist
-                        //$.growl.notice({ title: "", message: "Zip file does not exist.", location: "tc", size: "large" });
-                        }); 
+                        });                         
                     }, function (error) {
                         console.log('[!] File not found: ' + fileName + ' errorcode: ' + + error.code);
                     });                                                                
