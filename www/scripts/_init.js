@@ -3028,26 +3028,26 @@ function backupDatabase() {
     var directoryName = cordova.file.dataDirectory;
 
     window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
-        //console.log('[!] Database exists: ' + fileName);
-        //console.log('[!] Storage: ' + directoryName);
+        console.log('[!] Database exists: ' + fileName);
+        console.log('[!] Storage: ' + directoryName);
         window.resolveLocalFileSystemURL(directoryName, function (directoryEntry) {
-            //console.log('[!] Directory: ' + directoryEntry.toURL());
+            console.log('[!] Directory: ' + directoryEntry.toURL());
             directoryEntry.getDirectory("backup", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
-                //console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
+                console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
                 fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
-                    //console.log('[!] Copy success');
+                    console.log('[!] Copy success');
                     $.growl.notice({ title: "", message: "Observations backedup to local Backup folder.", location: "tc", size: "large" });
                 }, function (error) {
-                    //console.log('[!] Copy failed: ' + error.code);
+                    console.log('[!] Copy failed: ' + error.code);
                 });
             }, function (error) {
-                //console.log('[!] Backup Directory not found: ' + directoryName + 'Backup' + ' errorcode: ' + + error.code);
+                console.log('[!] Backup Directory not found: ' + directoryName + 'Backup' + ' errorcode: ' + + error.code);
             })
         }, function (error) {
-            //console.log('[!] Directory not found: ' + directoryName + ' errorcode: ' + + error.code);
+            console.log('[!] Directory not found: ' + directoryName + ' errorcode: ' + + error.code);
         });
     }, function (error) {
-        //console.log('[!] Database not found: ' + fileName + ' errorcode: ' + + error.code);
+        console.log('[!] Database not found: ' + fileName + ' errorcode: ' + + error.code);
     });
 }
 function restoreDatabase() {
@@ -3059,28 +3059,28 @@ function restoreDatabase() {
                 var fileName = cordova.file.dataDirectory + 'backup/sims.db';
 
                 window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
-                    //console.log('[!] Database exists: ' + fileName);
-                    //console.log('[!] Storage: ' + directoryName);
+                    console.log('[!] Database exists: ' + fileName);
+                    console.log('[!] Storage: ' + directoryName);
                     window.resolveLocalFileSystemURL(cordova.file.applicationStorageDirectory + 'Library', function (directoryEntry) {
-                        //console.log('[!] Directory: ' + directoryEntry.toURL());
+                        console.log('[!] Directory: ' + directoryEntry.toURL());
                         directoryEntry.getDirectory("LocalDatabase", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
-                            //console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
+                            console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
                             fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
-                                //console.log('[!] Copy success');
+                                console.log('[!] Copy success');
                                 $.when(fetchSettings()).then(initSettings()).done(function () {
                                     $.growl({ title: "", message: "Observations restored to the application.", location: "tc", size: "large" });
                                 });
                             }, function (error) {
-                                //console.log('[!] Copy failed: ' + error.code);
+                                console.log('[!] Copy failed: ' + error.code);
                             });
                         }, function (error) {
-                            //console.log('[!] Restore Directory not found: ' + directoryName + 'Backup' + ' errorcode: ' + + error.code);
+                            console.log('[!] Restore Directory not found: ' + directoryName + 'Backup' + ' errorcode: ' + + error.code);
                         })
                     }, function (error) {
-                        //console.log('[!] Directory not found: ' + directoryName + ' errorcode: ' + + error.code);
+                        console.log('[!] Directory not found: ' + directoryName + ' errorcode: ' + + error.code);
                     });
                 }, function (error) {
-                    //console.log('[!] Database not found: ' + fileName + ' errorcode: ' + + error.code);
+                    console.log('[!] Database not found: ' + fileName + ' errorcode: ' + + error.code);
                 });
             },
             cancel: function () {
