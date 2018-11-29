@@ -1601,10 +1601,10 @@ $(document).on('click', '#settings', function (e) {
     }).done(function () {
         $('#modalProgress').modal('hide');
         if (statusElem.innerHTML === 'online') {
-            $('a.btnSync').removeClass('hide');
+            $('button.btnSync').removeClass('hide');
         }
         if (statusElem.innerHTML === 'offline') {
-            $('a.btnSync').addClass('hide');
+            $('button.btnSync').addClass('hide');
         }
     });
     $('#modalSettings').modal();
@@ -1914,7 +1914,7 @@ $(document).on('click', 'a.btnResetData', function (e) {
         }
     });
 });
-$(document).on('click', 'a.btnSync', function (e) {
+$(document).on('click', 'button.btnSync', function (e) {
     $.confirm({
         title: 'Confirm Data Sync!',
         content: 'Do you want to sync application data with the Server?<br/>Note: <b>Observations will not be Synced.</b>',
@@ -2133,10 +2133,10 @@ $(document).on('click', '#newObservationAH', function () {
     $('#modalAHGrid').modal('hide');
     $('#modalAHMenu').modal();
 });
-$(document).on('click', 'a.btnBackupData', function (e) {
+$(document).on('click', 'button.btnBackupData', function (e) {
     backupDatabase();
 });
-$(document).on('click', 'a.btnRestoreData', function (e) {
+$(document).on('click', 'button.btnRestoreData', function (e) {
     restoreDatabase();
 });
 $(document).on('click', '#closeProgress', function (e) {
