@@ -3029,7 +3029,6 @@ function backupDatabase() {
     var directoryName = cordova.file.documentsDirectory;
     window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
         console.log('[!] Database exists: ' + fileName);
-        console.log('[!] Storage: ' + directoryName);
         window.resolveLocalFileSystemURL(directoryName, function (directoryEntry) {
             console.log('[!] Directory: ' + directoryEntry.toURL());
             directoryEntry.getDirectory("backup", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
@@ -3082,7 +3081,6 @@ function restoreDatabase() {
                 var fileName2 = cordova.file.applicationStorageDirectory + 'Library/LocalDatabase/sims.db';
                 window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
                     console.log('[!] Database exists: ' + fileName);
-                    console.log('[!] Storage: ' + directoryName);
                     window.resolveLocalFileSystemURL(cordova.file.applicationStorageDirectory + 'Library', function (directoryEntry) {
                         console.log('[!] Directory: ' + directoryEntry.toURL());
                         directoryEntry.getDirectory("LocalDatabase", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
