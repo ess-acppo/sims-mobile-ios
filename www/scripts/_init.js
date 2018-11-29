@@ -3080,7 +3080,6 @@ function restoreDatabase() {
             Ok: function () {
                 var fileName = cordova.file.documentsDirectory + 'backup/sims.db';
                 var fileName2 = cordova.file.applicationStorageDirectory + 'Library/LocalDatabase/sims.db';
-
                 window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
                     console.log('[!] Database exists: ' + fileName);
                     console.log('[!] Storage: ' + directoryName);
@@ -3110,7 +3109,7 @@ function restoreDatabase() {
                             }); 
                         }, function (error) {
                             console.log('[!] Restore Directory not found: ' + directoryName + 'Backup' + ' errorcode: ' + + error.code);
-                        })
+                        });
                     }, function (error) {
                         console.log('[!] Directory not found: ' + directoryName + ' errorcode: ' + + error.code);
                     });

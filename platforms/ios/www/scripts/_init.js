@@ -3080,7 +3080,6 @@ function restoreDatabase() {
             Ok: function () {
                 var fileName = cordova.file.documentsDirectory + 'backup/sims.db';
                 var fileName2 = cordova.file.applicationStorageDirectory + 'Library/LocalDatabase/sims.db';
-
                 window.resolveLocalFileSystemURL(fileName, function (fileEntry) {
                     console.log('[!] Database exists: ' + fileName);
                     console.log('[!] Storage: ' + directoryName);
@@ -3106,13 +3105,13 @@ function restoreDatabase() {
                                 //$.growl.notice({ title: "", message: "Zip file does not exist.", location: "tc", size: "large" });
                                 });                         
                             }, function (error) {
-                                console.log('[!] File not found: ' + fileName + ' errorcode: ' + + error.code);
+                                console.log('[!] File not found: ' + fileName2 + ' errorcode: ' + + error.code);
                             }); 
                         }, function (error) {
-                            console.log('[!] Restore Directory not found: ' + directoryName + 'Backup' + ' errorcode: ' + + error.code);
-                        })
+                            console.log('[!] Restore Directory not found: Backup' + ' errorcode: ' + + error.code);
+                        });
                     }, function (error) {
-                        console.log('[!] Directory not found: ' + directoryName + ' errorcode: ' + + error.code);
+                        console.log('[!] Directory not found.errorcode: ' + + error.code);
                     });
                 }, function (error) {
                     console.log('[!] Database not found: ' + fileName + ' errorcode: ' + + error.code);
