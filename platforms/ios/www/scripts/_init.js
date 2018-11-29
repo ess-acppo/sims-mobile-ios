@@ -3091,7 +3091,7 @@ function restoreDatabase() {
                                 //$.growl.notice({ title: "", message: "Zip file is removed successfully.", location: "tc", size: "large" });
                                     fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
                                         console.log('[!] Copy success');
-                                        $.growl.notice({ title: "", message: "Observations restored to local Backup folder.", location: "tc", size: "large" });
+                                        $.growl.notice({ title: "", message: "Observations restored to the app. PLEASE RESTART THE APP for the settings to take effect!", location: "tc", size: "large" });
                                     }, function (error) {
                                         console.log('[!] Copy failed: ' + error.code);
                                     });                         
