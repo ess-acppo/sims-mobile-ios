@@ -3085,25 +3085,16 @@ function restoreDatabase() {
                         console.log('[!] Directory: ' + directoryEntry.toURL());
                         directoryEntry.getDirectory("LocalDatabase", { create: true, exclusive: false }, function (bkupdirectoryEntry) {
                             console.log('[!] Directory: ' + bkupdirectoryEntry.toURL());
-                            window.resolveLocalFileSystemURL(fileName2, function (fileEntry1) {
-                                fileEntry1.remove(function () {                              
-                                // The file has been removed succesfully
-                                //$.growl.notice({ title: "", message: "Zip file is removed successfully.", location: "tc", size: "large" });
-                                    fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
-                                        console.log('[!] Copy success');
-                                        $.growl.notice({ title: "", message: "Observations restored to the app. PLEASE RESTART THE APP for the settings to take effect!", location: "tc", size: "large" });
-                                    }, function (error) {
-                                        console.log('[!] Copy failed: ' + error.code);
-                                    });                         
+                            window.sqlitePlugin.deleteDatabase({name: 'sims.db', location: 'default'}, , function (error) {
+                                fileEntry.copyTo(bkupdirectoryEntry, name, function (cpfileEntry) {
+                                    console.log('[!] Copy success');
+                                    $.growl.notice({ title: "", message: "Observations restored to the app. PLEASE RESTART THE APP for the settings to take effect!", location: "tc", size: "large" });
                                 }, function (error) {
+                                    console.log('[!] Copy failed: ' + error.code);
+                                });  
+                            }, function () {                              
                                 // Error deleting the file
-                                //$.growl.error({ title: "", message: "Error removing zip file.", location: "tc", size: "large" });
-                                }, function () {                              
-                                // The file doesn't exist
-                                //$.growl.notice({ title: "", message: "Zip file does not exist.", location: "tc", size: "large" });
-                                });                         
-                            }, function (error) {
-                                console.log('[!] File not found: ' + fileName2 + ' errorcode: ' + + error.code);
+                                $.growl.error({ title: "", message: "Error removing database file before restore.", location: "tc", size: "large" });
                             }); 
                         }, function (error) {
                             console.log('[!] Restore Directory not found: Backup' + ' errorcode: ' + + error.code);
