@@ -3165,7 +3165,7 @@ function logRecord(record) {
         });
     });
 }
-$(document).on('click', 'button.downloadBaseMaps', function (e) {
+$(document).on('click', '#downloadBaseMaps', function (e) {
     var url = resSettings.settings.mapSets[0].downloadPath;
     //var numfiles = resSettings.settings.mapSets[0].numfiles;
     var numfiles = $(this).data("files");
@@ -3177,7 +3177,7 @@ $(document).on('click', 'button.downloadBaseMaps', function (e) {
     $('#modalDownload').modal();
     getFileandExtractIOS(url, mapset, 2, numfiles);
 });
-$(document).on('click', 'button.downloadMaps', function (e) {
+$(document).on('click', '#downloadMaps', function (e) {
     var str = $('#curActivities').val();
     if (str === "0") { return true; }
     var AData;
