@@ -1602,10 +1602,10 @@ $(document).on('click', '#settings', function (e) {
     }).done(function () {
         $('#modalProgress').modal('hide');
         if (statusElem.innerHTML === 'online') {
-            $('button.btnSync').removeClass('hide');
+            $('#btnSync').removeClass('hide');
         }
         if (statusElem.innerHTML === 'offline') {
-            $('button.btnSync').addClass('hide');
+            $('#btnSync').addClass('hide');
         }
     });
     $('#modalSettings').modal();
@@ -1848,7 +1848,7 @@ $(document).on('hidden.bs.modal', '#modalForm', function () {
         loadMapMarkersAH();
     }
 });
-$(document).on('click', '.btnResetData', function (e) {
+$(document).on('click', '#btnResetData', function (e) {
     $.confirm({
         title: 'Confirm Data Reset!',
         content: 'Do you want to delete all the observation records?',
@@ -1915,7 +1915,7 @@ $(document).on('click', '.btnResetData', function (e) {
         }
     });
 });
-$(document).on('click', 'button.btnSync', function (e) {
+$(document).on('click', '#btnSync', function (e) {
     $.confirm({
         title: 'Confirm Data Sync!',
         content: 'Do you want to sync application data with the Server?<br/>Note: <b>Observations will not be Synced.</b>',
@@ -2134,10 +2134,10 @@ $(document).on('click', '#newObservationAH', function () {
     $('#modalAHGrid').modal('hide');
     $('#modalAHMenu').modal();
 });
-$(document).on('click', '.btnBackupData', function (e) {
+$(document).on('click', '#btnBackupData', function (e) {
     backupDatabase();
 });
-$(document).on('click', '.btnRestoreData', function (e) {
+$(document).on('click', '#btnRestoreData', function (e) {
     restoreDatabase();
 });
 $(document).on('click', '#closeProgress', function (e) {
@@ -2953,7 +2953,7 @@ function exportObservationsToCSV() {
         });
     });
 }
-$(document).on('click', '.btnDownloadLogs', function (event) {
+$(document).on('click', '#btnDownloadLogs', function (event) {
     var fileName = cordova.file.dataDirectory + 'Logs/log.txt';
     var directoryName = cordova.file.dataDirectory;
 
@@ -2973,7 +2973,7 @@ $(document).on('click', '.btnDownloadLogs', function (event) {
     });
 
 });
-$(document).on('click', '.btnClearLogs', function (event) {
+$(document).on('click', '#btnClearLogs', function (event) {
     window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (fs) {
         fs.getDirectory("Logs", { create: true, exclusive: false }, function (dirEntry) {
             dirEntry.getFile("log.txt", { create: true, exclusive: false }, function (fileEntry) {
