@@ -1071,7 +1071,7 @@ $(document).on('blur', 'input[type=text][name="age"]', function (e) {
 });
 $(document).on('click', '#bsInfo', function () {
     window.resolveLocalFileSystemURL(cordova.file.applicationDirectory + 'www/assets/visguide.pdf', function (fileEntry) {
-        window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (dirEntry) {
+        window.resolveLocalFileSystemURL(cordova.file.tempDirectory, function (dirEntry) {
             fileEntry.copyTo(dirEntry, 'file.pdf', function (newFileEntry) {
                 cordova.plugins.fileOpener2.open(newFileEntry.nativeURL, 'application/pdf',
                     {
