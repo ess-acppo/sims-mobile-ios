@@ -1,0 +1,57 @@
+
+App Thinning Size Report for All Variants of  
+
+Variant:  -28E6C625-4F7E-4743-A37D-A8A0F7804319.ipa
+Supported variant descriptors: [device: iPad7,1, os-version: 12], [device: iPad7,2, os-version: 12], [device: iPad7,4, os-version: 12], [device: iPad8,2, os-version: 12], [device: iPad8,3, os-version: 12], [device: iPad8,7, os-version: 12], [device: iPad6,3, os-version: 12], [device: iPad7,3, os-version: 12], [device: iPad6,4, os-version: 12], [device: iPad8,5, os-version: 12], [device: iPad8,6, os-version: 12], [device: iPad8,1, os-version: 12], [device: iPad8,8, os-version: 12], and [device: iPad8,4, os-version: 12]
+App + On Demand Resources size: 4.3 MB compressed, 8.7 MB uncompressed
+App size: 4.3 MB compressed, 8.7 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
+
+
+Variant:  -2C850EDE-E4CA-473D-9F36-583FC09730AD.ipa
+Supported variant descriptors: [device: iPhone11,2, os-version: 12], [device: iPhone10,3, os-version: 12], [device: iPhone10,6, os-version: 12], [device: iPhone11,4, os-version: 12], [device: iPhone10,2, os-version: 12], [device: iPhone11,6, os-version: 12], [device: iPhone9,4, os-version: 12], [device: iPhone9,2, os-version: 12], and [device: iPhone10,5, os-version: 12]
+App + On Demand Resources size: 4.3 MB compressed, 8.7 MB uncompressed
+App size: 4.3 MB compressed, 8.7 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
+
+
+Variant:  -4DEBE508-3E0C-4ADF-BC07-839E7179412C.ipa
+Supported variant descriptors: [device: iPhone6,1, os-version: 12], [device: iPhone8,1, os-version: 12], [device: iPhone8,4, os-version: 12], [device: iPhone6,2, os-version: 12], [device: iPod7,1, os-version: 12], and [device: iPhone7,2, os-version: 12]
+App + On Demand Resources size: 4.2 MB compressed, 8.7 MB uncompressed
+App size: 4.2 MB compressed, 8.7 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
+
+
+Variant:  -527FD0A7-9AE2-4FAC-9573-2E4C9A2D4397.ipa
+Supported variant descriptors: [device: iPhone11,8, os-version: 12]
+App + On Demand Resources size: 4.3 MB compressed, 8.7 MB uncompressed
+App size: 4.3 MB compressed, 8.7 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
+
+
+Variant:  -8727ADA7-17D8-446E-9EE3-06228E5482FC.ipa
+Supported variant descriptors: [device: iPhone8,2, os-version: 12] and [device: iPhone7,1, os-version: 11]
+App + On Demand Resources size: 4.3 MB compressed, 8.7 MB uncompressed
+App size: 4.3 MB compressed, 8.7 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
+
+
+Variant:  -AC133BE1-E6BF-4742-96EE-048EA8661033.ipa
+Supported variant descriptors: [device: iPad6,11, os-version: 12], [device: iPad5,1, os-version: 12], [device: iPad4,3, os-version: 12], [device: iPad4,4, os-version: 12], [device: iPad4,2, os-version: 12], [device: iPad7,6, os-version: 12], [device: iPad4,9, os-version: 12], [device: iPad7,5, os-version: 12], [device: iPad4,6, os-version: 12], [device: iPad6,7, os-version: 12], [device: iPad4,7, os-version: 12], [device: iPad4,1, os-version: 12], [device: iPad4,8, os-version: 12], [device: iPad5,2, os-version: 12], [device: iPad5,3, os-version: 12], [device: iPad5,4, os-version: 12], [device: iPad4,5, os-version: 12], [device: iPad6,8, os-version: 12], and [device: iPad6,12, os-version: 12]
+App + On Demand Resources size: 4.3 MB compressed, 8.7 MB uncompressed
+App size: 4.3 MB compressed, 8.7 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
+
+
+Variant:  -C20ED7FF-2119-4A5C-821A-054EBA736591.ipa
+Supported variant descriptors: [device: iPhone9,1, os-version: 12], [device: iPhone9,3, os-version: 12], [device: iPhone10,1, os-version: 12], and [device: iPhone10,4, os-version: 12]
+App + On Demand Resources size: 4.2 MB compressed, 8.7 MB uncompressed
+App size: 4.2 MB compressed, 8.7 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
+
+
+Variant:  .ipa
+Supported variant descriptors: Universal
+App + On Demand Resources size: 4.4 MB compressed, 8.7 MB uncompressed
+App size: 4.4 MB compressed, 8.7 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
