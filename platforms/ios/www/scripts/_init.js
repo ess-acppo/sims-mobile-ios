@@ -3223,17 +3223,31 @@ $(document).on('click', '#downloadMaps', function (e) {
                 $('#mb8 .fa-check-circle-o').addClass('hide');
                 $('#mb8 .closeDownload').addClass('hide');
                 $('#modalDownload').modal();
-                $.when(getCurrentActivityTiles(str, wC1, wC2, 11, 18))
-                    .done(function () {
-                        resSettings.settings.mapSets[0].lastDownloadDate = new Date().toString();
-                        db.transaction(function (tx) {
-                            tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
-                                $('#form3').find('label.mapNotes').text(new Date().toString());
-                            });
-                        }, function (err) {
-                            $.growl({ title: "", message: "An error occured while updating mapsets. " + err.message, location: "tc", size: "large" });
-                        });
-                    });
+                if (AppMode === 'AH') {
+                   $.when(getCurrentActivityTiles(str, wC1, wC2, 11, 15))
+                   .done(function () {
+                         resSettings.settings.mapSets[0].lastDownloadDate = new Date().toString();
+                         db.transaction(function (tx) {
+                                        tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
+                                                      $('#form3').find('label.mapNotes').text(new Date().toString());
+                                                      });
+                                        }, function (err) {
+                                        $.growl({ title: "", message: "An error occured while updating mapsets. " + err.message, location: "tc", size: "large" });
+                                        });
+                         });
+                } else {
+                   $.when(getCurrentActivityTiles(str, wC1, wC2, 11, 16))
+                   .done(function () {
+                         resSettings.settings.mapSets[0].lastDownloadDate = new Date().toString();
+                         db.transaction(function (tx) {
+                                        tx.executeSql("UPDATE settings SET settingsval = ? WHERE id = ?", [JSON.stringify(resSettings), 1], function (tx, res) {
+                                                      $('#form3').find('label.mapNotes').text(new Date().toString());
+                                                      });
+                                        }, function (err) {
+                                        $.growl({ title: "", message: "An error occured while updating mapsets. " + err.message, location: "tc", size: "large" });
+                                        });
+                         });
+                }
             }
         }
     }

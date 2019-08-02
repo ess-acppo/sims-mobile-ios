@@ -405,7 +405,7 @@
 				LastUpgradeCheck = 510;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = A39U9WXPTQ;
+						DevelopmentTeam = N9BU8DV6XF;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -415,6 +415,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
@@ -541,7 +542,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = A39U9WXPTQ;
+				DEVELOPMENT_TEAM = N9BU8DV6XF;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -551,7 +552,7 @@
 				INFOPLIST_FILE = "SIMS Mobile/SIMS Mobile-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.cordova.ESFA;
+				PRODUCT_BUNDLE_IDENTIFIER = au.gov.agriculture.esfadev;
 				PRODUCT_NAME = "ESFA - Enterprise Surveillance Field App";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
@@ -570,14 +571,14 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
-				DEVELOPMENT_TEAM = A39U9WXPTQ;
+				DEVELOPMENT_TEAM = N9BU8DV6XF;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SIMS Mobile/SIMS Mobile-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "SIMS Mobile/SIMS Mobile-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				PRODUCT_BUNDLE_IDENTIFIER = io.cordova.ESFA;
+				PRODUCT_BUNDLE_IDENTIFIER = au.gov.agriculture.esfadev;
 				PRODUCT_NAME = "ESFA - Enterprise Surveillance Field App";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
